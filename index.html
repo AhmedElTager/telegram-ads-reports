@@ -1,1 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Telegram Ads — Campaign Report</title>
 
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      color: #222;
+    }
+
+    .topbar {
+      background: #fff;
+      border-bottom: 1px solid #ddd;
+      padding: 18px 25px;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 35px auto;
+      padding: 0 18px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 25px;
+      margin-bottom: 20px;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 7px 14px;
+      border-radius: 20px;
+      background: #e7f7ed;
+      color: #16834b;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .stat {
+      border: 1px solid #e1e4e8;
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    .stat-title {
+      color: #777;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .ad-preview {
+      margin-top: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 18px;
+    }
+
+    .channel-button {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 11px 18px;
+      background: #229ed9;
+      color: white;
+      text-decoration: none;
+      border-radius: 7px;
+    }
+
+    .updated {
+      color: #777;
+      font-size: 13px;
+      margin-top: 15px;
+    }
+
+    @media (max-width: 600px) {
+      .stats {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="topbar">
+    Telegram Ads
+  </div>
+
+  <div class="container">
+
+    <div class="card">
+      <h2>Campaign Report</h2>
+
+      <span class="status">
+        Active
+      </span>
+
+      <div class="stats">
+
+        <div class="stat">
+          <div class="stat-title">
+            Impressions
+          </div>
+
+          <div class="stat-value">
+            0
+          </div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-title">
+            Campaign Status
+          </div>
+
+          <div class="stat-value">
+            Active
+          </div>
+        </div>
+
+      </div>
+
+      <div class="ad-preview">
+
+        <h3>Advertisement</h3>
+
+        <p>
+          Your Telegram advertisement will appear here.
+        </p>
+
+        <a
+          class="channel-button"
+          href="#"
+          target="_blank">
+          Visit Channel
+        </a>
+
+      </div>
+
+      <div class="updated">
+        Last updated: —
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>
