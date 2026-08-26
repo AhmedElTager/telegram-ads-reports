@@ -5,9 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>تقارير إعلانات تيليجرام</title>
+  <title>تقرير إعلانات تيليجرام</title>
 
-  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
@@ -23,7 +22,7 @@
     }
 
     .topbar {
-      background: #ffffff;
+      background: #fff;
       border-bottom: 1px solid #ddd;
       padding: 18px 20px;
       font-size: 22px;
@@ -37,11 +36,11 @@
     }
 
     .card {
-      background: #ffffff;
+      background: #fff;
       border: 1px solid #ddd;
-      border-radius: 14px;
+      border-radius: 12px;
       padding: 24px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 3px 12px rgba(0,0,0,.05);
     }
 
     .header {
@@ -52,16 +51,13 @@
       flex-wrap: wrap;
     }
 
-    h1,
-    h2,
-    h3 {
+    h1, h2 {
       margin-top: 0;
     }
 
     .campaign-name {
       color: #666;
       margin-top: 6px;
-      font-size: 15px;
     }
 
     .status {
@@ -78,7 +74,7 @@
     }
 
     .status.inactive {
-      background: #fdecec;
+      background: #fce8e8;
       color: #c0392b;
     }
 
@@ -134,8 +130,7 @@
     }
 
     .ad-image {
-      width: 100%;
-      max-width: 600px;
+      max-width: 100%;
       border-radius: 10px;
       margin-bottom: 15px;
       display: none;
@@ -146,14 +141,10 @@
       margin-top: 15px;
       padding: 12px 20px;
       background: #229ed9;
-      color: #ffffff;
+      color: white;
       text-decoration: none;
       border-radius: 8px;
       font-weight: bold;
-    }
-
-    .channel-button:hover {
-      opacity: 0.9;
     }
 
     .updated {
@@ -167,47 +158,24 @@
       text-align: center;
       padding: 40px 10px;
       color: #666;
-      font-size: 16px;
     }
 
     .error {
-      display: none;
-      margin-top: 20px;
-      padding: 15px;
-      border-radius: 8px;
       background: #fdecec;
       color: #b42318;
-      line-height: 1.7;
-      direction: ltr;
-      text-align: left;
-      word-break: break-word;
-    }
-
-    .success-info {
-      margin-top: 20px;
-      padding: 14px;
-      background: #f0f7ff;
+      padding: 15px;
       border-radius: 8px;
-      color: #345;
-      font-size: 14px;
+      margin-top: 20px;
+      display: none;
     }
 
     @media (max-width: 600px) {
-
-      .container {
-        margin: 15px auto;
-      }
-
-      .card {
-        padding: 18px;
-      }
-
       .stats {
         grid-template-columns: 1fr;
       }
 
-      .stat-value {
-        font-size: 26px;
+      .card {
+        padding: 18px;
       }
 
       .topbar {
@@ -225,13 +193,11 @@
 
   <div class="container">
 
-    <!-- Loading -->
     <div id="loading" class="loading">
       جاري تحميل بيانات الحملة...
     </div>
 
-    <!-- Report -->
-    <div id="report" class="card" style="display: none;">
+    <div id="report" class="card" style="display:none;">
 
       <div class="header">
 
@@ -249,7 +215,6 @@
 
       </div>
 
-      <!-- Statistics -->
       <div class="stats">
 
         <div class="stat">
@@ -278,7 +243,6 @@
 
       </div>
 
-      <!-- Advertisement -->
       <div class="ad-preview">
 
         <h2>
@@ -290,13 +254,20 @@
           <img
             id="adImage"
             class="ad-image"
-            alt="صورة الإعلان">
+            alt="صورة الإعلان"
+          >
 
-          <div id="adTitle" class="ad-title">
+          <div
+            id="adTitle"
+            class="ad-title"
+          >
             إعلان تيليجرام
           </div>
 
-          <div id="adText" class="ad-text">
+          <div
+            id="adText"
+            class="ad-text"
+          >
             —
           </div>
 
@@ -305,7 +276,8 @@
             class="channel-button"
             href="#"
             target="_blank"
-            rel="noopener noreferrer">
+            rel="noopener noreferrer"
+          >
             زيارة القناة
           </a>
 
@@ -313,27 +285,28 @@
 
       </div>
 
-      <!-- Last Update -->
-      <div id="updated" class="updated">
+      <div
+        id="updated"
+        class="updated"
+      >
         آخر تحديث: —
-      </div>
-
-      <div class="success-info">
-        ℹ️ يتم تحديث بيانات التقرير من قاعدة البيانات.
       </div>
 
     </div>
 
-    <!-- Error -->
-    <div id="error" class="error"></div>
+    <div
+      id="error"
+      class="error"
+    ></div>
 
   </div>
 
+
   <script>
 
-    /* =========================
-       SUPABASE CONNECTION
-    ========================= */
+    /* ===============================
+       SUPABASE
+    =============================== */
 
     const SUPABASE_URL =
       "https://oxclimxygexnezblrhpz.supabase.co";
@@ -348,9 +321,9 @@
       );
 
 
-    /* =========================
+    /* ===============================
        LOAD CAMPAIGN
-    ========================= */
+    =============================== */
 
     async function loadCampaign() {
 
@@ -366,68 +339,71 @@
 
       try {
 
-        console.log("Connecting to Supabase...");
+        /*
+          نقرأ الكود من الرابط
 
+          مثال:
+          ?code=TEST-001
+        */
 
-        const { data, error } =
-          await supabaseClient
-
-            .from("campaigns")
-
-            .select(
-              "id, client_id, campaign_name, impressions, status, ad_text, ad_image, channel_url, start_date, end_date, last_updated, report_code, created_at"
-            )
-
-            .order(
-              "created_at",
-              {
-                ascending: false
-              }
-            )
-
-            .limit(1)
-
-            .single();
-
-
-        /* =========================
-           CHECK DATABASE ERROR
-        ========================= */
-
-        if (error) {
-
-          console.error(
-            "Supabase error:",
-            error
+        const params =
+          new URLSearchParams(
+            window.location.search
           );
+
+        const reportCode =
+          params.get("code");
+
+
+        if (!reportCode) {
 
           throw new Error(
-            error.message
+            "رابط التقرير غير صحيح."
           );
+
         }
 
 
-        /* =========================
-           CHECK DATA
-        ========================= */
+        /*
+          نجيب الحملة التي تحمل
+          نفس Report Code
+        */
+
+        const {
+          data,
+          error
+        } = await supabaseClient
+
+          .from("campaigns")
+
+          .select("*")
+
+          .eq(
+            "report_code",
+            reportCode
+          )
+
+          .limit(1)
+          .maybeSingle();
+
+
+        if (error) {
+          throw error;
+        }
+
 
         if (!data) {
 
           throw new Error(
-            "لم يتم العثور على أي حملة في جدول campaigns."
+            "لم يتم العثور على هذا التقرير."
           );
+
         }
 
 
-        console.log(
-          "Campaign loaded:",
-          data
-        );
-
-
-        /* =========================
+        /* ===============================
            CAMPAIGN NAME
-        ========================= */
+        =============================== */
 
         document.getElementById(
           "campaignName"
@@ -436,76 +412,65 @@
           "حملة إعلانية";
 
 
-        /* =========================
+        /* ===============================
            IMPRESSIONS
-        ========================= */
-
-        const impressions =
-          Number(
-            data.impressions || 0
-          );
+        =============================== */
 
         document.getElementById(
           "impressions"
         ).textContent =
-          impressions.toLocaleString(
-            "en-US"
-          );
+          Number(
+            data.impressions || 0
+          ).toLocaleString("en-US");
 
 
-        /* =========================
+        /* ===============================
            STATUS
-        ========================= */
+        =============================== */
 
-        const campaignStatus =
-          data.status ||
-          "غير معروف";
-
-
-        document.getElementById(
-          "statusValue"
-        ).textContent =
-          campaignStatus;
-
-
-        const statusElement =
+        const status =
           document.getElementById(
             "status"
           );
 
+        const statusValue =
+          document.getElementById(
+            "statusValue"
+          );
 
-        statusElement.classList.remove(
-          "active",
-          "inactive"
-        );
+
+        statusValue.textContent =
+          data.status || "—";
 
 
         if (
-          campaignStatus.toLowerCase() ===
-          "active"
+          data.status === "Active"
         ) {
 
-          statusElement.textContent =
+          status.textContent =
             "● نشطة";
 
-          statusElement.classList.add(
-            "active"
-          );
+          status.className =
+            "status active";
 
         } else {
 
-          statusElement.textContent =
-            "● " + campaignStatus;
+          status.textContent =
+            "● " +
+            (
+              data.status ||
+              "غير معروف"
+            );
 
-          statusElement.classList.add(
-            "inactive"
-          );
+          status.className =
+            "status inactive";
+
         }
 
 
-        /* =========================
+        /* ===============================
            AD TEXT
-        ========================= */
+        =============================== */
 
         document.getElementById(
           "adText"
@@ -514,47 +479,67 @@
           "لا يوجد نص للإعلان.";
 
 
-        /* =========================
+        /* ===============================
            AD IMAGE
-        ========================= */
+        =============================== */
+
+        const image =
+          document.getElementById(
+            "adImage"
+          );
+
 
         if (data.ad_image) {
-
-          const image =
-            document.getElementById(
-              "adImage"
-            );
 
           image.src =
             data.ad_image;
 
           image.style.display =
             "block";
+
+        } else {
+
+          image.style.display =
+            "none";
+
         }
 
 
-        /* =========================
-           CHANNEL URL
-        ========================= */
+        /* ===============================
+           CHANNEL
+        =============================== */
+
+        const button =
+          document.getElementById(
+            "channelButton"
+          );
+
 
         if (data.channel_url) {
-
-          const button =
-            document.getElementById(
-              "channelButton"
-            );
 
           button.href =
             data.channel_url;
 
           button.style.display =
             "inline-block";
+
+        } else {
+
+          button.style.display =
+            "none";
+
         }
 
 
-        /* =========================
+        /* ===============================
            LAST UPDATED
-        ========================= */
+        =============================== */
+
+        const updated =
+          document.getElementById(
+            "updated"
+          );
+
 
         if (data.last_updated) {
 
@@ -563,9 +548,7 @@
               data.last_updated
             );
 
-          document.getElementById(
-            "updated"
-          ).textContent =
+          updated.textContent =
             "آخر تحديث: " +
             date.toLocaleString(
               "ar-EG"
@@ -573,16 +556,15 @@
 
         } else {
 
-          document.getElementById(
-            "updated"
-          ).textContent =
-            "آخر تحديث: غير متوفر";
+          updated.textContent =
+            "آخر تحديث: —";
+
         }
 
 
-        /* =========================
+        /* ===============================
            SHOW REPORT
-        ========================= */
+        =============================== */
 
         loading.style.display =
           "none";
@@ -593,36 +575,40 @@
 
       } catch (error) {
 
-        console.error(
-          "Error:",
-          error
-        );
+        console.error(error);
 
-
-        /* Hide loading */
 
         loading.style.display =
           "none";
 
-
-        /* Show error */
 
         errorBox.style.display =
           "block";
 
 
         errorBox.textContent =
-          "حدث خطأ أثناء تحميل البيانات: " +
-          (error.message || error);
+          "❌ " +
+          error.message;
+
       }
+
     }
 
 
-    /* =========================
-       START
-    ========================= */
+    /* ===============================
+       AUTO REFRESH
+       
+       كل دقيقة يعيد قراءة البيانات
+       من Supabase
+    =============================== */
 
     loadCampaign();
+
+
+    setInterval(
+      loadCampaign,
+      60000
+    );
 
   </script>
 
