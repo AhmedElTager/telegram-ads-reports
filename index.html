@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>تقرير إعلانات تيليجرام</title>
+  <title>تقارير إعلانات تيليجرام</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
+
     * {
       box-sizing: border-box;
     }
@@ -21,7 +23,7 @@
     }
 
     .topbar {
-      background: #fff;
+      background: #ffffff;
       border-bottom: 1px solid #ddd;
       padding: 18px 20px;
       font-size: 21px;
@@ -35,11 +37,31 @@
     }
 
     .card {
-      background: #fff;
+      background: #ffffff;
       border: 1px solid #ddd;
       border-radius: 14px;
       padding: 24px;
       box-shadow: 0 4px 15px rgba(0,0,0,.05);
+    }
+
+    .welcome {
+      text-align: center;
+      padding: 45px 20px;
+    }
+
+    .welcome-icon {
+      font-size: 55px;
+      margin-bottom: 15px;
+    }
+
+    .welcome h1 {
+      margin-bottom: 12px;
+    }
+
+    .welcome p {
+      color: #666;
+      line-height: 1.8;
+      margin: 0;
     }
 
     .header {
@@ -50,7 +72,8 @@
       flex-wrap: wrap;
     }
 
-    h1, h2 {
+    h1,
+    h2 {
       margin-top: 0;
     }
 
@@ -161,11 +184,32 @@
       padding: 18px;
       border-radius: 10px;
       margin-top: 20px;
-      display: none;
       text-align: center;
+      line-height: 1.8;
+      display: none;
+    }
+
+    .not-found {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .not-found-icon {
+      font-size: 50px;
+      margin-bottom: 15px;
+    }
+
+    .not-found h2 {
+      margin-bottom: 10px;
+    }
+
+    .not-found p {
+      color: #666;
+      line-height: 1.8;
     }
 
     @media (max-width: 600px) {
+
       .stats {
         grid-template-columns: 1fr;
       }
@@ -173,69 +217,133 @@
       .card {
         padding: 18px;
       }
+
+      .topbar {
+        font-size: 19px;
+      }
+
+      .stat-value {
+        font-size: 27px;
+      }
+
     }
+
   </style>
+
 </head>
 
 <body>
+
+  <!-- =========================
+       TOP BAR
+  ========================== -->
 
   <div class="topbar">
     📊 تقارير إعلانات تيليجرام
   </div>
 
+
   <div class="container">
 
-    <div id="loading" class="loading">
+    <!-- =========================
+         LOADING
+    ========================== -->
+
+    <div
+      id="loading"
+      class="loading"
+    >
       جاري تحميل التقرير...
     </div>
 
-    <div id="error" class="error"></div>
 
-    <div id="report" class="card" style="display:none;">
+    <!-- =========================
+         MAIN REPORT
+    ========================== -->
+
+    <div
+      id="report"
+      class="card"
+      style="display:none;"
+    >
 
       <div class="header">
 
         <div>
-          <h1>تقرير الحملة</h1>
 
-          <div id="campaignName" class="campaign-name">
+          <h1>
+            تقرير الحملة
+          </h1>
+
+          <div
+            id="campaignName"
+            class="campaign-name"
+          >
             —
           </div>
+
         </div>
 
-        <span id="status" class="status">
+
+        <span
+          id="status"
+          class="status"
+        >
           —
         </span>
 
       </div>
 
+
+      <!-- =========================
+           STATISTICS
+      ========================== -->
+
       <div class="stats">
 
         <div class="stat">
+
           <div class="stat-title">
             مرات الظهور
           </div>
 
-          <div id="impressions" class="stat-value">
+          <div
+            id="impressions"
+            class="stat-value"
+          >
             0
           </div>
+
         </div>
 
+
         <div class="stat">
+
           <div class="stat-title">
             حالة الحملة
           </div>
 
-          <div id="statusValue" class="stat-value">
+          <div
+            id="statusValue"
+            class="stat-value"
+          >
             —
           </div>
+
         </div>
 
       </div>
 
+
+      <!-- =========================
+           AD PREVIEW
+      ========================== -->
+
       <div class="ad-preview">
 
-        <h2>الإعلان</h2>
+        <h2>
+          الإعلان
+        </h2>
 
         <div class="ad-box">
 
@@ -245,9 +353,14 @@
             alt="صورة الإعلان"
           >
 
-          <div id="adText" class="ad-text">
+
+          <div
+            id="adText"
+            class="ad-text"
+          >
             لا يوجد نص للإعلان.
           </div>
+
 
           <a
             id="channelButton"
@@ -263,22 +376,100 @@
 
       </div>
 
-      <div id="updated" class="updated">
+
+      <!-- =========================
+           LAST UPDATED
+      ========================== -->
+
+      <div
+        id="updated"
+        class="updated"
+      >
         آخر تحديث: —
       </div>
 
     </div>
+
+
+    <!-- =========================
+         HOME / NO CODE
+    ========================== -->
+
+    <div
+      id="welcome"
+      class="card welcome"
+      style="display:none;"
+    >
+
+      <div class="welcome-icon">
+        📊
+      </div>
+
+      <h1>
+        تقارير إعلانات تيليجرام
+      </h1>
+
+      <p>
+        مرحبًا بك في نظام تقارير إعلانات تيليجرام.
+        <br>
+        من فضلك استخدم رابط التقرير الخاص بك
+        الذي تم إرساله إليك.
+      </p>
+
+    </div>
+
+
+    <!-- =========================
+         REPORT NOT FOUND
+    ========================== -->
+
+    <div
+      id="notFound"
+      class="card not-found"
+      style="display:none;"
+    >
+
+      <div class="not-found-icon">
+        🔍
+      </div>
+
+      <h2>
+        لم يتم العثور على التقرير
+      </h2>
+
+      <p>
+        رابط التقرير غير صحيح أو أن التقرير غير موجود.
+        <br>
+        تأكد من استخدام الرابط الذي تم إرساله إليك.
+      </p>
+
+    </div>
+
+
+    <!-- =========================
+         ERROR
+    ========================== -->
+
+    <div
+      id="error"
+      class="error"
+    ></div>
 
   </div>
 
 
   <script>
 
+    /* =====================================
+       SUPABASE SETTINGS
+    ===================================== */
+
     const SUPABASE_URL =
       "https://oxclimxygexnezblrhpz.supabase.co";
 
     const SUPABASE_KEY =
       "sb_publishable_LakP2nXyrFIvnpwzj8GEvA_90dL9_LK";
+
 
     const supabaseClient =
       window.supabase.createClient(
@@ -287,37 +478,126 @@
       );
 
 
+    /* =====================================
+       ELEMENTS
+    ===================================== */
+
+    const loading =
+      document.getElementById(
+        "loading"
+      );
+
+    const report =
+      document.getElementById(
+        "report"
+      );
+
+    const welcome =
+      document.getElementById(
+        "welcome"
+      );
+
+    const notFound =
+      document.getElementById(
+        "notFound"
+      );
+
+    const errorBox =
+      document.getElementById(
+        "error"
+      );
+
+
+    /* =====================================
+       SHOW WELCOME
+    ===================================== */
+
+    function showWelcome() {
+
+      loading.style.display =
+        "none";
+
+      report.style.display =
+        "none";
+
+      notFound.style.display =
+        "none";
+
+      errorBox.style.display =
+        "none";
+
+      welcome.style.display =
+        "block";
+
+    }
+
+
+    /* =====================================
+       SHOW NOT FOUND
+    ===================================== */
+
+    function showNotFound() {
+
+      loading.style.display =
+        "none";
+
+      report.style.display =
+        "none";
+
+      welcome.style.display =
+        "none";
+
+      errorBox.style.display =
+        "none";
+
+      notFound.style.display =
+        "block";
+
+    }
+
+
+    /* =====================================
+       LOAD CAMPAIGN
+    ===================================== */
+
     async function loadCampaign() {
 
-      const loading =
-        document.getElementById("loading");
-
-      const report =
-        document.getElementById("report");
-
-      const errorBox =
-        document.getElementById("error");
-
-
       try {
+
+        /*
+          قراءة Report Code
+          من الرابط
+        */
 
         const params =
           new URLSearchParams(
             window.location.search
           );
 
+
         const code =
           params.get("code");
 
 
+        /*
+          إذا لم يوجد code
+          نعرض الصفحة الرئيسية
+          بدون بيانات أي عميل
+        */
+
         if (!code) {
 
-          throw new Error(
-            "رابط التقرير غير صحيح."
-          );
+          showWelcome();
+
+          return;
 
         }
 
+
+        /*
+          البحث عن الحملة
+          الخاصة بهذا الكود فقط
+        */
 
         const {
           data,
@@ -338,19 +618,39 @@
           .maybeSingle();
 
 
+        /*
+          لو Supabase رجع خطأ
+        */
+
         if (error) {
-          throw error;
-        }
 
-
-        if (!data) {
+          console.error(
+            error
+          );
 
           throw new Error(
-            "لم يتم العثور على هذا التقرير."
+            "حدث خطأ أثناء تحميل التقرير."
           );
 
         }
 
+
+        /*
+          لو الكود غير موجود
+        */
+
+        if (!data) {
+
+          showNotFound();
+
+          return;
+
+        }
+
+
+        /* =================================
+           CAMPAIGN NAME
+        ================================= */
 
         document.getElementById(
           "campaignName"
@@ -359,13 +659,23 @@
           "حملة إعلانية";
 
 
+        /* =================================
+           IMPRESSIONS
+        ================================= */
+
         document.getElementById(
           "impressions"
         ).textContent =
           Number(
             data.impressions || 0
-          ).toLocaleString("en-US");
+          ).toLocaleString(
+            "en-US"
+          );
 
+
+        /* =================================
+           STATUS VALUE
+        ================================= */
 
         document.getElementById(
           "statusValue"
@@ -374,30 +684,45 @@
           "—";
 
 
+        /* =================================
+           STATUS BADGE
+        ================================= */
+
         const status =
           document.getElementById(
             "status"
           );
 
 
-        status.textContent =
-          data.status === "Active"
-            ? "● نشطة"
-            : "● " +
-              (
-                data.status ||
-                "غير معروف"
-              );
+        if (
+          data.status ===
+          "Active"
+        ) {
+
+          status.textContent =
+            "● نشطة";
+
+          status.className =
+            "status active";
+
+        } else {
+
+          status.textContent =
+            "● " +
+            (
+              data.status ||
+              "غير معروف"
+            );
+
+          status.className =
+            "status inactive";
+
+        }
 
 
-        status.className =
-          "status " +
-          (
-            data.status === "Active"
-              ? "active"
-              : "inactive"
-          );
-
+        /* =================================
+           AD TEXT
+        ================================= */
 
         document.getElementById(
           "adText"
@@ -406,15 +731,24 @@
           "لا يوجد نص للإعلان.";
 
 
-        if (data.ad_image) {
+        /* =================================
+           AD IMAGE
+        ================================= */
+
+        if (
+          data.ad_image &&
+          data.ad_image.trim() !== ""
+        ) {
 
           const image =
             document.getElementById(
               "adImage"
             );
 
+
           image.src =
             data.ad_image;
+
 
           image.style.display =
             "block";
@@ -422,15 +756,24 @@
         }
 
 
-        if (data.channel_url) {
+        /* =================================
+           CHANNEL BUTTON
+        ================================= */
+
+        if (
+          data.channel_url &&
+          data.channel_url.trim() !== ""
+        ) {
 
           const button =
             document.getElementById(
               "channelButton"
             );
 
+
           button.href =
             data.channel_url;
+
 
           button.style.display =
             "inline-block";
@@ -438,12 +781,19 @@
         }
 
 
-        if (data.last_updated) {
+        /* =================================
+           LAST UPDATED
+        ================================= */
+
+        if (
+          data.last_updated
+        ) {
 
           const date =
             new Date(
               data.last_updated
             );
+
 
           document.getElementById(
             "updated"
@@ -456,22 +806,51 @@
         }
 
 
+        /* =================================
+           SHOW REPORT
+        ================================= */
+
         loading.style.display =
+          "none";
+
+        welcome.style.display =
+          "none";
+
+        notFound.style.display =
+          "none";
+
+        errorBox.style.display =
           "none";
 
         report.style.display =
           "block";
 
+      }
 
-      } catch (error) {
 
-        console.error(error);
+      catch (error) {
+
+        console.error(
+          error
+        );
+
 
         loading.style.display =
           "none";
 
+        welcome.style.display =
+          "none";
+
+        notFound.style.display =
+          "none";
+
+        report.style.display =
+          "none";
+
+
         errorBox.style.display =
           "block";
+
 
         errorBox.textContent =
           "❌ " +
@@ -481,6 +860,10 @@
 
     }
 
+
+    /* =====================================
+       START
+    ===================================== */
 
     loadCampaign();
 
