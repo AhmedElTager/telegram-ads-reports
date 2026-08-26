@@ -6,6 +6,8 @@
 
   <title>تقرير إعلانات تيليجرام</title>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     * {
       box-sizing: border-box;
@@ -19,7 +21,7 @@
     }
 
     .topbar {
-      background: #ffffff;
+      background: #fff;
       border-bottom: 1px solid #ddd;
       padding: 18px 20px;
       font-size: 22px;
@@ -33,12 +35,11 @@
     }
 
     .card {
-      background: #ffffff;
+      background: #fff;
       border: 1px solid #ddd;
       border-radius: 12px;
       padding: 24px;
-      margin-bottom: 20px;
-      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 3px 12px rgba(0,0,0,.05);
     }
 
     .header {
@@ -49,25 +50,31 @@
       flex-wrap: wrap;
     }
 
-    h1,
-    h2,
-    h3 {
+    h1, h2, h3 {
       margin-top: 0;
     }
 
     .campaign-name {
-      color: #555;
-      margin-top: 5px;
+      color: #666;
+      margin-top: 6px;
     }
 
     .status {
       display: inline-block;
       padding: 8px 16px;
       border-radius: 20px;
-      background: #e7f7ed;
-      color: #16834b;
       font-weight: bold;
       font-size: 14px;
+    }
+
+    .status.active {
+      background: #e7f7ed;
+      color: #16834b;
+    }
+
+    .status.inactive {
+      background: #fce8e8;
+      color: #c0392b;
     }
 
     .stats {
@@ -100,7 +107,6 @@
       border: 1px solid #ddd;
       border-radius: 10px;
       padding: 20px;
-      background: #ffffff;
     }
 
     .ad-box {
@@ -117,8 +123,15 @@
     }
 
     .ad-text {
-      line-height: 1.7;
+      line-height: 1.8;
       color: #444;
+    }
+
+    .ad-image {
+      max-width: 100%;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      display: none;
     }
 
     .channel-button {
@@ -132,10 +145,6 @@
       font-weight: bold;
     }
 
-    .channel-button:hover {
-      opacity: 0.9;
-    }
-
     .updated {
       color: #777;
       font-size: 13px;
@@ -143,30 +152,28 @@
       text-align: center;
     }
 
-    .info {
-      margin-top: 20px;
+    .loading {
+      text-align: center;
+      padding: 40px 10px;
+      color: #666;
+    }
+
+    .error {
+      background: #fdecec;
+      color: #b42318;
       padding: 15px;
-      background: #f0f7ff;
       border-radius: 8px;
-      color: #345;
-      font-size: 14px;
+      margin-top: 20px;
+      display: none;
     }
 
     @media (max-width: 600px) {
-      .container {
-        margin: 15px auto;
-      }
-
-      .card {
-        padding: 18px;
-      }
-
       .stats {
         grid-template-columns: 1fr;
       }
 
-      .stat-value {
-        font-size: 26px;
+      .card {
+        padding: 18px;
       }
 
       .topbar {
@@ -184,53 +191,51 @@
 
   <div class="container">
 
-    <div class="card">
+    <div id="loading" class="loading">
+      جاري تحميل بيانات الحملة...
+    </div>
+
+    <div id="report" class="card" style="display:none;">
 
       <div class="header">
 
         <div>
           <h1>تقرير الحملة</h1>
-          <div class="campaign-name">
-            حملة إعلانية على تيليجرام
+
+          <div id="campaignName" class="campaign-name">
+            —
           </div>
         </div>
 
-        <span class="status">
-          ● نشطة
+        <span id="status" class="status">
+          —
         </span>
 
       </div>
 
-
       <div class="stats">
 
         <div class="stat">
-
           <div class="stat-title">
             مرات الظهور
           </div>
 
-          <div class="stat-value">
+          <div id="impressions" class="stat-value">
             0
           </div>
-
         </div>
 
-
         <div class="stat">
-
           <div class="stat-title">
             حالة الحملة
           </div>
 
-          <div class="stat-value">
-            نشطة
+          <div id="statusValue" class="stat-value">
+            —
           </div>
-
         </div>
 
       </div>
-
 
       <div class="ad-preview">
 
@@ -240,20 +245,22 @@
 
         <div class="ad-box">
 
-          <div class="ad-title">
+          <img id="adImage" class="ad-image" alt="صورة الإعلان">
+
+          <div id="adTitle" class="ad-title">
             إعلان تيليجرام
           </div>
 
-          <div class="ad-text">
-            سيظهر نص الإعلان هنا.
-            <br>
-            يمكنك وضع محتوى الإعلان الخاص بالعميل في هذا المكان.
+          <div id="adText" class="ad-text">
+            —
           </div>
 
           <a
+            id="channelButton"
             class="channel-button"
-            href="https://t.me/"
-            target="_blank">
+            href="#"
+            target="_blank"
+            style="display:none;">
             زيارة القناة
           </a>
 
@@ -261,19 +268,117 @@
 
       </div>
 
-
-      <div class="info">
-        ℹ️ يتم تحديث بيانات التقرير تلقائيًا عند ربطه بمصدر البيانات.
-      </div>
-
-
-      <div class="updated">
+      <div id="updated" class="updated">
         آخر تحديث: —
       </div>
 
     </div>
 
+    <div id="error" class="error"></div>
+
   </div>
+
+  <script>
+
+    const SUPABASE_URL =
+      "https://oxclimxygexnezblrhpz.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_LakP2nXyrFIvnpwzj8GEvA_90dL9_LK";
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+    async function loadCampaign() {
+
+      const loading = document.getElementById("loading");
+      const report = document.getElementById("report");
+      const errorBox = document.getElementById("error");
+
+      try {
+
+        const { data, error } = await supabaseClient
+          .from("campaigns")
+          .select("*")
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .single();
+
+        if (error) {
+          throw error;
+        }
+
+        document.getElementById("campaignName").textContent =
+          data.campaign_name || "حملة إعلانية";
+
+        document.getElementById("impressions").textContent =
+          Number(data.impressions || 0).toLocaleString("en-US");
+
+        document.getElementById("statusValue").textContent =
+          data.status || "—";
+
+        const status = document.getElementById("status");
+
+        status.textContent =
+          data.status === "Active"
+            ? "● نشطة"
+            : "● " + (data.status || "غير معروف");
+
+        if (data.status === "Active") {
+          status.classList.add("active");
+        } else {
+          status.classList.add("inactive");
+        }
+
+        document.getElementById("adText").textContent =
+          data.ad_text || "لا يوجد نص للإعلان.";
+
+        if (data.ad_image) {
+          const image = document.getElementById("adImage");
+          image.src = data.ad_image;
+          image.style.display = "block";
+        }
+
+        if (data.channel_url) {
+          const button = document.getElementById("channelButton");
+          button.href = data.channel_url;
+          button.style.display = "inline-block";
+        }
+
+        if (data.last_updated) {
+
+          const date = new Date(data.last_updated);
+
+          document.getElementById("updated").textContent =
+            "آخر تحديث: " +
+            date.toLocaleString("ar-EG");
+
+        }
+
+        loading.style.display = "none";
+        report.style.display = "block";
+
+      } catch (error) {
+
+        console.error(error);
+
+        loading.style.display = "none";
+
+        errorBox.style.display = "block";
+
+        errorBox.textContent =
+          "حدث خطأ أثناء تحميل بيانات الحملة.";
+
+      }
+
+    }
+
+    loadCampaign();
+
+  </script>
 
 </body>
   </html>
