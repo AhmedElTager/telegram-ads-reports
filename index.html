@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Telegram Ads — Campaign Report</title>
+
+  <title>تقرير إعلانات تيليجرام</title>
 
   <style>
     * {
@@ -18,30 +19,50 @@
     }
 
     .topbar {
-      background: #fff;
+      background: #ffffff;
       border-bottom: 1px solid #ddd;
-      padding: 18px 25px;
+      padding: 18px 20px;
       font-size: 22px;
       font-weight: bold;
     }
 
     .container {
       max-width: 900px;
-      margin: 35px auto;
-      padding: 0 18px;
+      margin: 30px auto;
+      padding: 0 16px;
     }
 
     .card {
-      background: #fff;
+      background: #ffffff;
       border: 1px solid #ddd;
-      border-radius: 10px;
-      padding: 25px;
+      border-radius: 12px;
+      padding: 24px;
       margin-bottom: 20px;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin-top: 0;
+    }
+
+    .campaign-name {
+      color: #555;
+      margin-top: 5px;
     }
 
     .status {
       display: inline-block;
-      padding: 7px 14px;
+      padding: 8px 16px;
       border-radius: 20px;
       background: #e7f7ed;
       color: #16834b;
@@ -53,52 +74,103 @@
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 15px;
-      margin-top: 20px;
+      margin-top: 25px;
     }
 
     .stat {
       border: 1px solid #e1e4e8;
-      border-radius: 8px;
+      border-radius: 10px;
       padding: 20px;
+      background: #fafafa;
     }
 
     .stat-title {
       color: #777;
       font-size: 14px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
     .stat-value {
-      font-size: 28px;
+      font-size: 30px;
       font-weight: bold;
     }
 
     .ad-preview {
-      margin-top: 20px;
+      margin-top: 25px;
       border: 1px solid #ddd;
-      border-radius: 8px;
+      border-radius: 10px;
+      padding: 20px;
+      background: #ffffff;
+    }
+
+    .ad-box {
+      background: #f4f6f8;
+      border-radius: 10px;
       padding: 18px;
+      margin-top: 15px;
+    }
+
+    .ad-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .ad-text {
+      line-height: 1.7;
+      color: #444;
     }
 
     .channel-button {
       display: inline-block;
       margin-top: 15px;
-      padding: 11px 18px;
+      padding: 12px 20px;
       background: #229ed9;
       color: white;
       text-decoration: none;
-      border-radius: 7px;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    .channel-button:hover {
+      opacity: 0.9;
     }
 
     .updated {
       color: #777;
       font-size: 13px;
-      margin-top: 15px;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .info {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f0f7ff;
+      border-radius: 8px;
+      color: #345;
+      font-size: 14px;
     }
 
     @media (max-width: 600px) {
+      .container {
+        margin: 15px auto;
+      }
+
+      .card {
+        padding: 18px;
+      }
+
       .stats {
         grid-template-columns: 1fr;
+      }
+
+      .stat-value {
+        font-size: 26px;
+      }
+
+      .topbar {
+        font-size: 19px;
       }
     }
   </style>
@@ -107,61 +179,96 @@
 <body>
 
   <div class="topbar">
-    Telegram Ads
+    📊 تقارير إعلانات تيليجرام
   </div>
 
   <div class="container">
 
     <div class="card">
-      <h2>Campaign Report</h2>
 
-      <span class="status">
-        Active
-      </span>
+      <div class="header">
+
+        <div>
+          <h1>تقرير الحملة</h1>
+          <div class="campaign-name">
+            حملة إعلانية على تيليجرام
+          </div>
+        </div>
+
+        <span class="status">
+          ● نشطة
+        </span>
+
+      </div>
+
 
       <div class="stats">
 
         <div class="stat">
+
           <div class="stat-title">
-            Impressions
+            مرات الظهور
           </div>
 
           <div class="stat-value">
             0
           </div>
+
         </div>
 
+
         <div class="stat">
+
           <div class="stat-title">
-            Campaign Status
+            حالة الحملة
           </div>
 
           <div class="stat-value">
-            Active
+            نشطة
           </div>
+
         </div>
 
       </div>
 
+
       <div class="ad-preview">
 
-        <h3>Advertisement</h3>
+        <h2>
+          الإعلان
+        </h2>
 
-        <p>
-          Your Telegram advertisement will appear here.
-        </p>
+        <div class="ad-box">
 
-        <a
-          class="channel-button"
-          href="#"
-          target="_blank">
-          Visit Channel
-        </a>
+          <div class="ad-title">
+            إعلان تيليجرام
+          </div>
+
+          <div class="ad-text">
+            سيظهر نص الإعلان هنا.
+            <br>
+            يمكنك وضع محتوى الإعلان الخاص بالعميل في هذا المكان.
+          </div>
+
+          <a
+            class="channel-button"
+            href="https://t.me/"
+            target="_blank">
+            زيارة القناة
+          </a>
+
+        </div>
 
       </div>
 
+
+      <div class="info">
+        ℹ️ يتم تحديث بيانات التقرير تلقائيًا عند ربطه بمصدر البيانات.
+      </div>
+
+
       <div class="updated">
-        Last updated: —
+        آخر تحديث: —
       </div>
 
     </div>
@@ -169,4 +276,4 @@
   </div>
 
 </body>
-</html>
+  </html>
