@@ -22,7 +22,7 @@
     }
 
     .topbar {
-      background: #ffffff;
+      background: #fff;
       border-bottom: 1px solid #ddd;
       padding: 18px 20px;
       font-size: 21px;
@@ -30,26 +30,28 @@
     }
 
     .container {
-      max-width: 800px;
+      max-width: 850px;
       margin: 25px auto;
       padding: 0 16px;
     }
 
     .card {
-      background: #ffffff;
+      background: #fff;
       border: 1px solid #ddd;
       border-radius: 14px;
       padding: 22px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, .05);
+      margin-bottom: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,.05);
     }
 
-    h1 {
+    h1,
+    h2 {
       margin-top: 0;
     }
 
     label {
       display: block;
-      margin-top: 18px;
+      margin-top: 17px;
       margin-bottom: 7px;
       font-weight: bold;
     }
@@ -66,13 +68,13 @@
     }
 
     textarea {
-      min-height: 100px;
+      min-height: 110px;
       resize: vertical;
     }
 
     button {
       width: 100%;
-      margin-top: 22px;
+      margin-top: 18px;
       padding: 13px;
       border: 0;
       border-radius: 8px;
@@ -88,12 +90,8 @@
       cursor: not-allowed;
     }
 
-    .message {
-      display: none;
-      margin-top: 18px;
-      padding: 13px;
-      border-radius: 8px;
-      line-height: 1.7;
+    .secondary {
+      background: #555;
     }
 
     .success {
@@ -106,28 +104,46 @@
       color: #b42318;
     }
 
-    .campaign-info {
-      margin-top: 20px;
+    .message {
+      display: none;
+      margin-top: 15px;
+      padding: 13px;
+      border-radius: 8px;
+      line-height: 1.7;
+    }
+
+    .info {
+      margin-top: 15px;
       padding: 15px;
       background: #f4f6f8;
       border-radius: 8px;
-      line-height: 1.8;
+      line-height: 1.9;
     }
 
-    .link-box {
+    .report-link {
       margin-top: 15px;
       padding: 12px;
-      background: #f0f7ff;
+      background: #eef7ff;
       border-radius: 8px;
-      word-break: break-all;
       direction: ltr;
       text-align: left;
+      word-break: break-all;
     }
 
-    .small {
+    .empty {
       color: #777;
-      font-size: 13px;
-      margin-top: 8px;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .divider {
+      border: 0;
+      border-top: 1px solid #eee;
+      margin: 25px 0;
+    }
+
+    .danger {
+      background: #c0392b;
     }
 
     @media (max-width: 600px) {
@@ -154,15 +170,125 @@
 
   <div class="container">
 
+    <!-- =========================
+         ADD NEW CAMPAIGN
+    ========================== -->
+
     <div class="card">
 
-      <h1>تعديل الحملة</h1>
+      <h1>➕ إضافة حملة جديدة</h1>
 
       <p>
-        من هنا يمكنك تحديث بيانات الحملة.
+        أضيفي بيانات العميل والحملة، وسيتم إنشاء رابط التقرير تلقائيًا.
       </p>
 
-      <!-- اختيار الحملة -->
+      <label>
+        اسم الحملة
+      </label>
+
+      <input
+        id="newCampaignName"
+        type="text"
+        placeholder="مثال: حملة شركة حور"
+      >
+
+      <label>
+        Report Code
+      </label>
+
+      <input
+        id="newReportCode"
+        type="text"
+        placeholder="مثال: HOR-001"
+      >
+
+      <div class="small">
+        استخدمي كود مختلف لكل تقرير.
+      </div>
+
+      <label>
+        مرات الظهور
+      </label>
+
+      <input
+        id="newImpressions"
+        type="number"
+        min="0"
+        value="0"
+      >
+
+      <label>
+        حالة الحملة
+      </label>
+
+      <select id="newStatus">
+
+        <option value="Active">
+          Active
+        </option>
+
+        <option value="Paused">
+          Paused
+        </option>
+
+        <option value="Completed">
+          Completed
+        </option>
+
+      </select>
+
+      <label>
+        نص الإعلان
+      </label>
+
+      <textarea
+        id="newAdText"
+        placeholder="اكتب نص الإعلان هنا"
+      ></textarea>
+
+      <label>
+        صورة الإعلان — رابط الصورة
+      </label>
+
+      <input
+        id="newAdImage"
+        type="url"
+        placeholder="https://example.com/image.jpg"
+      >
+
+      <label>
+        رابط القناة
+      </label>
+
+      <input
+        id="newChannelUrl"
+        type="url"
+        placeholder="https://t.me/example"
+      >
+
+      <button id="addButton">
+        ➕ إضافة الحملة
+      </button>
+
+      <div
+        id="addMessage"
+        class="message"
+      ></div>
+
+    </div>
+
+
+    <!-- =========================
+         EDIT CAMPAIGN
+    ========================== -->
+
+    <div class="card">
+
+      <h1>✏️ تعديل حملة</h1>
+
+      <p>
+        اختاري الحملة التي تريدين تعديلها.
+      </p>
 
       <label>
         الحملة
@@ -174,11 +300,12 @@
         </option>
       </select>
 
-      <div id="campaignInfo" class="campaign-info">
+      <div
+        id="campaignInfo"
+        class="info"
+      >
         اختر حملة لعرض بياناتها.
       </div>
-
-      <!-- مرات الظهور -->
 
       <label>
         مرات الظهور
@@ -188,10 +315,7 @@
         id="impressions"
         type="number"
         min="0"
-        placeholder="مثال: 2500"
       >
-
-      <!-- الحالة -->
 
       <label>
         حالة الحملة
@@ -213,8 +337,6 @@
 
       </select>
 
-      <!-- نص الإعلان -->
-
       <label>
         نص الإعلان
       </label>
@@ -223,8 +345,6 @@
         id="adText"
         placeholder="اكتب نص الإعلان هنا"
       ></textarea>
-
-      <!-- صورة الإعلان -->
 
       <label>
         صورة الإعلان — رابط الصورة
@@ -236,12 +356,6 @@
         placeholder="https://example.com/image.jpg"
       >
 
-      <div class="small">
-        اتركيه فارغًا إذا لم توجد صورة.
-      </div>
-
-      <!-- رابط القناة -->
-
       <label>
         رابط القناة
       </label>
@@ -252,33 +366,27 @@
         placeholder="https://t.me/example"
       >
 
-      <!-- زر الحفظ -->
-
       <button id="saveButton">
         💾 حفظ التعديلات
       </button>
 
-      <!-- رسالة -->
-
       <div
-        id="message"
+        id="saveMessage"
         class="message"
       ></div>
 
-      <!-- رابط التقرير -->
-
       <div
-        id="reportLink"
+        id="reportLinkBox"
         style="display:none;"
       >
 
         <label>
-          رابط التقرير
+          🔗 رابط التقرير
         </label>
 
         <div
-          class="link-box"
-          id="linkBox"
+          id="reportLink"
+          class="report-link"
         ></div>
 
       </div>
@@ -286,6 +394,7 @@
     </div>
 
   </div>
+
 
   <script>
 
@@ -296,13 +405,13 @@
     const SUPABASE_URL =
       "https://oxclimxygexnezblrhpz.supabase.co";
 
-    const SUPABASE_PUBLISHABLE_KEY =
+    const SUPABASE_KEY =
       "sb_publishable_LakP2nXyrFIvnpwzj8GEvA_90dL9_LK";
 
     const supabaseClient =
       window.supabase.createClient(
         SUPABASE_URL,
-        SUPABASE_PUBLISHABLE_KEY
+        SUPABASE_KEY
       );
 
 
@@ -352,15 +461,49 @@
         "campaignInfo"
       );
 
-    const message =
-      document.getElementById(
-        "message"
-      );
-
     const saveButton =
       document.getElementById(
         "saveButton"
       );
+
+    const saveMessage =
+      document.getElementById(
+        "saveMessage"
+      );
+
+    const addButton =
+      document.getElementById(
+        "addButton"
+      );
+
+    const addMessage =
+      document.getElementById(
+        "addMessage"
+      );
+
+
+    /* =====================================
+       SHOW MESSAGE
+    ===================================== */
+
+    function showMessage(
+      element,
+      text,
+      success
+    ) {
+
+      element.textContent =
+        text;
+
+      element.style.display =
+        "block";
+
+      element.className =
+        success
+          ? "message success"
+          : "message error";
+
+    }
 
 
     /* =====================================
@@ -411,6 +554,7 @@
             "لا توجد حملات في قاعدة البيانات.";
 
           return;
+
         }
 
 
@@ -445,6 +589,7 @@
         console.error(error);
 
         showMessage(
+          saveMessage,
           "❌ خطأ في تحميل الحملات: " +
           error.message,
           false
@@ -456,7 +601,7 @@
 
 
     /* =====================================
-       LOAD SELECTED CAMPAIGN
+       LOAD SELECTED
     ===================================== */
 
     function loadSelectedCampaign() {
@@ -535,23 +680,24 @@
       reportCode
     ) {
 
-      const reportLink =
+      const box =
         document.getElementById(
-          "reportLink"
+          "reportLinkBox"
         );
 
-      const linkBox =
+      const link =
         document.getElementById(
-          "linkBox"
+          "reportLink"
         );
 
 
       if (!reportCode) {
 
-        reportLink.style.display =
+        box.style.display =
           "none";
 
         return;
+
       }
 
 
@@ -572,18 +718,265 @@
         );
 
 
-      linkBox.textContent =
+      link.textContent =
         url;
 
 
-      reportLink.style.display =
+      box.style.display =
         "block";
 
     }
 
 
     /* =====================================
-       SAVE CAMPAIGN
+       ADD NEW CAMPAIGN
+    ===================================== */
+
+    addButton.addEventListener(
+      "click",
+      async function() {
+
+        const name =
+          document.getElementById(
+            "newCampaignName"
+          ).value.trim();
+
+
+        const reportCode =
+          document.getElementById(
+            "newReportCode"
+          ).value.trim();
+
+
+        const impressions =
+          Number(
+            document.getElementById(
+              "newImpressions"
+            ).value || 0
+          );
+
+
+        const status =
+          document.getElementById(
+            "newStatus"
+          ).value;
+
+
+        const adText =
+          document.getElementById(
+            "newAdText"
+          ).value.trim();
+
+
+        const adImage =
+          document.getElementById(
+            "newAdImage"
+          ).value.trim();
+
+
+        const channelUrl =
+          document.getElementById(
+            "newChannelUrl"
+          ).value.trim();
+
+
+        if (!name) {
+
+          showMessage(
+            addMessage,
+            "❌ اكتبي اسم الحملة.",
+            false
+          );
+
+          return;
+
+        }
+
+
+        if (!reportCode) {
+
+          showMessage(
+            addMessage,
+            "❌ اكتبي Report Code.",
+            false
+          );
+
+          return;
+
+        }
+
+
+        addButton.disabled =
+          true;
+
+        addButton.textContent =
+          "جاري الإضافة...";
+
+
+        try {
+
+          /*
+            نتأكد أن Report Code
+            غير مستخدم بالفعل
+          */
+
+          const {
+            data: existing,
+            error: checkError
+          } = await supabaseClient
+
+            .from("campaigns")
+
+            .select("id")
+
+            .eq(
+              "report_code",
+              reportCode
+            );
+
+
+          if (checkError) {
+            throw checkError;
+          }
+
+
+          if (
+            existing &&
+            existing.length > 0
+          ) {
+
+            throw new Error(
+              "Report Code مستخدم بالفعل. اختاري كودًا آخر."
+            );
+
+          }
+
+
+          /*
+            إنشاء UUID تلقائيًا
+          */
+
+          const newId =
+            crypto.randomUUID();
+
+
+          /*
+            إضافة الحملة
+          */
+
+          const {
+            error
+          } = await supabaseClient
+
+            .from("campaigns")
+
+            .insert({
+
+              id:
+                newId,
+
+              campaign_name:
+                name,
+
+              impressions:
+                impressions,
+
+              status:
+                status,
+
+              ad_text:
+                adText || null,
+
+              ad_image:
+                adImage || null,
+
+              channel_url:
+                channelUrl || null,
+
+              report_code:
+                reportCode,
+
+              last_updated:
+                new Date().toISOString()
+
+            });
+
+
+          if (error) {
+            throw error;
+          }
+
+
+          showMessage(
+            addMessage,
+            "✅ تمت إضافة الحملة بنجاح.",
+            true
+          );
+
+
+          /*
+            تنظيف النموذج
+          */
+
+          document.getElementById(
+            "newCampaignName"
+          ).value = "";
+
+          document.getElementById(
+            "newReportCode"
+          ).value = "";
+
+          document.getElementById(
+            "newImpressions"
+          ).value = "0";
+
+          document.getElementById(
+            "newAdText"
+          ).value = "";
+
+          document.getElementById(
+            "newAdImage"
+          ).value = "";
+
+          document.getElementById(
+            "newChannelUrl"
+          ).value = "";
+
+
+          /*
+            إعادة تحميل الحملات
+          */
+
+          await loadCampaigns();
+
+
+        } catch (error) {
+
+          console.error(error);
+
+          showMessage(
+            addMessage,
+            "❌ خطأ أثناء إضافة الحملة: " +
+            error.message,
+            false
+          );
+
+        } finally {
+
+          addButton.disabled =
+            false;
+
+          addButton.textContent =
+            "➕ إضافة الحملة";
+
+        }
+
+      }
+    );
+
+
+    /* =====================================
+       SAVE EDIT
     ===================================== */
 
     saveButton.addEventListener(
@@ -597,11 +990,13 @@
         if (!id) {
 
           showMessage(
+            saveMessage,
             "❌ اختاري حملة أولًا.",
             false
           );
 
           return;
+
         }
 
 
@@ -613,12 +1008,6 @@
 
 
         try {
-
-          /*
-             IMPORTANT:
-             لا نستخدم .single()
-             بعد update.
-          */
 
           const {
             error
@@ -665,54 +1054,21 @@
           }
 
 
-          /*
-             Update local data
-          */
-
-          const index =
-            campaigns.findIndex(
-              function(item) {
-
-                return String(item.id) ===
-                  String(id);
-
-              }
-            );
-
-
-          if (index !== -1) {
-
-            campaigns[index].impressions =
-              Number(
-                impressionsInput.value ||
-                0
-              );
-
-            campaigns[index].status =
-              statusInput.value;
-
-            campaigns[index].ad_text =
-              adTextInput.value.trim() ||
-              null;
-
-            campaigns[index].ad_image =
-              adImageInput.value.trim() ||
-              null;
-
-            campaigns[index].channel_url =
-              channelUrlInput.value.trim() ||
-              null;
-
-            campaigns[index].last_updated =
-              new Date().toISOString();
-
-          }
-
-
           showMessage(
+            saveMessage,
             "✅ تم حفظ التعديلات بنجاح.",
             true
           );
+
+
+          await loadCampaigns();
+
+
+          campaignSelect.value =
+            id;
+
+
+          loadSelectedCampaign();
 
 
         } catch (error) {
@@ -720,6 +1076,7 @@
           console.error(error);
 
           showMessage(
+            saveMessage,
             "❌ خطأ أثناء الحفظ: " +
             error.message,
             false
@@ -740,7 +1097,7 @@
 
 
     /* =====================================
-       CHANGE CAMPAIGN
+       SELECT CHANGE
     ===================================== */
 
     campaignSelect.addEventListener(
@@ -749,34 +1106,11 @@
 
         loadSelectedCampaign();
 
-        message.style.display =
+        saveMessage.style.display =
           "none";
 
       }
     );
-
-
-    /* =====================================
-       SHOW MESSAGE
-    ===================================== */
-
-    function showMessage(
-      text,
-      success
-    ) {
-
-      message.textContent =
-        text;
-
-      message.style.display =
-        "block";
-
-      message.className =
-        success
-          ? "message success"
-          : "message error";
-
-    }
 
 
     /* =====================================
@@ -788,22 +1122,27 @@
     ) {
 
       return String(value)
+
         .replace(
           /&/g,
           "&amp;"
         )
+
         .replace(
           /</g,
           "&lt;"
         )
+
         .replace(
           />/g,
           "&gt;"
         )
+
         .replace(
           /"/g,
           "&quot;"
         )
+
         .replace(
           /'/g,
           "&#039;"
