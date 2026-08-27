@@ -2,7 +2,6 @@
 <html lang="ar" dir="rtl">
 
 <head>
-
   <meta charset="UTF-8">
 
   <meta
@@ -15,7 +14,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-
     * {
       box-sizing: border-box;
     }
@@ -54,20 +52,20 @@
       box-shadow: 0 4px 15px rgba(0,0,0,.05);
     }
 
+    .login-card {
+      max-width: 500px;
+      margin: 60px auto;
+    }
+
     h1,
     h2,
     h3 {
       margin-top: 0;
     }
 
-    .login-card {
-      max-width: 500px;
-      margin: 60px auto;
-    }
-
     .logo {
       text-align: center;
-      font-size: 45px;
+      font-size: 50px;
       margin-bottom: 10px;
     }
 
@@ -116,6 +114,11 @@
       cursor: pointer;
     }
 
+    button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
     .primary {
       background: #229ed9;
       color: #fff;
@@ -141,11 +144,6 @@
       color: #c0392b;
     }
 
-    button:disabled {
-      opacity: .6;
-      cursor: not-allowed;
-    }
-
     .form-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -160,12 +158,12 @@
       line-height: 1.7;
     }
 
-    .message.success-message {
+    .success-message {
       background: #e7f7ed;
       color: #16834b;
     }
 
-    .message.error-message {
+    .error-message {
       background: #fdecec;
       color: #b42318;
     }
@@ -265,20 +263,14 @@
       display: none !important;
     }
 
-    .empty {
+    .empty,
+    .loading {
       text-align: center;
       padding: 30px;
       color: #777;
     }
 
-    .loading {
-      text-align: center;
-      padding: 25px;
-      color: #777;
-    }
-
     @media (max-width: 650px) {
-
       .form-row {
         grid-template-columns: 1fr;
         gap: 0;
@@ -295,20 +287,13 @@
       .card {
         padding: 18px;
       }
-
     }
-
   </style>
-
 </head>
-
 
 <body>
 
-
-  <!-- ================================
-       TOP BAR
-  ================================= -->
+  <!-- TOP BAR -->
 
   <div class="topbar">
 
@@ -319,6 +304,7 @@
     <button
       id="logoutButton"
       class="logout hidden"
+      type="button"
     >
       🚪 تسجيل الخروج
     </button>
@@ -328,10 +314,7 @@
 
   <div class="container">
 
-
-    <!-- ================================
-         LOGIN
-    ================================= -->
+    <!-- LOGIN -->
 
     <div
       id="loginSection"
@@ -350,12 +333,10 @@
         هذه الصفحة مخصصة لإدارة تقارير العملاء.
       </div>
 
-
       <div
         id="loginMessage"
         class="message"
       ></div>
-
 
       <label>
         البريد الإلكتروني
@@ -368,7 +349,6 @@
         autocomplete="email"
       >
 
-
       <label>
         كلمة المرور
       </label>
@@ -380,11 +360,11 @@
         autocomplete="current-password"
       >
 
-
       <button
         id="loginButton"
         class="primary"
         style="width:100%;"
+        type="button"
       >
         🔐 تسجيل الدخول
       </button>
@@ -392,19 +372,14 @@
     </div>
 
 
-    <!-- ================================
-         ADMIN PANEL
-    ================================= -->
+    <!-- ADMIN -->
 
     <div
       id="adminSection"
       class="hidden"
     >
 
-
-      <!-- ================================
-           ADD CAMPAIGN
-      ================================= -->
+      <!-- ADD CAMPAIGN -->
 
       <div class="card">
 
@@ -416,12 +391,10 @@
           أضيفي بيانات العميل والحملة، وسيتم إنشاء رابط التقرير تلقائيًا.
         </p>
 
-
         <div
           id="addMessage"
           class="message"
         ></div>
-
 
         <div class="form-row">
 
@@ -438,7 +411,6 @@
             >
 
           </div>
-
 
           <div>
 
@@ -541,6 +513,7 @@
         <button
           id="addButton"
           class="success"
+          type="button"
         >
           ➕ إضافة الحملة
         </button>
@@ -548,10 +521,7 @@
       </div>
 
 
-
-      <!-- ================================
-           EDIT CAMPAIGN
-      ================================= -->
+      <!-- EDIT -->
 
       <div class="card">
 
@@ -562,7 +532,6 @@
         <p style="color:#777;">
           اختاري الحملة التي تريدين تعديلها.
         </p>
-
 
         <div
           id="editMessage"
@@ -583,8 +552,10 @@
         </select>
 
 
-        <div id="editForm" class="hidden">
-
+        <div
+          id="editForm"
+          class="hidden"
+        >
 
           <div class="form-row">
 
@@ -702,6 +673,7 @@
             <button
               id="saveButton"
               class="primary"
+              type="button"
             >
               💾 حفظ التعديلات
             </button>
@@ -709,6 +681,7 @@
             <button
               id="deleteButton"
               class="danger"
+              type="button"
             >
               🗑️ حذف الحملة
             </button>
@@ -730,6 +703,7 @@
             <button
               id="copyLinkButton"
               class="secondary"
+              type="button"
             >
               📋 نسخ رابط التقرير
             </button>
@@ -737,22 +711,19 @@
             <button
               id="openLinkButton"
               class="secondary"
+              type="button"
             >
               🔗 فتح التقرير
             </button>
 
           </div>
 
-
         </div>
 
       </div>
 
 
-
-      <!-- ================================
-           ALL CAMPAIGNS
-      ================================= -->
+      <!-- CAMPAIGNS -->
 
       <div class="card">
 
@@ -774,11 +745,9 @@
 
       </div>
 
-
     </div>
 
   </div>
-
 
 
   <script>
@@ -793,7 +762,6 @@
     const SUPABASE_KEY =
       "sb_publishable_LakP2nXyrFIvnpwzj8GEvA_90dL9_LK";
 
-
     const supabaseClient =
       window.supabase.createClient(
         SUPABASE_URL,
@@ -802,7 +770,7 @@
 
 
     /* =====================================
-       REPORT BASE URL
+       REPORT URL
     ===================================== */
 
     const REPORT_BASE_URL =
@@ -814,19 +782,25 @@
     ===================================== */
 
     const loginSection =
-      document.getElementById(
-        "loginSection"
-      );
+      document.getElementById("loginSection");
 
     const adminSection =
-      document.getElementById(
-        "adminSection"
-      );
+      document.getElementById("adminSection");
+
+    const loginButton =
+      document.getElementById("loginButton");
 
     const logoutButton =
-      document.getElementById(
-        "logoutButton"
-      );
+      document.getElementById("logoutButton");
+
+    const loginEmail =
+      document.getElementById("loginEmail");
+
+    const loginPassword =
+      document.getElementById("loginPassword");
+
+    const loginMessage =
+      document.getElementById("loginMessage");
 
 
     let campaigns = [];
@@ -834,9 +808,8 @@
     let selectedCampaignId = null;
 
 
-
     /* =====================================
-       MESSAGE FUNCTION
+       MESSAGE
     ===================================== */
 
     function showMessage(
@@ -845,8 +818,7 @@
       type
     ) {
 
-      element.textContent =
-        text;
+      element.textContent = text;
 
       element.className =
         "message " +
@@ -856,19 +828,51 @@
             : "error-message"
         );
 
-      element.style.display =
-        "block";
+      element.style.display = "block";
 
     }
 
 
     function hideMessage(element) {
 
-      element.style.display =
-        "none";
+      element.style.display = "none";
 
     }
 
+
+    /* =====================================
+       ESCAPE HTML
+    ===================================== */
+
+    function escapeHtml(value) {
+
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+    }
+
+
+    /* =====================================
+       REPORT LINK
+    ===================================== */
+
+    function createReportLink(code) {
+
+      if (!code) {
+        return REPORT_BASE_URL;
+      }
+
+      return (
+        REPORT_BASE_URL +
+        "?code=" +
+        encodeURIComponent(code)
+      );
+
+    }
 
 
     /* =====================================
@@ -878,29 +882,17 @@
     async function login() {
 
       const email =
-        document.getElementById(
-          "loginEmail"
-        ).value.trim();
+        loginEmail.value.trim();
 
       const password =
-        document.getElementById(
-          "loginPassword"
-        ).value;
+        loginPassword.value;
 
-
-      const message =
-        document.getElementById(
-          "loginMessage"
-        );
-
-
-      hideMessage(message);
-
+      hideMessage(loginMessage);
 
       if (!email || !password) {
 
         showMessage(
-          message,
+          loginMessage,
           "اكتبي البريد الإلكتروني وكلمة المرور.",
           "error"
         );
@@ -910,50 +902,68 @@
       }
 
 
-      const button =
-        document.getElementById(
-          "loginButton"
-        );
+      loginButton.disabled = true;
 
-
-      button.disabled = true;
-
-      button.textContent =
+      loginButton.textContent =
         "جاري تسجيل الدخول...";
 
 
-      const {
-        error
-      } =
-        await supabaseClient.auth.signInWithPassword({
-          email: email,
-          password: password
-        });
+      try {
+
+        const result =
+          await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password
+          });
 
 
-      button.disabled = false;
+        if (result.error) {
 
-      button.textContent =
-        "🔐 تسجيل الدخول";
+          console.error(
+            "Login error:",
+            result.error
+          );
+
+          showMessage(
+            loginMessage,
+            "❌ " + (
+              result.error.message ||
+              "فشل تسجيل الدخول."
+            ),
+            "error"
+          );
+
+          return;
+
+        }
 
 
-      if (error) {
-
-        showMessage(
-          message,
-          "❌ البريد الإلكتروني أو كلمة المرور غير صحيحة.",
-          "error"
-        );
-
-        return;
+        await checkSession();
 
       }
 
+      catch (error) {
 
-      await checkSession();
+        console.error(error);
+
+        showMessage(
+          loginMessage,
+          "❌ حدث خطأ أثناء الاتصال بـ Supabase.",
+          "error"
+        );
+
+      }
+
+      finally {
+
+        loginButton.disabled = false;
+
+        loginButton.textContent =
+          "🔐 تسجيل الدخول";
+
+      }
 
     }
-
 
 
     /* =====================================
@@ -964,20 +974,15 @@
 
       await supabaseClient.auth.signOut();
 
-      loginSection.classList.remove(
-        "hidden"
-      );
+      loginSection.classList.remove("hidden");
 
-      adminSection.classList.add(
-        "hidden"
-      );
+      adminSection.classList.add("hidden");
 
-      logoutButton.classList.add(
-        "hidden"
-      );
+      logoutButton.classList.add("hidden");
+
+      loginPassword.value = "";
 
     }
-
 
 
     /* =====================================
@@ -986,50 +991,58 @@
 
     async function checkSession() {
 
-      const {
-        data
-      } =
-        await supabaseClient.auth.getSession();
+      try {
+
+        const {
+          data,
+          error
+        } =
+          await supabaseClient.auth.getSession();
 
 
-      if (
-        data &&
-        data.session
-      ) {
+        if (error) {
 
-        loginSection.classList.add(
-          "hidden"
-        );
+          console.error(error);
 
-        adminSection.classList.remove(
-          "hidden"
-        );
+          return;
 
-        logoutButton.classList.remove(
-          "hidden"
-        );
+        }
 
 
-        await loadCampaigns();
+        if (
+          data &&
+          data.session
+        ) {
 
-      } else {
+          loginSection.classList.add("hidden");
 
-        loginSection.classList.remove(
-          "hidden"
-        );
+          adminSection.classList.remove("hidden");
 
-        adminSection.classList.add(
-          "hidden"
-        );
+          logoutButton.classList.remove("hidden");
 
-        logoutButton.classList.add(
-          "hidden"
-        );
+          await loadCampaigns();
+
+        }
+
+        else {
+
+          loginSection.classList.remove("hidden");
+
+          adminSection.classList.add("hidden");
+
+          logoutButton.classList.add("hidden");
+
+        }
+
+      }
+
+      catch (error) {
+
+        console.error(error);
 
       }
 
     }
-
 
 
     /* =====================================
@@ -1049,8 +1062,7 @@
         );
 
 
-      loading.style.display =
-        "block";
+      loading.style.display = "block";
 
 
       const {
@@ -1058,11 +1070,8 @@
         error
       } =
         await supabaseClient
-
           .from("campaigns")
-
           .select("*")
-
           .order(
             "created_at",
             {
@@ -1071,16 +1080,15 @@
           );
 
 
-      loading.style.display =
-        "none";
+      loading.style.display = "none";
 
 
       if (error) {
 
+        console.error(error);
+
         list.innerHTML =
           "<div class='empty'>❌ حدث خطأ أثناء تحميل الحملات.</div>";
-
-        console.error(error);
 
         return;
 
@@ -1098,9 +1106,8 @@
     }
 
 
-
     /* =====================================
-       RENDER CAMPAIGNS
+       RENDER
     ===================================== */
 
     function renderCampaigns() {
@@ -1122,8 +1129,8 @@
 
 
       list.innerHTML =
-        campaigns.map(
-          campaign => {
+        campaigns
+          .map(campaign => {
 
             const link =
               createReportLink(
@@ -1162,7 +1169,6 @@
 
                   </div>
 
-
                   <span class="status-badge ${statusClass}">
                     ${escapeHtml(
                       campaign.status ||
@@ -1173,29 +1179,4 @@
                 </div>
 
 
-                <div class="campaign-info">
-
-                  <div class="info-box">
-
-                    <div class="info-title">
-                      مرات الظهور
-                    </div>
-
-                    <div class="info-value">
-                      ${Number(
-                        campaign.impressions || 0
-                      ).toLocaleString("en-US")}
-                    </div>
-
-                  </div>
-
-
-                  <div class="info-box">
-
-                    <div class="info-title">
-                      رابط التقرير
-                    </div>
-
-                    <div
-                      class="info-value"
-                      style="font-size:12px;direction:ltr;text-align:
+                <div class="campai
