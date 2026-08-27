@@ -6,141 +6,103 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-/* =========================
-   Helpers
-========================= */
-
 function cleanNumber(value) {
   if (value === null || value === undefined) return null;
 
-  if (typeof value === "number") {
-    return Number.isFinite(value) ? value : null;
-  }
-
-  if (typeof value !== "string") return null;
-
-  const cleaned = value
-    .replace(/[,\s]/g, "")
+  const text = String(value)
+    .replace(/[,\.\s]/g, "")
     .replace(/[^\d]/g, "");
 
-  if (!cleaned) return null;
+  if (!text) return null;
 
-  const number = Number(cleaned);
+  const number = Number(text);
 
   return Number.isFinite(number) ? number : null;
 }
 
-/* =========================
-   Find views in normal text
-========================= */
+async function getViews(page) {
+  // ننتظر تحميل صفحة الإحصائيات
+  await page.waitForTimeout(8000);
 
-function findViewsInText(text) {
-  if (!text) return null;
+  // نحاول قراءة النص الظاهر في الصفحة
+  const bodyText = await page.locator("body").innerText();
 
-  const patterns = [
-    /overall\s*views[\s:]*([\d,.\s]+)/i,
-    /total\s*views[\s:]*([\d,.\s]+)/i,
-    /views[\s:]*([\d,.\s]+)/i,
-    /views\s*\n\s*([\d,.\s]+)/i,
-    /impressions[\s:]*([\d,.\s]+)/i
-  ];
+  console.log("PAGE URL:", page.url());
+  console.log("PAGE TITLE:", await page.title());
 
-  for (const pattern of patterns) {
-    const match = text.match(pattern);
+  // الطريقة الأولى: Views ثم الرقم
+  let match = bodyText.match(
+    /Views[\s\S]{0,100}?([\d,]+(?:\.\d+)?)/i
+  );
 
-    if (match) {
-      const value = cleanNumber(match[1]);
+  if (match) {
+    const views = cleanNumber(match[1]);
 
-      if (value !== null) {
-        return value;
+    if (views !== null) {
+      console.log("Views found from body:", views);
+      return views;
+    }
+  }
+
+  // الطريقة الثانية: البحث عن عنصر Views نفسه
+  const viewsLocator = page.getByText("Views", { exact: true }).first();
+
+  if (await viewsLocator.count()) {
+    try {
+      const parentText = await viewsLocator
+        .locator("..")
+        .innerText();
+
+      console.log("Views parent text:", parentText);
+
+      const numbers = parentText.match(/[\d,]+/g);
+
+      if (numbers && numbers.length) {
+        for (const number of numbers) {
+          const views = cleanNumber(number);
+
+          if (views !== null) {
+            console.log("Views found from element:", views);
+            return views;
+          }
+        }
       }
+    } catch (error) {
+      console.log("Element extraction failed:", error.message);
+    }
+  }
+
+  // الطريقة الثالثة: البحث في HTML
+  const html = await page.content();
+
+  match = html.match(
+    /Views[\s\S]{0,500}?([\d,]+(?:\.\d+)?)/i
+  );
+
+  if (match) {
+    const views = cleanNumber(match[1]);
+
+    if (views !== null) {
+      console.log("Views found from HTML:", views);
+      return views;
     }
   }
 
   return null;
 }
-
-/* =========================
-   Find views inside JSON
-========================= */
-
-function findViewsInObject(value) {
-  if (value === null || value === undefined) {
-    return null;
-  }
-
-  if (Array.isArray(value)) {
-    for (const item of value) {
-      const result = findViewsInObject(item);
-
-      if (result !== null) {
-        return result;
-      }
-    }
-
-    return null;
-  }
-
-  if (typeof value !== "object") {
-    return null;
-  }
-
-  const keys = Object.keys(value);
-
-  const preferredKeys = [
-    "overall_views",
-    "overallViews",
-    "total_views",
-    "totalViews",
-    "views",
-    "impressions",
-    "total_impressions",
-    "totalImpressions"
-  ];
-
-  for (const key of preferredKeys) {
-    if (Object.prototype.hasOwnProperty.call(value, key)) {
-      const number = cleanNumber(value[key]);
-
-      if (number !== null) {
-        return number;
-      }
-    }
-  }
-
-  for (const key of keys) {
-    const result = findViewsInObject(value[key]);
-
-    if (result !== null) {
-      return result;
-    }
-  }
-
-  return null;
-}
-
-/* =========================
-   Main
-========================= */
 
 async function main() {
-  console.log("Starting Telegram Ads statistics updater...");
-
   const { data: campaigns, error } = await supabase
     .from("campaigns")
-    .select(
-      "id, report_code, stats_url, impressions, status, campaign_name"
-    )
+    .select("id, campaign_name, report_code, stats_url, impressions")
     .not("stats_url", "is", null);
 
   if (error) {
-    throw new Error(
-      `Supabase error while loading campaigns: ${error.message}`
-    );
+    throw new Error(error.message);
   }
 
   if (!campaigns || campaigns.length === 0) {
-    console.log("No campaigns with stats_url found.");
+    console.log("No campaigns with stats_url.");
     return;
   }
 
@@ -152,259 +114,47 @@ async function main() {
 
   const context = await browser.newContext({
     viewport: {
-      width: 1365,
+      width: 1280,
       height: 900
     },
     userAgent:
-      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 " +
-      "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131 Safari/537.36"
   });
 
   const page = await context.newPage();
 
   for (const campaign of campaigns) {
-    console.log("");
-    console.log("======================================");
-    console.log(
-      `Checking campaign: ${
-        campaign.report_code || campaign.campaign_name || campaign.id
-      }`
-    );
-    console.log(`Stats URL: ${campaign.stats_url}`);
-
-    let networkViews = null;
+    console.log("--------------------------------");
+    console.log("Campaign:", campaign.campaign_name);
+    console.log("Report:", campaign.report_code);
+    console.log("URL:", campaign.stats_url);
+    console.log("Old impressions:", campaign.impressions);
 
     try {
-      /* =========================
-         Capture Telegram responses
-      ========================= */
-
-      page.removeAllListeners("response");
-
-      page.on("response", async (response) => {
-        try {
-          const url = response.url();
-
-          if (
-            !url.includes("telegram.org") &&
-            !url.includes("ads.telegram.org")
-          ) {
-            return;
-          }
-
-          const contentType =
-            response.headers()["content-type"] || "";
-
-          if (
-            !contentType.includes("json") &&
-            !contentType.includes("javascript") &&
-            !contentType.includes("text")
-          ) {
-            return;
-          }
-
-          let body = "";
-
-          try {
-            body = await response.text();
-          } catch {
-            return;
-          }
-
-          if (!body) return;
-
-          /* Try JSON */
-          try {
-            const json = JSON.parse(body);
-
-            const found = findViewsInObject(json);
-
-            if (found !== null) {
-              networkViews = found;
-
-              console.log(
-                `Views found from network response: ${found}`
-              );
-            }
-          } catch {
-            /* Not JSON */
-          }
-
-          /* Try plain text */
-          if (networkViews === null) {
-            const found = findViewsInText(body);
-
-            if (found !== null) {
-              networkViews = found;
-
-              console.log(
-                `Views found from network text: ${found}`
-              );
-            }
-          }
-        } catch {
-          /* Ignore individual response errors */
-        }
-      });
-
-      /* =========================
-         Open stats page
-      ========================= */
-
       await page.goto(campaign.stats_url, {
-        waitUntil: "domcontentloaded",
-        timeout: 60000
+        waitUntil: "networkidle",
+        timeout: 90000
       });
 
-      console.log("Telegram stats page opened.");
+      console.log("Telegram page loaded.");
 
-      /* Give Telegram time to load the statistics */
-      await page.waitForTimeout(8000);
+      const views = await getViews(page);
 
-      /* Additional wait for network activity */
-      try {
-        await page.waitForLoadState("networkidle", {
-          timeout: 15000
+      if (views === null) {
+        console.log(
+          `Views NOT FOUND for ${campaign.report_code || campaign.id}`
+        );
+
+        // ناخد Screenshot للمشكلة في GitHub Actions
+        await page.screenshot({
+          path: `telegram-${campaign.id}.png`,
+          fullPage: true
         });
-      } catch {
-        /* networkidle is not required */
-      }
-
-      await page.waitForTimeout(3000);
-
-      /* =========================
-         Read page text
-      ========================= */
-
-      const bodyText = await page.locator("body").innerText();
-
-      console.log(
-        "Page text length:",
-        bodyText.length
-      );
-
-      let views = networkViews;
-
-      /* =========================
-         Try normal page text
-      ========================= */
-
-      if (views === null) {
-        views = findViewsInText(bodyText);
-
-        if (views !== null) {
-          console.log(
-            `Views found in page text: ${views}`
-          );
-        }
-      }
-
-      /* =========================
-         Try HTML
-      ========================= */
-
-      if (views === null) {
-        const html = await page.content();
-
-        views = findViewsInText(html);
-
-        if (views !== null) {
-          console.log(
-            `Views found in page HTML: ${views}`
-          );
-        }
-      }
-
-      /* =========================
-         Try aria labels / titles
-      ========================= */
-
-      if (views === null) {
-        const accessibilityText = await page.locator(
-          "[aria-label], [title]"
-        ).evaluateAll((elements) =>
-          elements
-            .map((el) => {
-              return (
-                el.getAttribute("aria-label") ||
-                el.getAttribute("title") ||
-                ""
-              );
-            })
-            .join("\n")
-        );
-
-        views = findViewsInText(accessibilityText);
-
-        if (views !== null) {
-          console.log(
-            `Views found in accessibility data: ${views}`
-          );
-        }
-      }
-
-      /* =========================
-         Try script contents
-      ========================= */
-
-      if (views === null) {
-        const scripts = await page.locator("script").allTextContents();
-
-        for (const script of scripts) {
-          const found = findViewsInText(script);
-
-          if (found !== null) {
-            views = found;
-
-            console.log(
-              `Views found inside script: ${views}`
-            );
-
-            break;
-          }
-
-          try {
-            const json = JSON.parse(script);
-
-            const jsonViews = findViewsInObject(json);
-
-            if (jsonViews !== null) {
-              views = jsonViews;
-
-              console.log(
-                `Views found inside JSON script: ${views}`
-              );
-
-              break;
-            }
-          } catch {
-            /* Ignore */
-          }
-        }
-      }
-
-      /* =========================
-         Nothing found
-      ========================= */
-
-      if (views === null) {
-        console.log(
-          `Views NOT FOUND for ${
-            campaign.report_code || campaign.id
-          }`
-        );
-
-        console.log(
-          "Page title:",
-          await page.title()
-        );
 
         continue;
       }
 
-      /* =========================
-         Update Supabase
-      ========================= */
+      console.log("REAL VIEWS:", views);
 
       const { error: updateError } = await supabase
         .from("campaigns")
@@ -416,40 +166,29 @@ async function main() {
 
       if (updateError) {
         console.error(
-          `Supabase update failed for ${
-            campaign.report_code || campaign.id
-          }:`,
+          "Supabase update error:",
           updateError.message
         );
-
-        continue;
+      } else {
+        console.log(
+          `UPDATED SUCCESSFULLY: ${campaign.campaign_name} = ${views}`
+        );
       }
-
-      console.log(
-        `UPDATED ${
-          campaign.report_code || campaign.id
-        } => ${views} impressions`
-      );
     } catch (error) {
       console.error(
-        `FAILED ${
-          campaign.report_code || campaign.id
-        }: ${error.message}`
+        `FAILED ${campaign.campaign_name}:`,
+        error.message
       );
     }
   }
 
-  await context.close();
   await browser.close();
 
-  console.log("");
-  console.log("======================================");
-  console.log("Telegram Ads statistics updater finished.");
-  console.log("======================================");
+  console.log("--------------------------------");
+  console.log("Telegram Ads update finished.");
 }
 
 main().catch((error) => {
-  console.error("FATAL ERROR:");
   console.error(error);
   process.exit(1);
 });
