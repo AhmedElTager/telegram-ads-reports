@@ -14,7 +14,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-
     * {
       box-sizing: border-box;
     }
@@ -32,11 +31,9 @@
       padding: 18px 20px;
       font-size: 21px;
       font-weight: bold;
-
       display: flex;
       justify-content: space-between;
       align-items: center;
-
       gap: 10px;
     }
 
@@ -50,10 +47,8 @@
       background: #fff;
       border: 1px solid #ddd;
       border-radius: 14px;
-
       padding: 24px;
       margin-bottom: 20px;
-
       box-shadow: 0 4px 15px rgba(0,0,0,.05);
     }
 
@@ -65,406 +60,276 @@
 
     label {
       display: block;
-
       font-weight: bold;
-
       margin-bottom: 7px;
     }
 
     input,
     textarea,
     select {
-
       width: 100%;
-
       padding: 13px;
-
       border: 1px solid #d5d9dd;
-
       border-radius: 8px;
-
       font-size: 15px;
-
       margin-bottom: 16px;
-
       background: #fff;
-
       font-family: Arial, sans-serif;
     }
 
     textarea {
-
       min-height: 120px;
-
       resize: vertical;
     }
 
     input:focus,
     textarea:focus,
     select:focus {
-
       outline: none;
-
       border-color: #229ed9;
-
-      box-shadow:
-        0 0 0 2px rgba(34,158,217,.1);
+      box-shadow: 0 0 0 2px rgba(34,158,217,.1);
     }
 
     button {
-
       border: 0;
-
       border-radius: 8px;
-
       padding: 12px 18px;
-
       font-size: 15px;
-
       font-weight: bold;
-
       cursor: pointer;
-
       font-family: Arial, sans-serif;
     }
 
     button:disabled {
-
       opacity: .6;
-
       cursor: not-allowed;
     }
 
     .primary {
-
       background: #229ed9;
-
       color: #fff;
     }
 
     .success {
-
       background: #16834b;
-
       color: #fff;
     }
 
     .danger {
-
       background: #d64545;
-
       color: #fff;
     }
 
     .secondary {
-
       background: #eef1f4;
-
       color: #333;
     }
 
     .refresh {
-
       background: #6c5ce7;
-
       color: white;
     }
 
     .form-row {
-
       display: grid;
-
       grid-template-columns: 1fr 1fr;
-
       gap: 15px;
     }
 
     .message {
-
       padding: 13px;
-
       border-radius: 8px;
-
       margin-bottom: 18px;
-
       display: none;
-
       line-height: 1.7;
-
       word-break: break-word;
-
       white-space: pre-line;
     }
 
     .success-message {
-
       background: #e7f7ed;
-
       color: #16834b;
     }
 
     .error-message {
-
       background: #fdecec;
-
       color: #b42318;
     }
 
     .campaign-list {
-
       margin-top: 15px;
     }
 
     .campaign-item {
-
       border: 1px solid #ddd;
-
       border-radius: 12px;
-
       padding: 18px;
-
       margin-bottom: 15px;
-
       background: #fafafa;
     }
 
     .campaign-header {
-
       display: flex;
-
       justify-content: space-between;
-
       align-items: center;
-
       gap: 10px;
-
       flex-wrap: wrap;
-
       margin-bottom: 15px;
     }
 
     .campaign-title {
-
       font-size: 19px;
-
       font-weight: bold;
     }
 
     .campaign-code {
-
       color: #777;
-
       font-size: 13px;
-
       margin-top: 5px;
     }
 
     .status-badge {
-
       padding: 7px 12px;
-
       border-radius: 20px;
-
       font-size: 13px;
-
       font-weight: bold;
     }
 
     .active {
-
       background: #e7f7ed;
-
       color: #16834b;
     }
 
     .inactive {
-
       background: #fce8e8;
-
       color: #c0392b;
     }
 
     .campaign-info {
-
       display: grid;
-
-      grid-template-columns:
-        repeat(2,1fr);
-
+      grid-template-columns: repeat(2, 1fr);
       gap: 10px;
-
       margin-bottom: 15px;
     }
 
     .info-box {
-
       background: #fff;
-
       border: 1px solid #e1e4e8;
-
       border-radius: 8px;
-
       padding: 12px;
     }
 
     .info-title {
-
       color: #777;
-
       font-size: 13px;
-
       margin-bottom: 5px;
     }
 
     .info-value {
-
       font-weight: bold;
-
       word-break: break-word;
     }
 
     .actions {
-
       display: flex;
-
       gap: 8px;
-
       flex-wrap: wrap;
     }
 
     .report-link {
-
       background: #fff;
-
       border: 1px solid #ddd;
-
       border-radius: 8px;
-
       padding: 12px;
-
       margin-top: 12px;
-
       word-break: break-all;
-
       direction: ltr;
-
       text-align: left;
-
       font-size: 13px;
     }
 
     .telegram-link {
-
       background: #eef8fc;
-
       border: 1px solid #c9e9f5;
-
       border-radius: 8px;
-
       padding: 12px;
-
       margin-top: 12px;
-
       word-break: break-all;
-
       direction: ltr;
-
       text-align: left;
-
       font-size: 13px;
     }
 
     .hint {
-
       color: #777;
-
       font-size: 13px;
-
       line-height: 1.7;
-
       margin-top: -8px;
-
       margin-bottom: 15px;
     }
 
     .hidden {
-
       display: none !important;
     }
 
     .empty,
     .loading {
-
       text-align: center;
-
       padding: 30px;
-
       color: #777;
     }
 
     .top-actions {
-
       display: flex;
-
       gap: 8px;
-
       flex-wrap: wrap;
     }
 
+    .copy-small {
+      margin-top: 10px;
+      width: 100%;
+    }
+
     @media (max-width: 650px) {
-
       .form-row {
-
         grid-template-columns: 1fr;
-
         gap: 0;
       }
 
       .campaign-info {
-
         grid-template-columns: 1fr;
       }
 
       .topbar {
-
         font-size: 17px;
-
         padding: 15px;
       }
 
       .topbar > div:first-child {
-
         max-width: 60%;
-
         line-height: 1.4;
       }
 
       .card {
-
         padding: 18px;
       }
 
       button {
-
         width: 100%;
       }
 
       .actions button {
-
         width: 100%;
       }
-
     }
-
   </style>
-
 </head>
-
 
 <body>
 
-
-  <!-- TOP BAR -->
+  <!-- =========================
+       TOP BAR
+  ========================== -->
 
   <div class="topbar">
 
@@ -507,14 +372,11 @@
 
       </p>
 
-
       <div
         id="addMessage"
         class="message"
       ></div>
 
-
-      <!-- NAME + CODE -->
 
       <div class="form-row">
 
@@ -550,8 +412,6 @@
       </div>
 
 
-      <!-- IMPRESSIONS + STATUS -->
-
       <div class="form-row">
 
         <div>
@@ -566,13 +426,6 @@
             min="0"
             value="0"
           >
-
-          <div class="hint">
-
-            اكتبي عدد المشاهدات الحالي
-            للإعلان.
-
-          </div>
 
         </div>
 
@@ -608,8 +461,6 @@
       </div>
 
 
-      <!-- TELEGRAM STATS -->
-
       <label for="addStatsUrl">
 
         🔗 رابط إحصائيات الإعلان الحقيقي
@@ -625,13 +476,10 @@
 
       <div class="hint">
 
-        ضعي رابط الإعلان الحقيقي من
-        Telegram Ads هنا.
+        ضعي هنا رابط الإعلان الحقيقي من Telegram Ads.
 
       </div>
 
-
-      <!-- AD TEXT -->
 
       <label for="addAdText">
 
@@ -644,8 +492,6 @@
         placeholder="اكتبي نص الإعلان..."
       ></textarea>
 
-
-      <!-- IMAGE -->
 
       <label for="addAdImage">
 
@@ -661,8 +507,6 @@
       >
 
 
-      <!-- CHANNEL -->
-
       <label for="addChannelUrl">
 
         🔗 رابط القناة / البوت
@@ -677,21 +521,15 @@
       >
 
 
-      <!-- ADD BUTTON -->
-
       <button
         id="addButton"
         class="success"
         type="button"
       >
-
         ➕ إضافة الإعلان
-
       </button>
 
-
     </div>
-
 
 
     <!-- =========================
@@ -705,9 +543,7 @@
       </h2>
 
       <p style="color:#777;">
-
         اختاري الإعلان الذي تريدين تعديله.
-
       </p>
 
 
@@ -718,17 +554,13 @@
 
 
       <label for="campaignSelect">
-
         الإعلان
-
       </label>
 
       <select id="campaignSelect">
 
         <option value="">
-
           جاري تحميل الإعلانات...
-
         </option>
 
       </select>
@@ -739,17 +571,12 @@
         class="hidden"
       >
 
-
-        <!-- NAME + CODE -->
-
         <div class="form-row">
 
           <div>
 
             <label for="editCampaignName">
-
               اسم الحملة
-
             </label>
 
             <input
@@ -763,9 +590,7 @@
           <div>
 
             <label for="editReportCode">
-
               Report Code
-
             </label>
 
             <input
@@ -778,16 +603,12 @@
         </div>
 
 
-        <!-- IMPRESSIONS + STATUS -->
-
         <div class="form-row">
 
           <div>
 
             <label for="editImpressions">
-
               مرات الظهور
-
             </label>
 
             <input
@@ -802,9 +623,7 @@
           <div>
 
             <label for="editStatus">
-
               حالة الإعلان
-
             </label>
 
             <select id="editStatus">
@@ -832,12 +651,8 @@
         </div>
 
 
-        <!-- STATS URL -->
-
         <label for="editStatsUrl">
-
           🔗 رابط إحصائيات الإعلان
-
         </label>
 
         <input
@@ -848,12 +663,8 @@
         >
 
 
-        <!-- TEXT -->
-
         <label for="editAdText">
-
           📝 نص الإعلان
-
         </label>
 
         <textarea
@@ -861,12 +672,8 @@
         ></textarea>
 
 
-        <!-- IMAGE -->
-
         <label for="editAdImage">
-
           🖼️ صورة الإعلان
-
         </label>
 
         <input
@@ -876,12 +683,8 @@
         >
 
 
-        <!-- CHANNEL -->
-
         <label for="editChannelUrl">
-
           🔗 رابط القناة / البوت
-
         </label>
 
         <input
@@ -891,8 +694,6 @@
         >
 
 
-        <!-- BUTTONS -->
-
         <div class="actions">
 
           <button
@@ -900,9 +701,7 @@
             class="primary"
             type="button"
           >
-
             💾 حفظ التعديلات
-
           </button>
 
 
@@ -911,15 +710,11 @@
             class="danger"
             type="button"
           >
-
             🗑️ حذف الإعلان
-
           </button>
 
         </div>
 
-
-        <!-- REPORT -->
 
         <div
           id="reportLinkBox"
@@ -943,9 +738,7 @@
             class="secondary"
             type="button"
           >
-
             📋 نسخ رابط التقرير
-
           </button>
 
 
@@ -954,18 +747,14 @@
             class="secondary"
             type="button"
           >
-
             🔗 فتح التقرير
-
           </button>
 
         </div>
 
-
       </div>
 
     </div>
-
 
 
     <!-- =========================
@@ -975,9 +764,7 @@
     <div class="card">
 
       <h2>
-
         📋 قائمة الإعلانات
-
       </h2>
 
 
@@ -985,9 +772,7 @@
         id="campaignsLoading"
         class="loading"
       >
-
         جاري تحميل الإعلانات...
-
       </div>
 
 
@@ -998,13 +783,10 @@
 
     </div>
 
-
   </div>
 
 
-
   <script>
-
 
     /* =====================================
        SUPABASE
@@ -1025,14 +807,12 @@
       );
 
 
-
     /* =====================================
        REPORT URL
     ===================================== */
 
     const REPORT_BASE_URL =
       "https://ahmedeltager.github.io/telegram-ads-reports/";
-
 
 
     /* =====================================
@@ -1044,70 +824,39 @@
     let selectedCampaignId = null;
 
 
-
     /* =====================================
        ELEMENTS
     ===================================== */
 
     const addButton =
-      document.getElementById(
-        "addButton"
-      );
-
+      document.getElementById("addButton");
 
     const addMessage =
-      document.getElementById(
-        "addMessage"
-      );
-
+      document.getElementById("addMessage");
 
     const campaignSelect =
-      document.getElementById(
-        "campaignSelect"
-      );
-
+      document.getElementById("campaignSelect");
 
     const editForm =
-      document.getElementById(
-        "editForm"
-      );
-
+      document.getElementById("editForm");
 
     const editMessage =
-      document.getElementById(
-        "editMessage"
-      );
-
+      document.getElementById("editMessage");
 
     const saveButton =
-      document.getElementById(
-        "saveButton"
-      );
-
+      document.getElementById("saveButton");
 
     const deleteButton =
-      document.getElementById(
-        "deleteButton"
-      );
-
+      document.getElementById("deleteButton");
 
     const copyLinkButton =
-      document.getElementById(
-        "copyLinkButton"
-      );
-
+      document.getElementById("copyLinkButton");
 
     const openLinkButton =
-      document.getElementById(
-        "openLinkButton"
-      );
-
+      document.getElementById("openLinkButton");
 
     const refreshButton =
-      document.getElementById(
-        "refreshButton"
-      );
-
+      document.getElementById("refreshButton");
 
 
     /* =====================================
@@ -1120,9 +869,7 @@
       type = "error"
     ) {
 
-      element.textContent =
-        text;
-
+      element.textContent = text;
 
       element.className =
         "message " +
@@ -1132,89 +879,102 @@
             : "error-message"
         );
 
-
-      element.style.display =
-        "block";
+      element.style.display = "block";
     }
 
 
+    function hideMessage(element) {
 
-    function hideMessage(
-      element
-    ) {
+      element.textContent = "";
 
-      element.textContent =
-        "";
-
-      element.style.display =
-        "none";
+      element.style.display = "none";
     }
-
 
 
     /* =====================================
        ESCAPE HTML
     ===================================== */
 
-    function escapeHtml(
-      value
-    ) {
+    function escapeHtml(value) {
 
-      return String(
-        value ?? ""
-      )
-
-        .replaceAll(
-          "&",
-          "&amp;"
-        )
-
-        .replaceAll(
-          "<",
-          "&lt;"
-        )
-
-        .replaceAll(
-          ">",
-          "&gt;"
-        )
-
-        .replaceAll(
-          '"',
-          "&quot;"
-        )
-
-        .replaceAll(
-          "'",
-          "&#039;"
-        );
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
     }
-
 
 
     /* =====================================
        REPORT LINK
     ===================================== */
 
-    function createReportLink(
-      code
-    ) {
+    function createReportLink(code) {
 
       if (!code) {
-
         return REPORT_BASE_URL;
       }
-
 
       return (
         REPORT_BASE_URL +
         "?code=" +
-        encodeURIComponent(
-          code
-        )
+        encodeURIComponent(code)
       );
     }
 
+
+    /* =====================================
+       FILL SELECT
+    ===================================== */
+
+    function fillCampaignSelect() {
+
+      campaignSelect.innerHTML = "";
+
+      if (!campaigns.length) {
+
+        campaignSelect.innerHTML =
+          `<option value="">
+            لا توجد إعلانات
+          </option>`;
+
+        editForm.classList.add("hidden");
+
+        return;
+      }
+
+
+      campaignSelect.innerHTML =
+        `<option value="">
+          اختاري الإعلان
+        </option>`;
+
+
+      campaigns.forEach(campaign => {
+
+        const option =
+          document.createElement("option");
+
+        option.value =
+          campaign.id;
+
+        option.textContent =
+          (
+            campaign.campaign_name ||
+            "بدون اسم"
+          ) +
+          " — " +
+          (
+            campaign.report_code ||
+            "بدون كود"
+          );
+
+        campaignSelect.appendChild(option);
+
+      });
+
+    }
 
 
     /* =====================================
@@ -1228,32 +988,23 @@
           "campaignsLoading"
         );
 
-
       const list =
         document.getElementById(
           "campaignList"
         );
 
 
-      loading.style.display =
-        "block";
+      loading.style.display = "block";
 
-
-      list.innerHTML =
-        "";
+      list.innerHTML = "";
 
 
       try {
 
         const result =
           await supabaseClient
-
-            .from(
-              "campaigns"
-            )
-
+            .from("campaigns")
             .select("*")
-
             .order(
               "created_at",
               {
@@ -1265,22 +1016,18 @@
         if (result.error) {
 
           console.error(
+            "LOAD ERROR:",
             result.error
           );
 
 
           list.innerHTML =
-
             "<div class='empty'>" +
-
-            "❌ فشل تحميل الإعلانات:<br><br>" +
-
+            "❌ فشل تحميل الإعلانات.<br><br>" +
             escapeHtml(
               result.error.message
             ) +
-
             "</div>";
-
 
           return;
         }
@@ -1298,28 +1045,24 @@
 
       catch (error) {
 
-        console.error(
-          error
-        );
+        console.error(error);
 
 
         list.innerHTML =
-
           "<div class='empty'>" +
-
-          "❌ حدث خطأ أثناء الاتصال بقاعدة البيانات." +
-
+          "❌ حدث خطأ أثناء الاتصال بقاعدة البيانات.<br><br>" +
+          escapeHtml(error.message) +
           "</div>";
+
       }
 
       finally {
 
-        loading.style.display =
-          "none";
+        loading.style.display = "none";
+
       }
 
     }
-
 
 
     /* =====================================
@@ -1337,11 +1080,8 @@
       if (!campaigns.length) {
 
         list.innerHTML =
-
           "<div class='empty'>" +
-
           "لا توجد إعلانات حتى الآن." +
-
           "</div>";
 
         return;
@@ -1349,152 +1089,192 @@
 
 
       list.innerHTML =
+        campaigns.map(campaign => {
 
-        campaigns
-          .map(
-            campaign => {
-
-              const reportLink =
-                createReportLink(
-                  campaign.report_code
-                );
+          const reportLink =
+            createReportLink(
+              campaign.report_code
+            );
 
 
-              const statusClass =
-                campaign.status ===
-                "Active"
-
-                  ? "active"
-
-                  : "inactive";
+          const statusClass =
+            campaign.status === "Active"
+              ? "active"
+              : "inactive";
 
 
-              return `
+          return `
 
-                <div class="campaign-item">
+            <div class="campaign-item">
 
-                  <div class="campaign-header">
+              <div class="campaign-header">
 
-                    <div>
+                <div>
 
-                      <div class="campaign-title">
+                  <div class="campaign-title">
+                    ${escapeHtml(
+                      campaign.campaign_name ||
+                      "بدون اسم"
+                    )}
+                  </div>
 
-                        ${escapeHtml(
-                          campaign.campaign_name ||
-                          "بدون اسم"
-                        )}
+                  <div class="campaign-code">
+                    Report Code:
+                    ${escapeHtml(
+                      campaign.report_code ||
+                      "—"
+                    )}
+                  </div>
 
+                </div>
+
+
+                <span
+                  class="status-badge ${statusClass}"
+                >
+                  ${escapeHtml(
+                    campaign.status ||
+                    "غير معروف"
+                  )}
+                </span>
+
+              </div>
+
+
+              <div class="campaign-info">
+
+                <div class="info-box">
+
+                  <div class="info-title">
+                    👁️ مرات الظهور
+                  </div>
+
+                  <div class="info-value">
+                    ${Number(
+                      campaign.impressions || 0
+                    ).toLocaleString("en-US")}
+                  </div>
+                    </div>
+
+
+                    <div class="info-box">
+
+                      <div class="info-title">
+                        📅 تاريخ الإضافة
                       </div>
 
+                      <div class="info-value">
 
-                      <div class="campaign-code">
-
-                        Report Code:
-
-                        ${escapeHtml(
-                          campaign.report_code ||
-                          "—"
-                        )}
+                        ${
+                          campaign.created_at
+                            ? new Date(
+                                campaign.created_at
+                              ).toLocaleDateString(
+                                "ar-EG"
+                              )
+                            : "—"
+                        }
 
                       </div>
 
                     </div>
 
+                  </div>
 
-                    <span
-                      class="status-badge ${statusClass}"
+
+                  ${
+                    campaign.stats_url
+                      ? `
+                        <div class="telegram-link">
+
+                          📈 رابط إحصائيات الإعلان الحقيقي:
+
+                          <br><br>
+
+                          ${escapeHtml(
+                            campaign.stats_url
+                          )}
+
+                        </div>
+                      `
+                      : ""
+                  }
+
+
+                  ${
+                    campaign.channel_url
+                      ? `
+                        <div class="report-link">
+
+                          📢 رابط القناة:
+
+                          <br><br>
+
+                          ${escapeHtml(
+                            campaign.channel_url
+                          )}
+
+                        </div>
+                      `
+                      : ""
+                  }
+
+
+                  <div class="report-link">
+
+                    🔗 رابط تقرير العميل:
+
+                    <br><br>
+
+                    ${escapeHtml(reportLink)}
+
+                    <button
+                      class="secondary copy-small"
+                      type="button"
+                      onclick="copyReportDirect('${encodeURIComponent(reportLink)}')"
                     >
-
-                      ${escapeHtml(
-                        campaign.status ||
-                        "غير معروف"
-                      )}
-
-                    </span>
+                      📋 نسخ رابط التقرير
+                    </button>
 
                   </div>
 
-                  <div class="campaign-info">
+
+                  ${
+                    campaign.ad_text
+                      ? `
+                        <div
+                          class="info-box"
+                          style="margin-top:12px;"
+                        >
+
+                          <div class="info-title">
+                            📝 نص الإعلان
+                          </div>
+
+                          <div
+                            class="info-value"
+                            style="font-weight:normal;line-height:1.8;"
+                          >
+                            ${escapeHtml(
+                              campaign.ad_text
+                            )}
+                          </div>
+
+                        </div>
+                      `
+                      : ""
+                  }
 
 
-                    <div class="info-box">
-        <div class="info-box">
+                </div>
 
-          <div class="info-title">
-            👁️ مرات الظهور
-          </div>
-
-          <div class="info-value">
-
-            ${Number(
-              campaign.impressions || 0
-            ).toLocaleString("en-US")}
-
-          </div>
-
-        </div>
-
-
-        <div class="info-box">
-
-          <div class="info-title">
-            📊 الحالة
-          </div>
-
-          <div class="info-value">
-
-            ${escapeHtml(
-              campaign.status || "—"
-            )}
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <div class="report-link">
-
-        🔗 رابط التقرير:
-
-        <br><br>
-
-        ${escapeHtml(reportLink)}
-
-      </div>
-
-
-      ${
-        campaign.stats_url
-          ? `
-            <div class="telegram-link">
-
-              📈 رابط إحصائيات Telegram:
-
-              <br><br>
-
-              ${escapeHtml(
-                campaign.stats_url
-              )}
-
-            </div>
-          `
-          : ""
-      }
-
-
-    </div>
-
-  `;
+              `;
 
             }
           )
-
           .join("");
 
     }
-
 
 
     /* =====================================
@@ -1592,8 +1372,11 @@
           );
 
 
-        reportBox.textContent =
-          reportLink;
+        reportBox.innerHTML =
+          "🔗 رابط تقرير العميل:<br><br>" +
+          escapeHtml(
+            reportLink
+          );
 
 
         reportBox.classList.remove(
@@ -1609,14 +1392,19 @@
 
         if (campaign.stats_url) {
 
-          telegramBox.textContent =
-            campaign.stats_url;
+          telegramBox.innerHTML =
+            "📈 رابط إحصائيات الإعلان الحقيقي:<br><br>" +
+            escapeHtml(
+              campaign.stats_url
+            );
 
           telegramBox.classList.remove(
             "hidden"
           );
 
-        } else {
+        }
+
+        else {
 
           telegramBox.classList.add(
             "hidden"
@@ -1628,7 +1416,6 @@
     );
 
 
-
     /* =====================================
        ADD CAMPAIGN
     ===================================== */
@@ -1637,7 +1424,9 @@
       "click",
       async function () {
 
-        hideMessage(addMessage);
+        hideMessage(
+          addMessage
+        );
 
 
         const campaignName =
@@ -1714,6 +1503,21 @@
         }
 
 
+        if (
+          !Number.isFinite(impressions) ||
+          impressions < 0
+        ) {
+
+          showMessage(
+            addMessage,
+            "❌ عدد مرات الظهور غير صحيح.",
+            "error"
+          );
+
+          return;
+        }
+
+
         addButton.disabled = true;
 
         addButton.textContent =
@@ -1751,10 +1555,18 @@
           };
 
 
+          console.log(
+            "INSERT DATA:",
+            insertData
+          );
+
+
           const result =
             await supabaseClient
               .from("campaigns")
-              .insert(insertData)
+              .insert(
+                insertData
+              )
               .select()
               .single();
 
@@ -1828,13 +1640,18 @@
 
         catch (error) {
 
-          console.error(error);
+          console.error(
+            "ADD EXCEPTION:",
+            error
+          );
 
 
           showMessage(
             addMessage,
-            "❌ حدث خطأ:\n\n" +
+
+            "❌ حدث خطأ أثناء إضافة الإعلان.\n\n" +
             error.message,
+
             "error"
           );
 
@@ -1853,7 +1670,6 @@
     );
 
 
-
     /* =====================================
        SAVE EDIT
     ===================================== */
@@ -1862,7 +1678,9 @@
       "click",
       async function () {
 
-        hideMessage(editMessage);
+        hideMessage(
+          editMessage
+        );
 
 
         if (!selectedCampaignId) {
@@ -1924,6 +1742,30 @@
         };
 
 
+        if (!updates.campaign_name) {
+
+          showMessage(
+            editMessage,
+            "❌ اسم الحملة مطلوب.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        if (!updates.report_code) {
+
+          showMessage(
+            editMessage,
+            "❌ Report Code مطلوب.",
+            "error"
+          );
+
+          return;
+        }
+
+
         saveButton.disabled = true;
 
         saveButton.textContent =
@@ -1944,10 +1786,18 @@
 
           if (result.error) {
 
+            console.error(
+              "UPDATE ERROR:",
+              result.error
+            );
+
+
             showMessage(
               editMessage,
-              "❌ فشل الحفظ:\n\n" +
+
+              "❌ فشل حفظ التعديلات.\n\n" +
               result.error.message,
+
               "error"
             );
 
@@ -1957,7 +1807,7 @@
 
           showMessage(
             editMessage,
-            "✅ تم حفظ التعديلات.",
+            "✅ تم حفظ التعديلات بنجاح.",
             "success"
           );
 
@@ -1970,7 +1820,10 @@
 
           showMessage(
             editMessage,
-            "❌ " + error.message,
+
+            "❌ حدث خطأ:\n\n" +
+            error.message,
+
             "error"
           );
 
@@ -1987,7 +1840,6 @@
 
       }
     );
-
 
 
     /* =====================================
@@ -2041,10 +1893,18 @@
 
           if (result.error) {
 
+            console.error(
+              "DELETE ERROR:",
+              result.error
+            );
+
+
             showMessage(
               editMessage,
-              "❌ فشل الحذف:\n\n" +
+
+              "❌ فشل حذف الإعلان.\n\n" +
               result.error.message,
+
               "error"
             );
 
@@ -2059,7 +1919,9 @@
           );
 
 
-          selectedCampaignId = null;
+          selectedCampaignId =
+            null;
+
 
           editForm.classList.add(
             "hidden"
@@ -2074,7 +1936,10 @@
 
           showMessage(
             editMessage,
-            "❌ " + error.message,
+
+            "❌ حدث خطأ:\n\n" +
+            error.message,
+
             "error"
           );
 
@@ -2091,7 +1956,6 @@
 
       }
     );
-
 
 
     /* =====================================
@@ -2116,9 +1980,7 @@
           campaigns.find(
             item =>
               String(item.id) ===
-              String(
-                selectedCampaignId
-              )
+              String(selectedCampaignId)
           );
 
 
@@ -2133,31 +1995,10 @@
           );
 
 
-        try {
-
-          await navigator.clipboard.writeText(
-            link
-          );
-
-
-          alert(
-            "✅ تم نسخ رابط التقرير."
-          );
-
-        }
-
-        catch {
-
-          prompt(
-            "انسخي رابط التقرير:",
-            link
-          );
-
-        }
+        copyText(link);
 
       }
     );
-
 
 
     /* =====================================
@@ -2182,9 +2023,7 @@
           campaigns.find(
             item =>
               String(item.id) ===
-              String(
-                selectedCampaignId
-              )
+              String(selectedCampaignId)
           );
 
 
@@ -2208,6 +2047,102 @@
     );
 
 
+    /* =====================================
+       COPY
+    ===================================== */
+
+    async function copyText(text) {
+
+      try {
+
+        if (
+          navigator.clipboard &&
+          window.isSecureContext
+        ) {
+
+          await navigator.clipboard.writeText(
+            text
+          );
+
+          alert(
+            "✅ تم نسخ رابط التقرير."
+          );
+
+          return;
+        }
+
+
+        const input =
+          document.createElement(
+            "textarea"
+          );
+
+
+        input.value = text;
+
+        input.style.position =
+          "fixed";
+
+        input.style.opacity =
+          "0";
+
+
+        document.body.appendChild(
+          input
+        );
+
+
+        input.focus();
+
+        input.select();
+
+
+        document.execCommand(
+          "copy"
+        );
+
+
+        document.body.removeChild(
+          input
+        );
+
+
+        alert(
+          "✅ تم نسخ رابط التقرير."
+        );
+
+      }
+
+      catch (error) {
+
+        prompt(
+          "انسخي الرابط:",
+          text
+        );
+
+      }
+
+    }
+
+
+    /* =====================================
+       COPY DIRECT
+    ===================================== */
+
+    async function copyReportDirect(
+      encodedLink
+    ) {
+
+      const link =
+        decodeURIComponent(
+          encodedLink
+        );
+
+
+      copyText(link);
+
+    }
+
 
     /* =====================================
        REFRESH
@@ -2226,7 +2161,8 @@
         await loadCampaigns();
 
 
-        refreshButton.disabled = false;
+        refreshButton.disabled =
+          false;
 
         refreshButton.textContent =
           "🔄 تحديث";
@@ -2235,12 +2171,11 @@
     );
 
 
-
     /* =====================================
        START
     ===================================== */
 
-    window.addEventListener(
+    document.addEventListener(
       "DOMContentLoaded",
       function () {
 
@@ -2249,11 +2184,9 @@
       }
     );
 
-
   </script>
-
 
 </body>
 
 </html>
-       
+          
