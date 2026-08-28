@@ -49,7 +49,7 @@
       border-radius: 14px;
       padding: 24px;
       margin-bottom: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,.05);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, .05);
     }
 
     .login-card {
@@ -73,6 +73,7 @@
       text-align: center;
       color: #777;
       margin-bottom: 25px;
+      line-height: 1.7;
     }
 
     label {
@@ -91,6 +92,7 @@
       font-size: 15px;
       margin-bottom: 16px;
       background: #fff;
+      font-family: Arial, sans-serif;
     }
 
     textarea {
@@ -103,6 +105,7 @@
     select:focus {
       outline: none;
       border-color: #229ed9;
+      box-shadow: 0 0 0 2px rgba(34, 158, 217, .1);
     }
 
     button {
@@ -112,6 +115,7 @@
       font-size: 15px;
       font-weight: bold;
       cursor: pointer;
+      font-family: Arial, sans-serif;
     }
 
     button:disabled {
@@ -156,6 +160,7 @@
       margin-bottom: 18px;
       display: none;
       line-height: 1.7;
+      word-break: break-word;
     }
 
     .success-message {
@@ -259,6 +264,26 @@
       font-size: 13px;
     }
 
+    .telegram-link {
+      background: #eef8fc;
+      border: 1px solid #c9e9f5;
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 12px;
+      word-break: break-all;
+      direction: ltr;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    .hint {
+      color: #777;
+      font-size: 13px;
+      line-height: 1.7;
+      margin-top: -8px;
+      margin-bottom: 15px;
+    }
+
     .hidden {
       display: none !important;
     }
@@ -270,7 +295,19 @@
       color: #777;
     }
 
+    .loading {
+      font-size: 15px;
+    }
+
+    .login-status {
+      text-align: center;
+      margin-top: 12px;
+      color: #777;
+      font-size: 13px;
+    }
+
     @media (max-width: 650px) {
+
       .form-row {
         grid-template-columns: 1fr;
         gap: 0;
@@ -282,10 +319,28 @@
 
       .topbar {
         font-size: 17px;
+        padding: 15px;
+      }
+
+      .topbar div {
+        max-width: 65%;
+        line-height: 1.4;
       }
 
       .card {
         padding: 18px;
+      }
+
+      .login-card {
+        margin: 25px auto;
+      }
+
+      button {
+        width: 100%;
+      }
+
+      .actions button {
+        width: 100%;
       }
     }
   </style>
@@ -293,7 +348,9 @@
 
 <body>
 
-  <!-- TOP BAR -->
+  <!-- =====================================
+       TOP BAR
+  ====================================== -->
 
   <div class="topbar">
 
@@ -314,7 +371,9 @@
 
   <div class="container">
 
-    <!-- LOGIN -->
+    <!-- =====================================
+         LOGIN
+    ====================================== -->
 
     <div
       id="loginSection"
@@ -330,7 +389,7 @@
       </h1>
 
       <div class="subtitle">
-        هذه الصفحة مخصصة لإدارة تقارير العملاء.
+        هذه الصفحة مخصصة لإدارة تقارير العملاء والإعلانات.
       </div>
 
       <div
@@ -338,7 +397,7 @@
         class="message"
       ></div>
 
-      <label>
+      <label for="loginEmail">
         البريد الإلكتروني
       </label>
 
@@ -346,10 +405,11 @@
         id="loginEmail"
         type="email"
         placeholder="example@email.com"
-        autocomplete="email"
+        autocomplete="username"
+        inputmode="email"
       >
 
-      <label>
+      <label for="loginPassword">
         كلمة المرور
       </label>
 
@@ -369,17 +429,26 @@
         🔐 تسجيل الدخول
       </button>
 
+      <div
+        id="loginStatus"
+        class="login-status"
+      ></div>
+
     </div>
 
 
-    <!-- ADMIN -->
+    <!-- =====================================
+         ADMIN SECTION
+    ====================================== -->
 
     <div
       id="adminSection"
       class="hidden"
     >
 
-      <!-- ADD CAMPAIGN -->
+      <!-- =====================================
+           ADD CAMPAIGN
+      ====================================== -->
 
       <div class="card">
 
@@ -387,8 +456,8 @@
           ➕ إضافة عميل / حملة جديدة
         </h2>
 
-        <p style="color:#777;">
-          أضيفي بيانات العميل والحملة، وسيتم إنشاء رابط التقرير تلقائيًا.
+        <p style="color:#777; line-height:1.7;">
+          أضيفي بيانات الإعلان الحقيقي، وسيتم إنشاء رابط التقرير للعميل.
         </p>
 
         <div
@@ -396,11 +465,12 @@
           class="message"
         ></div>
 
+
         <div class="form-row">
 
           <div>
 
-            <label>
+            <label for="addCampaignName">
               اسم الحملة / العميل
             </label>
 
@@ -412,9 +482,10 @@
 
           </div>
 
+
           <div>
 
-            <label>
+            <label for="addReportCode">
               Report Code
             </label>
 
@@ -433,7 +504,7 @@
 
           <div>
 
-            <label>
+            <label for="addImpressions">
               مرات الظهور
             </label>
 
@@ -444,12 +515,16 @@
               value="0"
             >
 
+            <div class="hint">
+              اتركيها 0 لو الإعلان جديد، وسيتم تحديثها لاحقًا.
+            </div>
+
           </div>
 
 
           <div>
 
-            <label>
+            <label for="addStatus">
               حالة الحملة
             </label>
 
@@ -478,7 +553,27 @@
         </div>
 
 
-        <label>
+        <!-- TELEGRAM STATS URL -->
+
+        <label for="addStatsUrl">
+          🔗 رابط إحصائيات إعلان Telegram
+        </label>
+
+        <input
+          id="addStatsUrl"
+          type="url"
+          placeholder="https://ads.telegram.org/stats/XXXXXXXX"
+          dir="ltr"
+        >
+
+        <div class="hint">
+          ضعي هنا رابط Statistics الخاص بالإعلان الحقيقي من Telegram Ads.
+        </div>
+
+
+        <!-- AD TEXT -->
+
+        <label for="addAdText">
           نص الإعلان
         </label>
 
@@ -488,7 +583,9 @@
         ></textarea>
 
 
-        <label>
+        <!-- IMAGE -->
+
+        <label for="addAdImage">
           صورة الإعلان — رابط الصورة
         </label>
 
@@ -496,17 +593,21 @@
           id="addAdImage"
           type="url"
           placeholder="https://example.com/image.jpg"
+          dir="ltr"
         >
 
 
-        <label>
-          رابط القناة
+        <!-- CHANNEL -->
+
+        <label for="addChannelUrl">
+          رابط القناة / البوت
         </label>
 
         <input
           id="addChannelUrl"
           type="url"
           placeholder="https://t.me/example"
+          dir="ltr"
         >
 
 
@@ -521,7 +622,9 @@
       </div>
 
 
-      <!-- EDIT -->
+      <!-- =====================================
+           EDIT CAMPAIGN
+      ====================================== -->
 
       <div class="card">
 
@@ -529,7 +632,7 @@
           ✏️ تعديل حملة
         </h2>
 
-        <p style="color:#777;">
+        <p style="color:#777; line-height:1.7;">
           اختاري الحملة التي تريدين تعديلها.
         </p>
 
@@ -539,7 +642,7 @@
         ></div>
 
 
-        <label>
+        <label for="campaignSelect">
           الحملة
         </label>
 
@@ -561,7 +664,7 @@
 
             <div>
 
-              <label>
+              <label for="editCampaignName">
                 اسم الحملة
               </label>
 
@@ -575,7 +678,7 @@
 
             <div>
 
-              <label>
+              <label for="editReportCode">
                 Report Code
               </label>
 
@@ -593,7 +696,7 @@
 
             <div>
 
-              <label>
+              <label for="editImpressions">
                 مرات الظهور
               </label>
 
@@ -608,7 +711,7 @@
 
             <div>
 
-              <label>
+              <label for="editStatus">
                 حالة الحملة
               </label>
 
@@ -637,7 +740,27 @@
           </div>
 
 
-          <label>
+          <!-- EDIT STATS URL -->
+
+          <label for="editStatsUrl">
+            🔗 رابط إحصائيات إعلان Telegram
+          </label>
+
+          <input
+            id="editStatsUrl"
+            type="url"
+            placeholder="https://ads.telegram.org/stats/XXXXXXXX"
+            dir="ltr"
+          >
+
+          <div class="hint">
+            هذا هو الرابط الذي سيستخدمه النظام لتحديث المشاهدات.
+          </div>
+
+
+          <!-- EDIT AD TEXT -->
+
+          <label for="editAdText">
             نص الإعلان
           </label>
 
@@ -646,7 +769,9 @@
           ></textarea>
 
 
-          <label>
+          <!-- EDIT IMAGE -->
+
+          <label for="editAdImage">
             صورة الإعلان — رابط الصورة
           </label>
 
@@ -654,17 +779,21 @@
             id="editAdImage"
             type="url"
             placeholder="https://example.com/image.jpg"
+            dir="ltr"
           >
 
 
-          <label>
-            رابط القناة
+          <!-- EDIT CHANNEL -->
+
+          <label for="editChannelUrl">
+            رابط القناة / البوت
           </label>
 
           <input
             id="editChannelUrl"
             type="url"
             placeholder="https://t.me/example"
+            dir="ltr"
           >
 
 
@@ -689,9 +818,19 @@
           </div>
 
 
+          <!-- REPORT LINK -->
+
           <div
             id="reportLinkBox"
             class="report-link hidden"
+          ></div>
+
+
+          <!-- TELEGRAM LINK -->
+
+          <div
+            id="telegramLinkBox"
+            class="telegram-link hidden"
           ></div>
 
 
@@ -723,7 +862,9 @@
       </div>
 
 
-      <!-- CAMPAIGNS -->
+      <!-- =====================================
+           CAMPAIGNS
+      ====================================== -->
 
       <div class="card">
 
@@ -754,7 +895,7 @@
 
     /* =====================================
        SUPABASE
-    ===================================== */
+    ====================================== */
 
     const SUPABASE_URL =
       "https://oxclimxygexnezblrhpz.supabase.co";
@@ -765,13 +906,21 @@
     const supabaseClient =
       window.supabase.createClient(
         SUPABASE_URL,
-        SUPABASE_KEY
+        SUPABASE_KEY,
+        {
+          auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true,
+            storageKey: "telegram-ads-admin-auth"
+          }
+        }
       );
 
 
     /* =====================================
-       REPORT URL
-    ===================================== */
+       REPORT BASE URL
+    ====================================== */
 
     const REPORT_BASE_URL =
       "https://ahmedeltager.github.io/telegram-ads-reports/";
@@ -779,7 +928,7 @@
 
     /* =====================================
        ELEMENTS
-    ===================================== */
+    ====================================== */
 
     const loginSection =
       document.getElementById("loginSection");
@@ -802,6 +951,9 @@
     const loginMessage =
       document.getElementById("loginMessage");
 
+    const loginStatus =
+      document.getElementById("loginStatus");
+
 
     let campaigns = [];
 
@@ -810,12 +962,12 @@
 
     /* =====================================
        MESSAGE
-    ===================================== */
+    ====================================== */
 
     function showMessage(
       element,
       text,
-      type
+      type = "error"
     ) {
 
       element.textContent = text;
@@ -835,6 +987,8 @@
 
     function hideMessage(element) {
 
+      element.textContent = "";
+
       element.style.display = "none";
 
     }
@@ -842,7 +996,7 @@
 
     /* =====================================
        ESCAPE HTML
-    ===================================== */
+    ====================================== */
 
     function escapeHtml(value) {
 
@@ -858,7 +1012,7 @@
 
     /* =====================================
        REPORT LINK
-    ===================================== */
+    ====================================== */
 
     function createReportLink(code) {
 
@@ -877,7 +1031,7 @@
 
     /* =====================================
        LOGIN
-    ===================================== */
+    ====================================== */
 
     async function login() {
 
@@ -888,6 +1042,9 @@
         loginPassword.value;
 
       hideMessage(loginMessage);
+
+      loginStatus.textContent = "";
+
 
       if (!email || !password) {
 
@@ -910,26 +1067,49 @@
 
       try {
 
-        const result =
+        console.log(
+          "Attempting Supabase login..."
+        );
+
+
+        const {
+          data,
+          error
+        } =
           await supabaseClient.auth.signInWithPassword({
             email: email,
             password: password
           });
 
 
-        if (result.error) {
+        if (error) {
 
           console.error(
-            "Login error:",
-            result.error
+            "Supabase login error:",
+            error
           );
+
+
+          let message =
+            error.message ||
+            "فشل تسجيل الدخول.";
+
+
+          if (
+            message
+              .toLowerCase()
+              .includes("invalid login credentials")
+          ) {
+
+            message =
+              "❌ البريد الإلكتروني أو كلمة المرور غير صحيحة.";
+
+          }
+
 
           showMessage(
             loginMessage,
-            "❌ " + (
-              result.error.message ||
-              "فشل تسجيل الدخول."
-            ),
+            message,
             "error"
           );
 
@@ -938,245 +1118,4 @@
         }
 
 
-        await checkSession();
-
-      }
-
-      catch (error) {
-
-        console.error(error);
-
-        showMessage(
-          loginMessage,
-          "❌ حدث خطأ أثناء الاتصال بـ Supabase.",
-          "error"
-        );
-
-      }
-
-      finally {
-
-        loginButton.disabled = false;
-
-        loginButton.textContent =
-          "🔐 تسجيل الدخول";
-
-      }
-
-    }
-
-
-    /* =====================================
-       LOGOUT
-    ===================================== */
-
-    async function logout() {
-
-      await supabaseClient.auth.signOut();
-
-      loginSection.classList.remove("hidden");
-
-      adminSection.classList.add("hidden");
-
-      logoutButton.classList.add("hidden");
-
-      loginPassword.value = "";
-
-    }
-
-
-    /* =====================================
-       CHECK SESSION
-    ===================================== */
-
-    async function checkSession() {
-
-      try {
-
-        const {
-          data,
-          error
-        } =
-          await supabaseClient.auth.getSession();
-
-
-        if (error) {
-
-          console.error(error);
-
-          return;
-
-        }
-
-
-        if (
-          data &&
-          data.session
-        ) {
-
-          loginSection.classList.add("hidden");
-
-          adminSection.classList.remove("hidden");
-
-          logoutButton.classList.remove("hidden");
-
-          await loadCampaigns();
-
-        }
-
-        else {
-
-          loginSection.classList.remove("hidden");
-
-          adminSection.classList.add("hidden");
-
-          logoutButton.classList.add("hidden");
-
-        }
-
-      }
-
-      catch (error) {
-
-        console.error(error);
-
-      }
-
-    }
-
-
-    /* =====================================
-       LOAD CAMPAIGNS
-    ===================================== */
-
-    async function loadCampaigns() {
-
-      const loading =
-        document.getElementById(
-          "campaignsLoading"
-        );
-
-      const list =
-        document.getElementById(
-          "campaignList"
-        );
-
-
-      loading.style.display = "block";
-
-
-      const {
-        data,
-        error
-      } =
-        await supabaseClient
-          .from("campaigns")
-          .select("*")
-          .order(
-            "created_at",
-            {
-              ascending: false
-            }
-          );
-
-
-      loading.style.display = "none";
-
-
-      if (error) {
-
-        console.error(error);
-
-        list.innerHTML =
-          "<div class='empty'>❌ حدث خطأ أثناء تحميل الحملات.</div>";
-
-        return;
-
-      }
-
-
-      campaigns =
-        data || [];
-
-
-      renderCampaigns();
-
-      fillCampaignSelect();
-
-    }
-
-
-    /* =====================================
-       RENDER
-    ===================================== */
-
-    function renderCampaigns() {
-
-      const list =
-        document.getElementById(
-          "campaignList"
-        );
-
-
-      if (!campaigns.length) {
-
-        list.innerHTML =
-          "<div class='empty'>لا توجد حملات حتى الآن.</div>";
-
-        return;
-
-      }
-
-
-      list.innerHTML =
-        campaigns
-          .map(campaign => {
-
-            const link =
-              createReportLink(
-                campaign.report_code
-              );
-
-
-            const statusClass =
-              campaign.status === "Active"
-                ? "active"
-                : "inactive";
-
-
-            return `
-
-              <div class="campaign-item">
-
-                <div class="campaign-header">
-
-                  <div>
-
-                    <div class="campaign-title">
-                      ${escapeHtml(
-                        campaign.campaign_name ||
-                        "بدون اسم"
-                      )}
-                    </div>
-
-                    <div class="campaign-code">
-                      Report Code:
-                      ${escapeHtml(
-                        campaign.report_code ||
-                        "—"
-                      )}
-                    </div>
-
-                  </div>
-
-                  <span class="status-badge ${statusClass}">
-                    ${escapeHtml(
-                      campaign.status ||
-                      "غير معروف"
-                    )}
-                  </span>
-
-                </div>
-
-
-                <div class="campai
+      
