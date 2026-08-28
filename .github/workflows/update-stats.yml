@@ -1,9 +1,9 @@
 name: Update Telegram Ads Stats
 
 on:
-  workflow_dispatch:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
 
 jobs:
   update-stats:
@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
 
       - name: Install dependencies
         run: npm install
@@ -26,6 +26,6 @@ jobs:
 
       - name: Update Telegram statistics
         env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SUPABASE_URL: "https://oxclimxygexnezblrhpz.supabase.co"
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
         run: node update-stats.js
