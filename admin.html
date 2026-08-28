@@ -32,9 +32,11 @@
       padding: 18px 20px;
       font-size: 21px;
       font-weight: bold;
+
       display: flex;
       justify-content: space-between;
       align-items: center;
+
       gap: 10px;
     }
 
@@ -48,8 +50,10 @@
       background: #fff;
       border: 1px solid #ddd;
       border-radius: 14px;
+
       padding: 24px;
       margin-bottom: 20px;
+
       box-shadow: 0 4px 15px rgba(0,0,0,.05);
     }
 
@@ -61,257 +65,395 @@
 
     label {
       display: block;
+
       font-weight: bold;
+
       margin-bottom: 7px;
     }
 
     input,
     textarea,
     select {
+
       width: 100%;
+
       padding: 13px;
+
       border: 1px solid #d5d9dd;
+
       border-radius: 8px;
+
       font-size: 15px;
+
       margin-bottom: 16px;
+
       background: #fff;
+
       font-family: Arial, sans-serif;
     }
 
     textarea {
+
       min-height: 120px;
+
       resize: vertical;
     }
 
     input:focus,
     textarea:focus,
     select:focus {
+
       outline: none;
+
       border-color: #229ed9;
-      box-shadow: 0 0 0 2px rgba(34,158,217,.1);
+
+      box-shadow:
+        0 0 0 2px rgba(34,158,217,.1);
     }
 
     button {
+
       border: 0;
+
       border-radius: 8px;
+
       padding: 12px 18px;
+
       font-size: 15px;
+
       font-weight: bold;
+
       cursor: pointer;
+
       font-family: Arial, sans-serif;
     }
 
     button:disabled {
+
       opacity: .6;
+
       cursor: not-allowed;
     }
 
     .primary {
+
       background: #229ed9;
+
       color: #fff;
     }
 
     .success {
+
       background: #16834b;
+
       color: #fff;
     }
 
     .danger {
+
       background: #d64545;
+
       color: #fff;
     }
 
     .secondary {
+
       background: #eef1f4;
+
       color: #333;
     }
 
     .refresh {
+
       background: #6c5ce7;
-      color: #fff;
+
+      color: white;
     }
 
     .form-row {
+
       display: grid;
+
       grid-template-columns: 1fr 1fr;
+
       gap: 15px;
     }
 
     .message {
+
       padding: 13px;
+
       border-radius: 8px;
+
       margin-bottom: 18px;
+
       display: none;
+
       line-height: 1.7;
+
       word-break: break-word;
+
+      white-space: pre-line;
     }
 
     .success-message {
+
       background: #e7f7ed;
+
       color: #16834b;
     }
 
     .error-message {
+
       background: #fdecec;
+
       color: #b42318;
     }
 
     .campaign-list {
+
       margin-top: 15px;
     }
 
     .campaign-item {
+
       border: 1px solid #ddd;
+
       border-radius: 12px;
+
       padding: 18px;
+
       margin-bottom: 15px;
+
       background: #fafafa;
     }
 
     .campaign-header {
+
       display: flex;
+
       justify-content: space-between;
+
       align-items: center;
+
       gap: 10px;
+
       flex-wrap: wrap;
+
       margin-bottom: 15px;
     }
 
     .campaign-title {
+
       font-size: 19px;
+
       font-weight: bold;
     }
 
     .campaign-code {
+
       color: #777;
+
       font-size: 13px;
+
       margin-top: 5px;
     }
 
     .status-badge {
+
       padding: 7px 12px;
+
       border-radius: 20px;
+
       font-size: 13px;
+
       font-weight: bold;
     }
 
     .active {
+
       background: #e7f7ed;
+
       color: #16834b;
     }
 
     .inactive {
+
       background: #fce8e8;
+
       color: #c0392b;
     }
 
     .campaign-info {
+
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+
+      grid-template-columns:
+        repeat(2,1fr);
+
       gap: 10px;
+
       margin-bottom: 15px;
     }
 
     .info-box {
+
       background: #fff;
+
       border: 1px solid #e1e4e8;
+
       border-radius: 8px;
+
       padding: 12px;
     }
 
     .info-title {
+
       color: #777;
+
       font-size: 13px;
+
       margin-bottom: 5px;
     }
 
     .info-value {
+
       font-weight: bold;
+
       word-break: break-word;
     }
 
     .actions {
+
       display: flex;
+
       gap: 8px;
+
       flex-wrap: wrap;
     }
 
-    .report-link,
-    .telegram-link {
+    .report-link {
+
       background: #fff;
+
       border: 1px solid #ddd;
+
       border-radius: 8px;
+
       padding: 12px;
+
       margin-top: 12px;
+
       word-break: break-all;
+
       direction: ltr;
+
       text-align: left;
+
       font-size: 13px;
     }
 
     .telegram-link {
+
       background: #eef8fc;
-      border-color: #c9e9f5;
+
+      border: 1px solid #c9e9f5;
+
+      border-radius: 8px;
+
+      padding: 12px;
+
+      margin-top: 12px;
+
+      word-break: break-all;
+
+      direction: ltr;
+
+      text-align: left;
+
+      font-size: 13px;
     }
 
     .hint {
+
       color: #777;
+
       font-size: 13px;
+
       line-height: 1.7;
+
       margin-top: -8px;
+
       margin-bottom: 15px;
     }
 
     .hidden {
+
       display: none !important;
     }
 
     .empty,
     .loading {
+
       text-align: center;
+
       padding: 30px;
+
       color: #777;
     }
 
     .top-actions {
+
       display: flex;
+
       gap: 8px;
+
       flex-wrap: wrap;
     }
 
     @media (max-width: 650px) {
 
       .form-row {
+
         grid-template-columns: 1fr;
+
         gap: 0;
       }
 
       .campaign-info {
+
         grid-template-columns: 1fr;
       }
 
       .topbar {
+
         font-size: 17px;
+
         padding: 15px;
       }
 
       .topbar > div:first-child {
+
         max-width: 60%;
+
         line-height: 1.4;
       }
 
       .card {
+
         padding: 18px;
       }
 
       button {
+
         width: 100%;
       }
 
-      .actions button,
-      .top-actions button {
+      .actions button {
+
         width: 100%;
       }
+
     }
 
   </style>
@@ -348,16 +490,21 @@
   <div class="container">
 
 
-    <!-- ADD CAMPAIGN -->
+    <!-- =========================
+         ADD CAMPAIGN
+    ========================== -->
 
     <div class="card">
 
-      <h2>
+      <h1>
         ➕ إضافة إعلان جديد
-      </h2>
+      </h1>
 
-      <p style="color:#777; line-height:1.7;">
-        أضيفي بيانات الإعلان الحقيقي، وسيتم إنشاء رابط تقرير للعميل.
+      <p style="color:#777;line-height:1.8;">
+
+        أضيفي بيانات الإعلان الحقيقي،
+        وسيتم إنشاء رابط تقرير للعميل تلقائيًا.
+
       </p>
 
 
@@ -367,11 +514,13 @@
       ></div>
 
 
+      <!-- NAME + CODE -->
+
       <div class="form-row">
 
         <div>
 
-          <label>
+          <label for="addCampaignName">
             اسم الحملة / العميل
           </label>
 
@@ -386,14 +535,14 @@
 
         <div>
 
-          <label>
+          <label for="addReportCode">
             Report Code
           </label>
 
           <input
             id="addReportCode"
             type="text"
-            placeholder="مثال: AHMED-001"
+            placeholder="مثال: AHM-001"
           >
 
         </div>
@@ -401,11 +550,13 @@
       </div>
 
 
+      <!-- IMPRESSIONS + STATUS -->
+
       <div class="form-row">
 
         <div>
 
-          <label>
+          <label for="addImpressions">
             مرات الظهور
           </label>
 
@@ -416,12 +567,19 @@
             value="0"
           >
 
+          <div class="hint">
+
+            اكتبي عدد المشاهدات الحالي
+            للإعلان.
+
+          </div>
+
         </div>
 
 
         <div>
 
-          <label>
+          <label for="addStatus">
             حالة الإعلان
           </label>
 
@@ -450,10 +608,12 @@
       </div>
 
 
-      <!-- TELEGRAM STATS URL -->
+      <!-- TELEGRAM STATS -->
 
-      <label>
+      <label for="addStatsUrl">
+
         🔗 رابط إحصائيات الإعلان الحقيقي
+
       </label>
 
       <input
@@ -464,26 +624,33 @@
       >
 
       <div class="hint">
-        ضعي هنا رابط Statistics الخاص بالإعلان الحقيقي من Telegram Ads.
+
+        ضعي رابط الإعلان الحقيقي من
+        Telegram Ads هنا.
+
       </div>
 
 
       <!-- AD TEXT -->
 
-      <label>
-        نص الإعلان
+      <label for="addAdText">
+
+        📝 نص الإعلان
+
       </label>
 
       <textarea
         id="addAdText"
-        placeholder="اكتبي نص الإعلان هنا"
+        placeholder="اكتبي نص الإعلان..."
       ></textarea>
 
 
       <!-- IMAGE -->
 
-      <label>
-        صورة الإعلان — رابط الصورة
+      <label for="addAdImage">
+
+        🖼️ صورة الإعلان
+
       </label>
 
       <input
@@ -496,8 +663,10 @@
 
       <!-- CHANNEL -->
 
-      <label>
-        رابط القناة / البوت
+      <label for="addChannelUrl">
+
+        🔗 رابط القناة / البوت
+
       </label>
 
       <input
@@ -508,19 +677,26 @@
       >
 
 
+      <!-- ADD BUTTON -->
+
       <button
         id="addButton"
         class="success"
         type="button"
       >
+
         ➕ إضافة الإعلان
+
       </button>
+
 
     </div>
 
 
 
-    <!-- EDIT CAMPAIGN -->
+    <!-- =========================
+         EDIT
+    ========================== -->
 
     <div class="card">
 
@@ -529,7 +705,9 @@
       </h2>
 
       <p style="color:#777;">
+
         اختاري الإعلان الذي تريدين تعديله.
+
       </p>
 
 
@@ -539,14 +717,18 @@
       ></div>
 
 
-      <label>
+      <label for="campaignSelect">
+
         الإعلان
+
       </label>
 
       <select id="campaignSelect">
 
         <option value="">
+
           جاري تحميل الإعلانات...
+
         </option>
 
       </select>
@@ -558,12 +740,16 @@
       >
 
 
+        <!-- NAME + CODE -->
+
         <div class="form-row">
 
           <div>
 
-            <label>
+            <label for="editCampaignName">
+
               اسم الحملة
+
             </label>
 
             <input
@@ -576,8 +762,10 @@
 
           <div>
 
-            <label>
+            <label for="editReportCode">
+
               Report Code
+
             </label>
 
             <input
@@ -590,12 +778,16 @@
         </div>
 
 
+        <!-- IMPRESSIONS + STATUS -->
+
         <div class="form-row">
 
           <div>
 
-            <label>
+            <label for="editImpressions">
+
               مرات الظهور
+
             </label>
 
             <input
@@ -609,8 +801,10 @@
 
           <div>
 
-            <label>
+            <label for="editStatus">
+
               حالة الإعلان
+
             </label>
 
             <select id="editStatus">
@@ -638,8 +832,12 @@
         </div>
 
 
-        <label>
-          🔗 رابط إحصائيات الإعلان الحقيقي
+        <!-- STATS URL -->
+
+        <label for="editStatsUrl">
+
+          🔗 رابط إحصائيات الإعلان
+
         </label>
 
         <input
@@ -650,8 +848,12 @@
         >
 
 
-        <label>
-          نص الإعلان
+        <!-- TEXT -->
+
+        <label for="editAdText">
+
+          📝 نص الإعلان
+
         </label>
 
         <textarea
@@ -659,29 +861,37 @@
         ></textarea>
 
 
-        <label>
-          صورة الإعلان
+        <!-- IMAGE -->
+
+        <label for="editAdImage">
+
+          🖼️ صورة الإعلان
+
         </label>
 
         <input
           id="editAdImage"
           type="url"
-          placeholder="https://example.com/image.jpg"
           dir="ltr"
         >
 
 
-        <label>
-          رابط القناة / البوت
+        <!-- CHANNEL -->
+
+        <label for="editChannelUrl">
+
+          🔗 رابط القناة / البوت
+
         </label>
 
         <input
           id="editChannelUrl"
           type="url"
-          placeholder="https://t.me/example"
           dir="ltr"
         >
 
+
+        <!-- BUTTONS -->
 
         <div class="actions">
 
@@ -690,7 +900,9 @@
             class="primary"
             type="button"
           >
+
             💾 حفظ التعديلات
+
           </button>
 
 
@@ -699,11 +911,15 @@
             class="danger"
             type="button"
           >
+
             🗑️ حذف الإعلان
+
           </button>
 
         </div>
 
+
+        <!-- REPORT -->
 
         <div
           id="reportLinkBox"
@@ -727,7 +943,9 @@
             class="secondary"
             type="button"
           >
+
             📋 نسخ رابط التقرير
+
           </button>
 
 
@@ -736,7 +954,9 @@
             class="secondary"
             type="button"
           >
+
             🔗 فتح التقرير
+
           </button>
 
         </div>
@@ -748,12 +968,16 @@
 
 
 
-    <!-- CAMPAIGNS -->
+    <!-- =========================
+         CAMPAIGNS LIST
+    ========================== -->
 
     <div class="card">
 
       <h2>
+
         📋 قائمة الإعلانات
+
       </h2>
 
 
@@ -761,7 +985,9 @@
         id="campaignsLoading"
         class="loading"
       >
+
         جاري تحميل الإعلانات...
+
       </div>
 
 
@@ -799,6 +1025,7 @@
       );
 
 
+
     /* =====================================
        REPORT URL
     ===================================== */
@@ -807,8 +1034,9 @@
       "https://ahmedeltager.github.io/telegram-ads-reports/";
 
 
+
     /* =====================================
-       DATA
+       VARIABLES
     ===================================== */
 
     let campaigns = [];
@@ -816,37 +1044,74 @@
     let selectedCampaignId = null;
 
 
+
     /* =====================================
        ELEMENTS
     ===================================== */
 
     const addButton =
-      document.getElementById("addButton");
+      document.getElementById(
+        "addButton"
+      );
 
-    const refreshButton =
-      document.getElementById("refreshButton");
+
+    const addMessage =
+      document.getElementById(
+        "addMessage"
+      );
+
 
     const campaignSelect =
-      document.getElementById("campaignSelect");
+      document.getElementById(
+        "campaignSelect"
+      );
+
 
     const editForm =
-      document.getElementById("editForm");
+      document.getElementById(
+        "editForm"
+      );
+
+
+    const editMessage =
+      document.getElementById(
+        "editMessage"
+      );
+
 
     const saveButton =
-      document.getElementById("saveButton");
+      document.getElementById(
+        "saveButton"
+      );
+
 
     const deleteButton =
-      document.getElementById("deleteButton");
+      document.getElementById(
+        "deleteButton"
+      );
+
 
     const copyLinkButton =
-      document.getElementById("copyLinkButton");
+      document.getElementById(
+        "copyLinkButton"
+      );
+
 
     const openLinkButton =
-      document.getElementById("openLinkButton");
+      document.getElementById(
+        "openLinkButton"
+      );
+
+
+    const refreshButton =
+      document.getElementById(
+        "refreshButton"
+      );
+
 
 
     /* =====================================
-       MESSAGES
+       MESSAGE
     ===================================== */
 
     function showMessage(
@@ -855,7 +1120,9 @@
       type = "error"
     ) {
 
-      element.textContent = text;
+      element.textContent =
+        text;
+
 
       element.className =
         "message " +
@@ -865,64 +1132,89 @@
             : "error-message"
         );
 
-      element.style.display = "block";
 
+      element.style.display =
+        "block";
     }
 
 
-    function hideMessage(element) {
 
-      element.textContent = "";
+    function hideMessage(
+      element
+    ) {
 
-      element.style.display = "none";
+      element.textContent =
+        "";
 
+      element.style.display =
+        "none";
     }
+
 
 
     /* =====================================
        ESCAPE HTML
     ===================================== */
 
-    function escapeHtml(value) {
+    function escapeHtml(
+      value
+    ) {
 
-      return String(value ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+      return String(
+        value ?? ""
+      )
 
+        .replaceAll(
+          "&",
+          "&amp;"
+        )
+
+        .replaceAll(
+          "<",
+          "&lt;"
+        )
+
+        .replaceAll(
+          ">",
+          "&gt;"
+        )
+
+        .replaceAll(
+          '"',
+          "&quot;"
+        )
+
+        .replaceAll(
+          "'",
+          "&#039;"
+        );
     }
+
 
 
     /* =====================================
        REPORT LINK
     ===================================== */
 
-    function createReportLink(code) {
+    function createReportLink(
+      code
+    ) {
 
       if (!code) {
+
         return REPORT_BASE_URL;
       }
+
 
       return (
         REPORT_BASE_URL +
         "?code=" +
-        encodeURIComponent(code)
+        encodeURIComponent(
+          code
+        )
       );
-
     }
 
-
-    /* =====================================
-       TELEGRAM URL
-    ===================================== */
-
-    function createTelegramStatsLink(url) {
-
-      return url || "";
-
-    }
 
 
     /* =====================================
@@ -936,62 +1228,98 @@
           "campaignsLoading"
         );
 
+
       const list =
         document.getElementById(
           "campaignList"
         );
 
 
-      loading.style.display = "block";
+      loading.style.display =
+        "block";
 
 
-      const result =
-        await supabaseClient
-          .from("campaigns")
-          .select("*")
-          .order(
-            "created_at",
-            {
-              ascending: false
-            }
+      list.innerHTML =
+        "";
+
+
+      try {
+
+        const result =
+          await supabaseClient
+
+            .from(
+              "campaigns"
+            )
+
+            .select("*")
+
+            .order(
+              "created_at",
+              {
+                ascending: false
+              }
+            );
+
+
+        if (result.error) {
+
+          console.error(
+            result.error
           );
 
 
-      loading.style.display = "none";
+          list.innerHTML =
 
+            "<div class='empty'>" +
 
-      if (result.error) {
+            "❌ فشل تحميل الإعلانات:<br><br>" +
 
-        console.error(
-          "Load campaigns error:",
-          result.error
-        );
-
-        list.innerHTML =
-          `
-          <div class="empty">
-            ❌ حدث خطأ أثناء تحميل الإعلانات.
-            <br><br>
-            ${escapeHtml(
+            escapeHtml(
               result.error.message
-            )}
-          </div>
-          `;
+            ) +
 
-        return;
+            "</div>";
+
+
+          return;
+        }
+
+
+        campaigns =
+          result.data || [];
+
+
+        renderCampaigns();
+
+        fillCampaignSelect();
 
       }
 
+      catch (error) {
 
-      campaigns =
-        result.data || [];
+        console.error(
+          error
+        );
 
 
-      renderCampaigns();
+        list.innerHTML =
 
-      fillCampaignSelect();
+          "<div class='empty'>" +
+
+          "❌ حدث خطأ أثناء الاتصال بقاعدة البيانات." +
+
+          "</div>";
+      }
+
+      finally {
+
+        loading.style.display =
+          "none";
+      }
 
     }
+
 
 
     /* =====================================
@@ -1009,158 +1337,87 @@
       if (!campaigns.length) {
 
         list.innerHTML =
-          `
-          <div class="empty">
-            لا توجد إعلانات حتى الآن.
-          </div>
-          `;
+
+          "<div class='empty'>" +
+
+          "لا توجد إعلانات حتى الآن." +
+
+          "</div>";
 
         return;
-
       }
 
 
       list.innerHTML =
+
         campaigns
-          .map(function(campaign) {
+          .map(
+            campaign => {
 
-            const reportLink =
-              createReportLink(
-                campaign.report_code
-              );
-
-
-            const statusClass =
-              campaign.status === "Active"
-                ? "active"
-                : "inactive";
+              const reportLink =
+                createReportLink(
+                  campaign.report_code
+                );
 
 
-            return `
+              const statusClass =
+                campaign.status ===
+                "Active"
 
-              <div class="campaign-item">
+                  ? "active"
 
-                <div class="campaign-header">
-
-                  <div>
-
-                    <div class="campaign-title">
-                      ${escapeHtml(
-                        campaign.campaign_name ||
-                        "بدون اسم"
-                      )}
-                    </div>
-
-                    <div class="campaign-code">
-                      Report Code:
-                      ${escapeHtml(
-                        campaign.report_code ||
-                        "—"
-                      )}
-                    </div>
-
-                  </div>
+                  : "inactive";
 
 
-                  <span class="status-badge ${statusClass}">
-                    ${escapeHtml(
-                      campaign.status ||
-                      "غير معروف"
-                    )}
-                  </span>
+              return `
 
-                </div>
+                <div class="campaign-item">
 
+                  <div class="campaign-header">
 
-                <div class="campaign-info">
+                    <div>
 
+                      <div class="campaign-title">
 
-                  <div class="info-box">
-
-                    <div class="info-title">
-                      👁️ المشاهدات
-                    </div>
-
-                    <div class="info-value">
-                      ${Number(
-                        campaign.impressions || 0
-                      ).toLocaleString("en-US")}
-                    </div>
-
-                  </div>
-
-
-                  <div class="info-box">
-
-                    <div class="info-title">
-                      🔗 رابط الإعلان
-                    </div>
-
-                    <div class="info-value">
-                      ${
-                        campaign.stats_url
-                          ? "متوفر"
-                          : "غير مضاف"
-                      }
-                    </div>
-
-                  </div>
-
-
-                </div>
-
-
-                ${
-                  campaign.stats_url
-                    ? `
-                      <div class="telegram-link">
                         ${escapeHtml(
-                          campaign.stats_url
+                          campaign.campaign_name ||
+                          "بدون اسم"
                         )}
+
                       </div>
-                    `
-                    : ""
-                }
 
 
-                <div class="report-link">
+                      <div class="campaign-code">
 
-                  <strong>
-                    رابط العميل:
-                  </strong>
+                        Report Code:
 
-                  <br><br>
+                        ${escapeHtml(
+                          campaign.report_code ||
+                          "—"
+                        )}
 
-                  ${escapeHtml(
-                    reportLink
-                  )}
+                      </div>
 
-                </div>
-
-
-                <div
-                  class="actions"
-                  style="margin-top:12px;"
-                >
-
-                  <button
-                    class="primary"
-                    type="button"
-                    onclick="selectCampaign('${campaign.id}')"
-                  >
-                    ✏️ تعديل
-                  </button>
+                    </div>
 
 
-                  <button
-                    class="secondary"
-                    type="button"
-                    onclick="copyText('${reportLink}')"
-                  >
-                    📋 نسخ رابط العميل
-                  </button>
+                    <span
+                      class="status-badge ${statusClass}"
+                    >
+
+                      ${escapeHtml(
+                        campaign.status ||
+                        "غير معروف"
+                      )}
+
+                    </span>
+
+                  </div>
 
 
-                  <button
-                    class="secondary"
-         
+                  <div class="campaign-info">
+
+
+                    <div class="info-box">
+
+       
