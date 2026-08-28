@@ -1414,10 +1414,846 @@
 
                   </div>
 
-
                   <div class="campaign-info">
 
 
                     <div class="info-box">
+        <div class="info-box">
 
+          <div class="info-title">
+            👁️ مرات الظهور
+          </div>
+
+          <div class="info-value">
+
+            ${Number(
+              campaign.impressions || 0
+            ).toLocaleString("en-US")}
+
+          </div>
+
+        </div>
+
+
+        <div class="info-box">
+
+          <div class="info-title">
+            📊 الحالة
+          </div>
+
+          <div class="info-value">
+
+            ${escapeHtml(
+              campaign.status || "—"
+            )}
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="report-link">
+
+        🔗 رابط التقرير:
+
+        <br><br>
+
+        ${escapeHtml(reportLink)}
+
+      </div>
+
+
+      ${
+        campaign.stats_url
+          ? `
+            <div class="telegram-link">
+
+              📈 رابط إحصائيات Telegram:
+
+              <br><br>
+
+              ${escapeHtml(
+                campaign.stats_url
+              )}
+
+            </div>
+          `
+          : ""
+      }
+
+
+    </div>
+
+  `;
+
+            }
+          )
+
+          .join("");
+
+    }
+
+
+
+    /* =====================================
+       SELECT CAMPAIGN
+    ===================================== */
+
+    campaignSelect.addEventListener(
+      "change",
+      function () {
+
+        selectedCampaignId =
+          this.value || null;
+
+
+        const campaign =
+          campaigns.find(
+            item =>
+              String(item.id) ===
+              String(selectedCampaignId)
+          );
+
+
+        if (!campaign) {
+
+          editForm.classList.add(
+            "hidden"
+          );
+
+          return;
+        }
+
+
+        editForm.classList.remove(
+          "hidden"
+        );
+
+
+        document.getElementById(
+          "editCampaignName"
+        ).value =
+          campaign.campaign_name || "";
+
+
+        document.getElementById(
+          "editReportCode"
+        ).value =
+          campaign.report_code || "";
+
+
+        document.getElementById(
+          "editImpressions"
+        ).value =
+          campaign.impressions || 0;
+
+
+        document.getElementById(
+          "editStatus"
+        ).value =
+          campaign.status || "Active";
+
+
+        document.getElementById(
+          "editStatsUrl"
+        ).value =
+          campaign.stats_url || "";
+
+
+        document.getElementById(
+          "editAdText"
+        ).value =
+          campaign.ad_text || "";
+
+
+        document.getElementById(
+          "editAdImage"
+        ).value =
+          campaign.ad_image || "";
+
+
+        document.getElementById(
+          "editChannelUrl"
+        ).value =
+          campaign.channel_url || "";
+
+
+        const reportLink =
+          createReportLink(
+            campaign.report_code
+          );
+
+
+        const reportBox =
+          document.getElementById(
+            "reportLinkBox"
+          );
+
+
+        reportBox.textContent =
+          reportLink;
+
+
+        reportBox.classList.remove(
+          "hidden"
+        );
+
+
+        const telegramBox =
+          document.getElementById(
+            "telegramLinkBox"
+          );
+
+
+        if (campaign.stats_url) {
+
+          telegramBox.textContent =
+            campaign.stats_url;
+
+          telegramBox.classList.remove(
+            "hidden"
+          );
+
+        } else {
+
+          telegramBox.classList.add(
+            "hidden"
+          );
+
+        }
+
+      }
+    );
+
+
+
+    /* =====================================
+       ADD CAMPAIGN
+    ===================================== */
+
+    addButton.addEventListener(
+      "click",
+      async function () {
+
+        hideMessage(addMessage);
+
+
+        const campaignName =
+          document.getElementById(
+            "addCampaignName"
+          ).value.trim();
+
+
+        const reportCode =
+          document.getElementById(
+            "addReportCode"
+          ).value.trim();
+
+
+        const impressions =
+          Number(
+            document.getElementById(
+              "addImpressions"
+            ).value || 0
+          );
+
+
+        const status =
+          document.getElementById(
+            "addStatus"
+          ).value;
+
+
+        const statsUrl =
+          document.getElementById(
+            "addStatsUrl"
+          ).value.trim();
+
+
+        const adText =
+          document.getElementById(
+            "addAdText"
+          ).value.trim();
+
+
+        const adImage =
+          document.getElementById(
+            "addAdImage"
+          ).value.trim();
+
+
+        const channelUrl =
+          document.getElementById(
+            "addChannelUrl"
+          ).value.trim();
+
+
+        if (!campaignName) {
+
+          showMessage(
+            addMessage,
+            "❌ اكتبي اسم الحملة / العميل.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        if (!reportCode) {
+
+          showMessage(
+            addMessage,
+            "❌ اكتبي Report Code.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        addButton.disabled = true;
+
+        addButton.textContent =
+          "⏳ جاري إضافة الإعلان...";
+
+
+        try {
+
+          const insertData = {
+
+            campaign_name:
+              campaignName,
+
+            report_code:
+              reportCode,
+
+            impressions:
+              impressions,
+
+            status:
+              status,
+
+            stats_url:
+              statsUrl || null,
+
+            ad_text:
+              adText || null,
+
+            ad_image:
+              adImage || null,
+
+            channel_url:
+              channelUrl || null
+
+          };
+
+
+          const result =
+            await supabaseClient
+              .from("campaigns")
+              .insert(insertData)
+              .select()
+              .single();
+
+
+          if (result.error) {
+
+            console.error(
+              "INSERT ERROR:",
+              result.error
+            );
+
+
+            showMessage(
+              addMessage,
+
+              "❌ لم تتم إضافة الإعلان.\n\n" +
+              result.error.message,
+
+              "error"
+            );
+
+            return;
+          }
+
+
+          showMessage(
+            addMessage,
+            "✅ تم إضافة الإعلان بنجاح.",
+            "success"
+          );
+
+
+          document.getElementById(
+            "addCampaignName"
+          ).value = "";
+
+
+          document.getElementById(
+            "addReportCode"
+          ).value = "";
+
+
+          document.getElementById(
+            "addImpressions"
+          ).value = "0";
+
+
+          document.getElementById(
+            "addStatsUrl"
+          ).value = "";
+
+
+          document.getElementById(
+            "addAdText"
+          ).value = "";
+
+
+          document.getElementById(
+            "addAdImage"
+          ).value = "";
+
+
+          document.getElementById(
+            "addChannelUrl"
+          ).value = "";
+
+
+          await loadCampaigns();
+
+        }
+
+        catch (error) {
+
+          console.error(error);
+
+
+          showMessage(
+            addMessage,
+            "❌ حدث خطأ:\n\n" +
+            error.message,
+            "error"
+          );
+
+        }
+
+        finally {
+
+          addButton.disabled = false;
+
+          addButton.textContent =
+            "➕ إضافة الإعلان";
+
+        }
+
+      }
+    );
+
+
+
+    /* =====================================
+       SAVE EDIT
+    ===================================== */
+
+    saveButton.addEventListener(
+      "click",
+      async function () {
+
+        hideMessage(editMessage);
+
+
+        if (!selectedCampaignId) {
+
+          showMessage(
+            editMessage,
+            "❌ اختاري إعلان أولًا.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        const updates = {
+
+          campaign_name:
+            document.getElementById(
+              "editCampaignName"
+            ).value.trim(),
+
+          report_code:
+            document.getElementById(
+              "editReportCode"
+            ).value.trim(),
+
+          impressions:
+            Number(
+              document.getElementById(
+                "editImpressions"
+              ).value || 0
+            ),
+
+          status:
+            document.getElementById(
+              "editStatus"
+            ).value,
+
+          stats_url:
+            document.getElementById(
+              "editStatsUrl"
+            ).value.trim() || null,
+
+          ad_text:
+            document.getElementById(
+              "editAdText"
+            ).value.trim() || null,
+
+          ad_image:
+            document.getElementById(
+              "editAdImage"
+            ).value.trim() || null,
+
+          channel_url:
+            document.getElementById(
+              "editChannelUrl"
+            ).value.trim() || null
+
+        };
+
+
+        saveButton.disabled = true;
+
+        saveButton.textContent =
+          "⏳ جاري الحفظ...";
+
+
+        try {
+
+          const result =
+            await supabaseClient
+              .from("campaigns")
+              .update(updates)
+              .eq(
+                "id",
+                selectedCampaignId
+              );
+
+
+          if (result.error) {
+
+            showMessage(
+              editMessage,
+              "❌ فشل الحفظ:\n\n" +
+              result.error.message,
+              "error"
+            );
+
+            return;
+          }
+
+
+          showMessage(
+            editMessage,
+            "✅ تم حفظ التعديلات.",
+            "success"
+          );
+
+
+          await loadCampaigns();
+
+        }
+
+        catch (error) {
+
+          showMessage(
+            editMessage,
+            "❌ " + error.message,
+            "error"
+          );
+
+        }
+
+        finally {
+
+          saveButton.disabled = false;
+
+          saveButton.textContent =
+            "💾 حفظ التعديلات";
+
+        }
+
+      }
+    );
+
+
+
+    /* =====================================
+       DELETE
+    ===================================== */
+
+    deleteButton.addEventListener(
+      "click",
+      async function () {
+
+        if (!selectedCampaignId) {
+
+          showMessage(
+            editMessage,
+            "❌ اختاري إعلان أولًا.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        const confirmed =
+          confirm(
+            "⚠️ هل أنتِ متأكدة من حذف هذا الإعلان؟"
+          );
+
+
+        if (!confirmed) {
+          return;
+        }
+
+
+        deleteButton.disabled = true;
+
+        deleteButton.textContent =
+          "⏳ جاري الحذف...";
+
+
+        try {
+
+          const result =
+            await supabaseClient
+              .from("campaigns")
+              .delete()
+              .eq(
+                "id",
+                selectedCampaignId
+              );
+
+
+          if (result.error) {
+
+            showMessage(
+              editMessage,
+              "❌ فشل الحذف:\n\n" +
+              result.error.message,
+              "error"
+            );
+
+            return;
+          }
+
+
+          showMessage(
+            editMessage,
+            "✅ تم حذف الإعلان.",
+            "success"
+          );
+
+
+          selectedCampaignId = null;
+
+          editForm.classList.add(
+            "hidden"
+          );
+
+
+          await loadCampaigns();
+
+        }
+
+        catch (error) {
+
+          showMessage(
+            editMessage,
+            "❌ " + error.message,
+            "error"
+          );
+
+        }
+
+        finally {
+
+          deleteButton.disabled = false;
+
+          deleteButton.textContent =
+            "🗑️ حذف الإعلان";
+
+        }
+
+      }
+    );
+
+
+
+    /* =====================================
+       COPY REPORT LINK
+    ===================================== */
+
+    copyLinkButton.addEventListener(
+      "click",
+      async function () {
+
+        if (!selectedCampaignId) {
+
+          alert(
+            "اختاري إعلان أولًا."
+          );
+
+          return;
+        }
+
+
+        const campaign =
+          campaigns.find(
+            item =>
+              String(item.id) ===
+              String(
+                selectedCampaignId
+              )
+          );
+
+
+        if (!campaign) {
+          return;
+        }
+
+
+        const link =
+          createReportLink(
+            campaign.report_code
+          );
+
+
+        try {
+
+          await navigator.clipboard.writeText(
+            link
+          );
+
+
+          alert(
+            "✅ تم نسخ رابط التقرير."
+          );
+
+        }
+
+        catch {
+
+          prompt(
+            "انسخي رابط التقرير:",
+            link
+          );
+
+        }
+
+      }
+    );
+
+
+
+    /* =====================================
+       OPEN REPORT
+    ===================================== */
+
+    openLinkButton.addEventListener(
+      "click",
+      function () {
+
+        if (!selectedCampaignId) {
+
+          alert(
+            "اختاري إعلان أولًا."
+          );
+
+          return;
+        }
+
+
+        const campaign =
+          campaigns.find(
+            item =>
+              String(item.id) ===
+              String(
+                selectedCampaignId
+              )
+          );
+
+
+        if (!campaign) {
+          return;
+        }
+
+
+        const link =
+          createReportLink(
+            campaign.report_code
+          );
+
+
+        window.open(
+          link,
+          "_blank"
+        );
+
+      }
+    );
+
+
+
+    /* =====================================
+       REFRESH
+    ===================================== */
+
+    refreshButton.addEventListener(
+      "click",
+      async function () {
+
+        refreshButton.disabled = true;
+
+        refreshButton.textContent =
+          "⏳ تحديث...";
+
+
+        await loadCampaigns();
+
+
+        refreshButton.disabled = false;
+
+        refreshButton.textContent =
+          "🔄 تحديث";
+
+      }
+    );
+
+
+
+    /* =====================================
+       START
+    ===================================== */
+
+    window.addEventListener(
+      "DOMContentLoaded",
+      function () {
+
+        loadCampaigns();
+
+      }
+    );
+
+
+  </script>
+
+
+</body>
+
+</html>
        
