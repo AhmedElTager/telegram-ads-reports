@@ -14,6 +14,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
+
     * {
       box-sizing: border-box;
     }
@@ -49,31 +50,13 @@
       border-radius: 14px;
       padding: 24px;
       margin-bottom: 20px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, .05);
-    }
-
-    .login-card {
-      max-width: 500px;
-      margin: 60px auto;
+      box-shadow: 0 4px 15px rgba(0,0,0,.05);
     }
 
     h1,
     h2,
     h3 {
       margin-top: 0;
-    }
-
-    .logo {
-      text-align: center;
-      font-size: 50px;
-      margin-bottom: 10px;
-    }
-
-    .subtitle {
-      text-align: center;
-      color: #777;
-      margin-bottom: 25px;
-      line-height: 1.7;
     }
 
     label {
@@ -105,7 +88,7 @@
     select:focus {
       outline: none;
       border-color: #229ed9;
-      box-shadow: 0 0 0 2px rgba(34, 158, 217, .1);
+      box-shadow: 0 0 0 2px rgba(34,158,217,.1);
     }
 
     button {
@@ -143,9 +126,9 @@
       color: #333;
     }
 
-    .logout {
-      background: #fce8e8;
-      color: #c0392b;
+    .refresh {
+      background: #6c5ce7;
+      color: #fff;
     }
 
     .form-row {
@@ -244,6 +227,7 @@
 
     .info-value {
       font-weight: bold;
+      word-break: break-word;
     }
 
     .actions {
@@ -252,7 +236,8 @@
       flex-wrap: wrap;
     }
 
-    .report-link {
+    .report-link,
+    .telegram-link {
       background: #fff;
       border: 1px solid #ddd;
       border-radius: 8px;
@@ -266,14 +251,7 @@
 
     .telegram-link {
       background: #eef8fc;
-      border: 1px solid #c9e9f5;
-      border-radius: 8px;
-      padding: 12px;
-      margin-top: 12px;
-      word-break: break-all;
-      direction: ltr;
-      text-align: left;
-      font-size: 13px;
+      border-color: #c9e9f5;
     }
 
     .hint {
@@ -295,15 +273,10 @@
       color: #777;
     }
 
-    .loading {
-      font-size: 15px;
-    }
-
-    .login-status {
-      text-align: center;
-      margin-top: 12px;
-      color: #777;
-      font-size: 13px;
+    .top-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
     @media (max-width: 650px) {
@@ -322,8 +295,8 @@
         padding: 15px;
       }
 
-      .topbar div {
-        max-width: 65%;
+      .topbar > div:first-child {
+        max-width: 60%;
         line-height: 1.4;
       }
 
@@ -331,26 +304,25 @@
         padding: 18px;
       }
 
-      .login-card {
-        margin: 25px auto;
-      }
-
       button {
         width: 100%;
       }
 
-      .actions button {
+      .actions button,
+      .top-actions button {
         width: 100%;
       }
     }
+
   </style>
+
 </head>
+
 
 <body>
 
-  <!-- =====================================
-       TOP BAR
-  ====================================== -->
+
+  <!-- TOP BAR -->
 
   <div class="topbar">
 
@@ -358,126 +330,245 @@
       📊 لوحة إدارة تقارير إعلانات تيليجرام
     </div>
 
-    <button
-      id="logoutButton"
-      class="logout hidden"
-      type="button"
-    >
-      🚪 تسجيل الخروج
-    </button>
+    <div class="top-actions">
+
+      <button
+        id="refreshButton"
+        class="refresh"
+        type="button"
+      >
+        🔄 تحديث
+      </button>
+
+    </div>
 
   </div>
 
 
   <div class="container">
 
-    <!-- =====================================
-         LOGIN
-    ====================================== -->
 
-    <div
-      id="loginSection"
-      class="card login-card"
-    >
+    <!-- ADD CAMPAIGN -->
 
-      <div class="logo">
-        🔐
-      </div>
+    <div class="card">
 
-      <h1 style="text-align:center;">
-        دخول الإدارة
-      </h1>
+      <h2>
+        ➕ إضافة إعلان جديد
+      </h2>
 
-      <div class="subtitle">
-        هذه الصفحة مخصصة لإدارة تقارير العملاء والإعلانات.
-      </div>
+      <p style="color:#777; line-height:1.7;">
+        أضيفي بيانات الإعلان الحقيقي، وسيتم إنشاء رابط تقرير للعميل.
+      </p>
+
 
       <div
-        id="loginMessage"
+        id="addMessage"
         class="message"
       ></div>
 
-      <label for="loginEmail">
-        البريد الإلكتروني
+
+      <div class="form-row">
+
+        <div>
+
+          <label>
+            اسم الحملة / العميل
+          </label>
+
+          <input
+            id="addCampaignName"
+            type="text"
+            placeholder="مثال: حملة أحمد"
+          >
+
+        </div>
+
+
+        <div>
+
+          <label>
+            Report Code
+          </label>
+
+          <input
+            id="addReportCode"
+            type="text"
+            placeholder="مثال: AHMED-001"
+          >
+
+        </div>
+
+      </div>
+
+
+      <div class="form-row">
+
+        <div>
+
+          <label>
+            مرات الظهور
+          </label>
+
+          <input
+            id="addImpressions"
+            type="number"
+            min="0"
+            value="0"
+          >
+
+        </div>
+
+
+        <div>
+
+          <label>
+            حالة الإعلان
+          </label>
+
+          <select id="addStatus">
+
+            <option value="Active">
+              Active
+            </option>
+
+            <option value="Paused">
+              Paused
+            </option>
+
+            <option value="Completed">
+              Completed
+            </option>
+
+            <option value="Inactive">
+              Inactive
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <!-- TELEGRAM STATS URL -->
+
+      <label>
+        🔗 رابط إحصائيات الإعلان الحقيقي
       </label>
 
       <input
-        id="loginEmail"
-        type="email"
-        placeholder="example@email.com"
-        autocomplete="username"
-        inputmode="email"
+        id="addStatsUrl"
+        type="url"
+        placeholder="https://ads.telegram.org/stats/XXXXXXXX"
+        dir="ltr"
       >
 
-      <label for="loginPassword">
-        كلمة المرور
+      <div class="hint">
+        ضعي هنا رابط Statistics الخاص بالإعلان الحقيقي من Telegram Ads.
+      </div>
+
+
+      <!-- AD TEXT -->
+
+      <label>
+        نص الإعلان
+      </label>
+
+      <textarea
+        id="addAdText"
+        placeholder="اكتبي نص الإعلان هنا"
+      ></textarea>
+
+
+      <!-- IMAGE -->
+
+      <label>
+        صورة الإعلان — رابط الصورة
       </label>
 
       <input
-        id="loginPassword"
-        type="password"
-        placeholder="كلمة المرور"
-        autocomplete="current-password"
+        id="addAdImage"
+        type="url"
+        placeholder="https://example.com/image.jpg"
+        dir="ltr"
       >
+
+
+      <!-- CHANNEL -->
+
+      <label>
+        رابط القناة / البوت
+      </label>
+
+      <input
+        id="addChannelUrl"
+        type="url"
+        placeholder="https://t.me/example"
+        dir="ltr"
+      >
+
 
       <button
-        id="loginButton"
-        class="primary"
-        style="width:100%;"
+        id="addButton"
+        class="success"
         type="button"
       >
-        🔐 تسجيل الدخول
+        ➕ إضافة الإعلان
       </button>
-
-      <div
-        id="loginStatus"
-        class="login-status"
-      ></div>
 
     </div>
 
 
-    <!-- =====================================
-         ADMIN SECTION
-    ====================================== -->
 
-    <div
-      id="adminSection"
-      class="hidden"
-    >
+    <!-- EDIT CAMPAIGN -->
 
-      <!-- =====================================
-           ADD CAMPAIGN
-      ====================================== -->
+    <div class="card">
 
-      <div class="card">
+      <h2>
+        ✏️ تعديل إعلان
+      </h2>
 
-        <h2>
-          ➕ إضافة عميل / حملة جديدة
-        </h2>
+      <p style="color:#777;">
+        اختاري الإعلان الذي تريدين تعديله.
+      </p>
 
-        <p style="color:#777; line-height:1.7;">
-          أضيفي بيانات الإعلان الحقيقي، وسيتم إنشاء رابط التقرير للعميل.
-        </p>
 
-        <div
-          id="addMessage"
-          class="message"
-        ></div>
+      <div
+        id="editMessage"
+        class="message"
+      ></div>
+
+
+      <label>
+        الإعلان
+      </label>
+
+      <select id="campaignSelect">
+
+        <option value="">
+          جاري تحميل الإعلانات...
+        </option>
+
+      </select>
+
+
+      <div
+        id="editForm"
+        class="hidden"
+      >
 
 
         <div class="form-row">
 
           <div>
 
-            <label for="addCampaignName">
-              اسم الحملة / العميل
+            <label>
+              اسم الحملة
             </label>
 
             <input
-              id="addCampaignName"
+              id="editCampaignName"
               type="text"
-              placeholder="مثال: حملة شركة حور"
             >
 
           </div>
@@ -485,14 +576,13 @@
 
           <div>
 
-            <label for="addReportCode">
+            <label>
               Report Code
             </label>
 
             <input
-              id="addReportCode"
+              id="editReportCode"
               type="text"
-              placeholder="مثال: HOR-001"
             >
 
           </div>
@@ -504,31 +594,26 @@
 
           <div>
 
-            <label for="addImpressions">
+            <label>
               مرات الظهور
             </label>
 
             <input
-              id="addImpressions"
+              id="editImpressions"
               type="number"
               min="0"
-              value="0"
             >
-
-            <div class="hint">
-              اتركيها 0 لو الإعلان جديد، وسيتم تحديثها لاحقًا.
-            </div>
 
           </div>
 
 
           <div>
 
-            <label for="addStatus">
-              حالة الحملة
+            <label>
+              حالة الإعلان
             </label>
 
-            <select id="addStatus">
+            <select id="editStatus">
 
               <option value="Active">
                 Active
@@ -553,407 +638,178 @@
         </div>
 
 
-        <!-- TELEGRAM STATS URL -->
-
-        <label for="addStatsUrl">
-          🔗 رابط إحصائيات إعلان Telegram
+        <label>
+          🔗 رابط إحصائيات الإعلان الحقيقي
         </label>
 
         <input
-          id="addStatsUrl"
+          id="editStatsUrl"
           type="url"
           placeholder="https://ads.telegram.org/stats/XXXXXXXX"
           dir="ltr"
         >
 
-        <div class="hint">
-          ضعي هنا رابط Statistics الخاص بالإعلان الحقيقي من Telegram Ads.
-        </div>
 
-
-        <!-- AD TEXT -->
-
-        <label for="addAdText">
+        <label>
           نص الإعلان
         </label>
 
         <textarea
-          id="addAdText"
-          placeholder="اكتب نص الإعلان هنا"
+          id="editAdText"
         ></textarea>
 
 
-        <!-- IMAGE -->
-
-        <label for="addAdImage">
-          صورة الإعلان — رابط الصورة
+        <label>
+          صورة الإعلان
         </label>
 
         <input
-          id="addAdImage"
+          id="editAdImage"
           type="url"
           placeholder="https://example.com/image.jpg"
           dir="ltr"
         >
 
 
-        <!-- CHANNEL -->
-
-        <label for="addChannelUrl">
+        <label>
           رابط القناة / البوت
         </label>
 
         <input
-          id="addChannelUrl"
+          id="editChannelUrl"
           type="url"
           placeholder="https://t.me/example"
           dir="ltr"
         >
 
 
-        <button
-          id="addButton"
-          class="success"
-          type="button"
-        >
-          ➕ إضافة الحملة
-        </button>
+        <div class="actions">
 
-      </div>
-
-
-      <!-- =====================================
-           EDIT CAMPAIGN
-      ====================================== -->
-
-      <div class="card">
-
-        <h2>
-          ✏️ تعديل حملة
-        </h2>
-
-        <p style="color:#777; line-height:1.7;">
-          اختاري الحملة التي تريدين تعديلها.
-        </p>
-
-        <div
-          id="editMessage"
-          class="message"
-        ></div>
-
-
-        <label for="campaignSelect">
-          الحملة
-        </label>
-
-        <select id="campaignSelect">
-
-          <option value="">
-            جاري تحميل الحملات...
-          </option>
-
-        </select>
-
-
-        <div
-          id="editForm"
-          class="hidden"
-        >
-
-          <div class="form-row">
-
-            <div>
-
-              <label for="editCampaignName">
-                اسم الحملة
-              </label>
-
-              <input
-                id="editCampaignName"
-                type="text"
-              >
-
-            </div>
-
-
-            <div>
-
-              <label for="editReportCode">
-                Report Code
-              </label>
-
-              <input
-                id="editReportCode"
-                type="text"
-              >
-
-            </div>
-
-          </div>
-
-
-          <div class="form-row">
-
-            <div>
-
-              <label for="editImpressions">
-                مرات الظهور
-              </label>
-
-              <input
-                id="editImpressions"
-                type="number"
-                min="0"
-              >
-
-            </div>
-
-
-            <div>
-
-              <label for="editStatus">
-                حالة الحملة
-              </label>
-
-              <select id="editStatus">
-
-                <option value="Active">
-                  Active
-                </option>
-
-                <option value="Paused">
-                  Paused
-                </option>
-
-                <option value="Completed">
-                  Completed
-                </option>
-
-                <option value="Inactive">
-                  Inactive
-                </option>
-
-              </select>
-
-            </div>
-
-          </div>
-
-
-          <!-- EDIT STATS URL -->
-
-          <label for="editStatsUrl">
-            🔗 رابط إحصائيات إعلان Telegram
-          </label>
-
-          <input
-            id="editStatsUrl"
-            type="url"
-            placeholder="https://ads.telegram.org/stats/XXXXXXXX"
-            dir="ltr"
+          <button
+            id="saveButton"
+            class="primary"
+            type="button"
           >
-
-          <div class="hint">
-            هذا هو الرابط الذي سيستخدمه النظام لتحديث المشاهدات.
-          </div>
+            💾 حفظ التعديلات
+          </button>
 
 
-          <!-- EDIT AD TEXT -->
-
-          <label for="editAdText">
-            نص الإعلان
-          </label>
-
-          <textarea
-            id="editAdText"
-          ></textarea>
-
-
-          <!-- EDIT IMAGE -->
-
-          <label for="editAdImage">
-            صورة الإعلان — رابط الصورة
-          </label>
-
-          <input
-            id="editAdImage"
-            type="url"
-            placeholder="https://example.com/image.jpg"
-            dir="ltr"
+          <button
+            id="deleteButton"
+            class="danger"
+            type="button"
           >
-
-
-          <!-- EDIT CHANNEL -->
-
-          <label for="editChannelUrl">
-            رابط القناة / البوت
-          </label>
-
-          <input
-            id="editChannelUrl"
-            type="url"
-            placeholder="https://t.me/example"
-            dir="ltr"
-          >
-
-
-          <div class="actions">
-
-            <button
-              id="saveButton"
-              class="primary"
-              type="button"
-            >
-              💾 حفظ التعديلات
-            </button>
-
-            <button
-              id="deleteButton"
-              class="danger"
-              type="button"
-            >
-              🗑️ حذف الحملة
-            </button>
-
-          </div>
-
-
-          <!-- REPORT LINK -->
-
-          <div
-            id="reportLinkBox"
-            class="report-link hidden"
-          ></div>
-
-
-          <!-- TELEGRAM LINK -->
-
-          <div
-            id="telegramLinkBox"
-            class="telegram-link hidden"
-          ></div>
-
-
-          <div
-            class="actions"
-            style="margin-top:10px;"
-          >
-
-            <button
-              id="copyLinkButton"
-              class="secondary"
-              type="button"
-            >
-              📋 نسخ رابط التقرير
-            </button>
-
-            <button
-              id="openLinkButton"
-              class="secondary"
-              type="button"
-            >
-              🔗 فتح التقرير
-            </button>
-
-          </div>
+            🗑️ حذف الإعلان
+          </button>
 
         </div>
 
-      </div>
-
-
-      <!-- =====================================
-           CAMPAIGNS
-      ====================================== -->
-
-      <div class="card">
-
-        <h2>
-          📋 الحملات الموجودة
-        </h2>
 
         <div
-          id="campaignsLoading"
-          class="loading"
+          id="reportLinkBox"
+          class="report-link hidden"
+        ></div>
+
+
+        <div
+          id="telegramLinkBox"
+          class="telegram-link hidden"
+        ></div>
+
+
+        <div
+          class="actions"
+          style="margin-top:10px;"
         >
-          جاري تحميل الحملات...
+
+          <button
+            id="copyLinkButton"
+            class="secondary"
+            type="button"
+          >
+            📋 نسخ رابط التقرير
+          </button>
+
+
+          <button
+            id="openLinkButton"
+            class="secondary"
+            type="button"
+          >
+            🔗 فتح التقرير
+          </button>
+
         </div>
 
-        <div
-          id="campaignList"
-          class="campaign-list"
-        ></div>
 
       </div>
 
     </div>
 
+
+
+    <!-- CAMPAIGNS -->
+
+    <div class="card">
+
+      <h2>
+        📋 قائمة الإعلانات
+      </h2>
+
+
+      <div
+        id="campaignsLoading"
+        class="loading"
+      >
+        جاري تحميل الإعلانات...
+      </div>
+
+
+      <div
+        id="campaignList"
+        class="campaign-list"
+      ></div>
+
+    </div>
+
+
   </div>
+
 
 
   <script>
 
+
     /* =====================================
        SUPABASE
-    ====================================== */
+    ===================================== */
 
     const SUPABASE_URL =
       "https://oxclimxygexnezblrhpz.supabase.co";
 
+
     const SUPABASE_KEY =
       "sb_publishable_LakP2nXyrFIvnpwzj8GEvA_90dL9_LK";
+
 
     const supabaseClient =
       window.supabase.createClient(
         SUPABASE_URL,
-        SUPABASE_KEY,
-        {
-          auth: {
-            persistSession: true,
-            autoRefreshToken: true,
-            detectSessionInUrl: true,
-            storageKey: "telegram-ads-admin-auth"
-          }
-        }
+        SUPABASE_KEY
       );
 
 
     /* =====================================
-       REPORT BASE URL
-    ====================================== */
+       REPORT URL
+    ===================================== */
 
     const REPORT_BASE_URL =
       "https://ahmedeltager.github.io/telegram-ads-reports/";
 
 
     /* =====================================
-       ELEMENTS
-    ====================================== */
-
-    const loginSection =
-      document.getElementById("loginSection");
-
-    const adminSection =
-      document.getElementById("adminSection");
-
-    const loginButton =
-      document.getElementById("loginButton");
-
-    const logoutButton =
-      document.getElementById("logoutButton");
-
-    const loginEmail =
-      document.getElementById("loginEmail");
-
-    const loginPassword =
-      document.getElementById("loginPassword");
-
-    const loginMessage =
-      document.getElementById("loginMessage");
-
-    const loginStatus =
-      document.getElementById("loginStatus");
-
+       DATA
+    ===================================== */
 
     let campaigns = [];
 
@@ -961,8 +817,37 @@
 
 
     /* =====================================
-       MESSAGE
-    ====================================== */
+       ELEMENTS
+    ===================================== */
+
+    const addButton =
+      document.getElementById("addButton");
+
+    const refreshButton =
+      document.getElementById("refreshButton");
+
+    const campaignSelect =
+      document.getElementById("campaignSelect");
+
+    const editForm =
+      document.getElementById("editForm");
+
+    const saveButton =
+      document.getElementById("saveButton");
+
+    const deleteButton =
+      document.getElementById("deleteButton");
+
+    const copyLinkButton =
+      document.getElementById("copyLinkButton");
+
+    const openLinkButton =
+      document.getElementById("openLinkButton");
+
+
+    /* =====================================
+       MESSAGES
+    ===================================== */
 
     function showMessage(
       element,
@@ -996,7 +881,7 @@
 
     /* =====================================
        ESCAPE HTML
-    ====================================== */
+    ===================================== */
 
     function escapeHtml(value) {
 
@@ -1012,7 +897,7 @@
 
     /* =====================================
        REPORT LINK
-    ====================================== */
+    ===================================== */
 
     function createReportLink(code) {
 
@@ -1030,162 +915,252 @@
 
 
     /* =====================================
-       LOGIN
-    ====================================== */
+       TELEGRAM URL
+    ===================================== */
 
-    async function login() {
+    function createTelegramStatsLink(url) {
 
-      const email =
-        loginEmail.value.trim();
+      return url || "";
 
-      const password =
-        loginPassword.value;
-
-      hideMessage(loginMessage);
-
-      loginStatus.textContent = "";
+    }
 
 
-      if (!email || !password) {
+    /* =====================================
+       LOAD CAMPAIGNS
+    ===================================== */
 
-        showMessage(
-          loginMessage,
-          "اكتبي البريد الإلكتروني وكلمة المرور.",
-          "error"
+    async function loadCampaigns() {
+
+      const loading =
+        document.getElementById(
+          "campaignsLoading"
         );
+
+      const list =
+        document.getElementById(
+          "campaignList"
+        );
+
+
+      loading.style.display = "block";
+
+
+      const result =
+        await supabaseClient
+          .from("campaigns")
+          .select("*")
+          .order(
+            "created_at",
+            {
+              ascending: false
+            }
+          );
+
+
+      loading.style.display = "none";
+
+
+      if (result.error) {
+
+        console.error(
+          "Load campaigns error:",
+          result.error
+        );
+
+        list.innerHTML =
+          `
+          <div class="empty">
+            ❌ حدث خطأ أثناء تحميل الإعلانات.
+            <br><br>
+            ${escapeHtml(
+              result.error.message
+            )}
+          </div>
+          `;
 
         return;
 
       }
 
 
-      loginButton.disabled = true;
-
-      loginButton.textContent =
-        "جاري تسجيل الدخول...";
+      campaigns =
+        result.data || [];
 
 
-      try {
+      renderCampaigns();
 
-        console.log(
-          "Attempting Supabase login..."
+      fillCampaignSelect();
+
+    }
+
+
+    /* =====================================
+       RENDER CAMPAIGNS
+    ===================================== */
+
+    function renderCampaigns() {
+
+      const list =
+        document.getElementById(
+          "campaignList"
         );
 
 
-        const {
-          data,
-          error
-        } =
-          await supabaseClient.auth.signInWithPassword({
-            email: email,
-            password: password
-          });
+      if (!campaigns.length) {
 
+        list.innerHTML =
+          `
+          <div class="empty">
+            لا توجد إعلانات حتى الآن.
+          </div>
+          `;
 
-        if (error) {
-
-          console.error(
-            "Supabase login error:",
-            error
-          );
-
-
-          let message =
-            error.message ||
-            "فشل تسجيل الدخول.";
-
-
-          if (
-            message
-              .toLowerCase()
-              .includes("invalid login credentials")
-          ) {
-
-            message =
-              "❌ البريد الإلكتروني أو كلمة المرور غير صحيحة.";
-
-          }
-
-
-          showMessage(
-            loginMessage,
-            message,
-            "error"
-          );
-
-          return;
+        return;
 
       }
 
-    catch (error) {
 
-      console.error("Login exception:", error);
+      list.innerHTML =
+        campaigns
+          .map(function(campaign) {
 
-      showMessage(
-        loginMessage,
-        "❌ حدث خطأ أثناء الاتصال. حاولي مرة أخرى.",
-        "error"
-      );
-
-    }
-
-    finally {
-
-      loginButton.disabled = false;
-
-      loginButton.textContent =
-        "🔐 تسجيل الدخول";
-
-    }
-
-  }
+            const reportLink =
+              createReportLink(
+                campaign.report_code
+              );
 
 
-  /* =====================================
-     BUTTON EVENTS
-  ===================================== */
-
-  loginButton.addEventListener(
-    "click",
-    login
-  );
+            const statusClass =
+              campaign.status === "Active"
+                ? "active"
+                : "inactive";
 
 
-  loginPassword.addEventListener(
-    "keydown",
-    function (event) {
+            return `
 
-      if (event.key === "Enter") {
-        login();
-      }
+              <div class="campaign-item">
 
-    }
-  );
+                <div class="campaign-header">
 
+                  <div>
 
-  logoutButton.addEventListener(
-    "click",
-    logout
-  );
+                    <div class="campaign-title">
+                      ${escapeHtml(
+                        campaign.campaign_name ||
+                        "بدون اسم"
+                      )}
+                    </div>
 
+                    <div class="campaign-code">
+                      Report Code:
+                      ${escapeHtml(
+                        campaign.report_code ||
+                        "—"
+                      )}
+                    </div>
 
-  /* =====================================
-     START
-  ===================================== */
-
-  window.addEventListener(
-    "load",
-    function () {
-      checkSession();
-    }
-  );
-
-</script>
-
-</body>
-
-</html>     
+                  </div>
 
 
+                  <span class="status-badge ${statusClass}">
+                    ${escapeHtml(
+                      campaign.status ||
+                      "غير معروف"
+                    )}
+                  </span>
 
-      
+                </div>
+
+
+                <div class="campaign-info">
+
+
+                  <div class="info-box">
+
+                    <div class="info-title">
+                      👁️ المشاهدات
+                    </div>
+
+                    <div class="info-value">
+                      ${Number(
+                        campaign.impressions || 0
+                      ).toLocaleString("en-US")}
+                    </div>
+
+                  </div>
+
+
+                  <div class="info-box">
+
+                    <div class="info-title">
+                      🔗 رابط الإعلان
+                    </div>
+
+                    <div class="info-value">
+                      ${
+                        campaign.stats_url
+                          ? "متوفر"
+                          : "غير مضاف"
+                      }
+                    </div>
+
+                  </div>
+
+
+                </div>
+
+
+                ${
+                  campaign.stats_url
+                    ? `
+                      <div class="telegram-link">
+                        ${escapeHtml(
+                          campaign.stats_url
+                        )}
+                      </div>
+                    `
+                    : ""
+                }
+
+
+                <div class="report-link">
+
+                  <strong>
+                    رابط العميل:
+                  </strong>
+
+                  <br><br>
+
+                  ${escapeHtml(
+                    reportLink
+                  )}
+
+                </div>
+
+
+                <div
+                  class="actions"
+                  style="margin-top:12px;"
+                >
+
+                  <button
+                    class="primary"
+                    type="button"
+                    onclick="selectCampaign('${campaign.id}')"
+                  >
+                    ✏️ تعديل
+                  </button>
+
+
+                  <button
+                    class="secondary"
+                    type="button"
+                    onclick="copyText('${reportLink}')"
+                  >
+                    📋 نسخ رابط العميل
+                  </button>
+
+
+                  <button
+                    class="secondary"
+         
