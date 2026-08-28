@@ -1115,7 +1115,77 @@
 
           return;
 
-        }
+      }
+
+    catch (error) {
+
+      console.error("Login exception:", error);
+
+      showMessage(
+        loginMessage,
+        "❌ حدث خطأ أثناء الاتصال. حاولي مرة أخرى.",
+        "error"
+      );
+
+    }
+
+    finally {
+
+      loginButton.disabled = false;
+
+      loginButton.textContent =
+        "🔐 تسجيل الدخول";
+
+    }
+
+  }
+
+
+  /* =====================================
+     BUTTON EVENTS
+  ===================================== */
+
+  loginButton.addEventListener(
+    "click",
+    login
+  );
+
+
+  loginPassword.addEventListener(
+    "keydown",
+    function (event) {
+
+      if (event.key === "Enter") {
+        login();
+      }
+
+    }
+  );
+
+
+  logoutButton.addEventListener(
+    "click",
+    logout
+  );
+
+
+  /* =====================================
+     START
+  ===================================== */
+
+  window.addEventListener(
+    "load",
+    function () {
+      checkSession();
+    }
+  );
+
+</script>
+
+</body>
+
+</html>     
+
 
 
       
