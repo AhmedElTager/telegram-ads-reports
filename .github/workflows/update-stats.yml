@@ -26,6 +26,6 @@ jobs:
 
       - name: Update Telegram statistics
         env:
-          SUPABASE_URL: "https://oxclimxygexnezblrhpz.supabase.co"
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          SUPABASE_URL: "https://oxclmxyegnezblrhpz.supabase.co"
+          SUPABASE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: node update-stats.js
