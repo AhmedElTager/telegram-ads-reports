@@ -2,34 +2,36 @@ const { createClient } = require("@supabase/supabase-js");
 const { chromium } = require("playwright");
 const fs = require("fs");
 
+// =====================================
+// SUPABASE
+// =====================================
+
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-// ===============================
+// =====================================
 // SETTINGS
-// ===============================
+// =====================================
 
 const DELAY_BETWEEN_CAMPAIGNS_MS = 4000;
 const MAX_RETRIES = 2;
 const NAV_TIMEOUT_MS = 60000;
 
-// ===============================
+// =====================================
 // SLEEP
-// ===============================
+// =====================================
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-// ===============================
-// CLEAN METRIC NUMBER
-// مهم:
-// لا نحول التاريخ أو النص إلى رقم
-// ===============================
+// =====================================
+// CLEAN NUMBER
+// =====================================
 
-function cleanMetricNumber(value) {
+function cleanNumber(value) {
   if (value === null || value === undefined) {
     return null;
   }
@@ -37,17 +39,15 @@ function cleanMetricNumber(value) {
   let text = String(value)
     .trim()
     .replace(/^"|"$/g, "")
-    .trim();
+    .replace(/\s/g, "");
 
   if (!text) {
     return null;
   }
 
-  // إزالة الفواصل والمسافات فقط
-  text = text.replace(/,/g, "").replace(/\s/g, "");
+  text = text.replace(/[^\d.-]/g, "");
 
-  // لازم يكون رقم فقط
-  if (!/^\d+(?:\.\d+)?$/.test(text)) {
+  if (!text) {
     return null;
   }
 
@@ -60,82 +60,36 @@ function cleanMetricNumber(value) {
   return number;
 }
 
-// ===============================
-// NORMALIZE HEADER
-// ===============================
-
-function normalizeHeader(value) {
-  return String(value || "")
-    .replace(/^\uFEFF/, "")
-    .replace(/^"|"$/g, "")
-    .trim()
-    .toLowerCase()
-    .replace(/[_-]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-// ===============================
+// =====================================
 // DETECT CSV DELIMITER
-// ===============================
+// =====================================
 
 function detectDelimiter(line) {
   const delimiters = [",", "\t", ";"];
 
-  let bestDelimiter = null;
-  let bestScore = -1;
+  let bestDelimiter = ",";
+  let bestCount = 0;
 
   for (const delimiter of delimiters) {
-    const columns = splitCSVLine(line, delimiter);
+    const count =
+      line.split(delimiter).length - 1;
 
-    const normalized = columns.map(normalizeHeader);
-
-    let score = 0;
-
-    for (const header of normalized) {
-      if (header === "date" || header.includes("date")) {
-        score += 2;
-      }
-
-      if (header === "views" || header.includes("views")) {
-        score += 3;
-      }
-
-      if (header === "clicks" || header.includes("clicks")) {
-        score += 2;
-      }
-
-      if (
-        header === "started bot" ||
-        header.includes("started bot")
-      ) {
-        score += 5;
-      }
-    }
-
-    // عدد الأعمدة يساعد في حالة التعادل
-    score += columns.length / 100;
-
-    if (score > bestScore) {
-      bestScore = score;
+    if (count > bestCount) {
+      bestCount = count;
       bestDelimiter = delimiter;
     }
-  }
-
-  // لو مفيش فاصل واضح
-  if (!bestDelimiter) {
-    return ",";
   }
 
   return bestDelimiter;
 }
 
-// ===============================
+// =====================================
 // SPLIT CSV LINE
-// ===============================
+// =====================================
 
 function splitCSVLine(line, delimiter) {
   const result = [];
+
   let current = "";
   let insideQuotes = false;
 
@@ -143,17 +97,8 @@ function splitCSVLine(line, delimiter) {
     const char = line[i];
 
     if (char === '"') {
-      // التعامل مع ""
-      if (
-        insideQuotes &&
-        line[i + 1] === '"'
-      ) {
-        current += '"';
-        i++;
-        continue;
-      }
-
       insideQuotes = !insideQuotes;
+      current += char;
       continue;
     }
 
@@ -161,22 +106,32 @@ function splitCSVLine(line, delimiter) {
       char === delimiter &&
       !insideQuotes
     ) {
-      result.push(current.trim());
+      result.push(
+        current
+          .replace(/^"|"$/g, "")
+          .trim()
+      );
+
       current = "";
+
       continue;
     }
 
     current += char;
   }
 
-  result.push(current.trim());
+  result.push(
+    current
+      .replace(/^"|"$/g, "")
+      .trim()
+  );
 
   return result;
 }
 
-// ===============================
-// READ VIEWS
-// ===============================
+// =====================================
+// GET VIEWS
+// =====================================
 
 async function getViews(page) {
   const bodyText =
@@ -192,9 +147,9 @@ async function getViews(page) {
     await page.title()
   );
 
-  // --------------------------------
-  // الطريقة الأولى
-  // --------------------------------
+  // =================================
+  // METHOD 1
+  // =================================
 
   let match =
     bodyText.match(
@@ -203,7 +158,7 @@ async function getViews(page) {
 
   if (match) {
     const views =
-      cleanMetricNumber(match[1]);
+      cleanNumber(match[1]);
 
     if (views !== null) {
       console.log(
@@ -215,9 +170,9 @@ async function getViews(page) {
     }
   }
 
-  // --------------------------------
-  // الطريقة الثانية
-  // --------------------------------
+  // =================================
+  // METHOD 2
+  // =================================
 
   try {
     const viewsLocator =
@@ -249,11 +204,15 @@ async function getViews(page) {
         );
 
       if (numbers) {
-        for (const n of numbers) {
+        for (
+          const number of numbers
+        ) {
           const value =
-            cleanMetricNumber(n);
+            cleanNumber(number);
 
-          if (value !== null) {
+          if (
+            value !== null
+          ) {
             console.log(
               "Views found from element:",
               value
@@ -264,29 +223,34 @@ async function getViews(page) {
         }
       }
     }
+
   } catch (error) {
+
     console.log(
       "Views element error:",
       error.message
     );
+
   }
 
   return null;
 }
 
-// ===============================
-// READ STARTED BOT FROM CSV
-// ===============================
+// =====================================
+// GET STARTED BOT FROM CSV
+// =====================================
 
 async function getStartedBotFromCSV(page) {
+
   console.log(
     "Trying to read Started bot from CSV..."
   );
 
   try {
-    // --------------------------------
-    // البحث عن Started bot
-    // --------------------------------
+
+    // =================================
+    // FIND STARTED BOT
+    // =================================
 
     const startedBot =
       page
@@ -301,6 +265,7 @@ async function getStartedBotFromCSV(page) {
     if (
       !(await startedBot.count())
     ) {
+
       console.log(
         "Started bot element NOT FOUND."
       );
@@ -312,17 +277,21 @@ async function getStartedBotFromCSV(page) {
       "Started bot element found."
     );
 
-    // --------------------------------
-    // اختيار Started bot
-    // --------------------------------
+    // =================================
+    // CLICK
+    // =================================
 
     try {
-      await startedBot.scrollIntoViewIfNeeded();
+
+      await startedBot
+        .scrollIntoViewIfNeeded();
 
       await startedBot.click({
         force: true
       });
+
     } catch (error) {
+
       console.log(
         "Started bot click retry..."
       );
@@ -330,17 +299,20 @@ async function getStartedBotFromCSV(page) {
       await startedBot.evaluate(
         (el) => el.click()
       );
+
     }
 
     console.log(
       "Started bot selected."
     );
 
-    await page.waitForTimeout(1500);
+    await page.waitForTimeout(
+      1500
+    );
 
-    // --------------------------------
-    // CSV buttons
-    // --------------------------------
+    // =================================
+    // FIND CSV
+    // =================================
 
     const csvLinks =
       page.getByText(
@@ -358,7 +330,10 @@ async function getStartedBotFromCSV(page) {
       csvCount
     );
 
-    if (csvCount === 0) {
+    if (
+      csvCount === 0
+    ) {
+
       console.log(
         "CSV button NOT FOUND."
       );
@@ -366,15 +341,19 @@ async function getStartedBotFromCSV(page) {
       return null;
     }
 
-    // أول CSV الخاص بالإحصائيات
+    // =================================
+    // CSV BUTTON
+    // =================================
+
     const csvButton =
       csvLinks.first();
 
-    await csvButton.scrollIntoViewIfNeeded();
+    await csvButton
+      .scrollIntoViewIfNeeded();
 
-    // --------------------------------
-    // Download
-    // --------------------------------
+    // =================================
+    // DOWNLOAD
+    // =================================
 
     const downloadPromise =
       page.waitForEvent(
@@ -385,10 +364,13 @@ async function getStartedBotFromCSV(page) {
       );
 
     try {
+
       await csvButton.click({
         force: true
       });
+
     } catch (error) {
+
       console.log(
         "CSV click retry..."
       );
@@ -396,6 +378,7 @@ async function getStartedBotFromCSV(page) {
       await csvButton.evaluate(
         (el) => el.click()
       );
+
     }
 
     const download =
@@ -405,14 +388,15 @@ async function getStartedBotFromCSV(page) {
       "CSV download started."
     );
 
-    // --------------------------------
+    // =================================
     // CSV PATH
-    // --------------------------------
+    // =================================
 
     const csvPath =
       await download.path();
 
     if (!csvPath) {
+
       console.log(
         "CSV path unavailable."
       );
@@ -426,7 +410,10 @@ async function getStartedBotFromCSV(page) {
         "utf8"
       );
 
-    // إزالة BOM
+    // =================================
+    // REMOVE BOM
+    // =================================
+
     csvText =
       csvText.replace(
         /^\uFEFF/,
@@ -440,13 +427,13 @@ async function getStartedBotFromCSV(page) {
     console.log(
       csvText.substring(
         0,
-        1500
+        1200
       )
     );
 
-    // --------------------------------
+    // =================================
     // LINES
-    // --------------------------------
+    // =================================
 
     const lines =
       csvText
@@ -463,6 +450,7 @@ async function getStartedBotFromCSV(page) {
     if (
       lines.length < 2
     ) {
+
       console.log(
         "CSV contains no data."
       );
@@ -470,9 +458,9 @@ async function getStartedBotFromCSV(page) {
       return 0;
     }
 
-    // --------------------------------
+    // =================================
     // DELIMITER
-    // --------------------------------
+    // =================================
 
     const delimiter =
       detectDelimiter(
@@ -486,47 +474,78 @@ async function getStartedBotFromCSV(page) {
       )
     );
 
-    // --------------------------------
+    // =================================
     // HEADERS
-    // --------------------------------
+    // =================================
 
     const headers =
       splitCSVLine(
         lines[0],
         delimiter
       ).map(
-        normalizeHeader
-      );
+        (header) =>
+          header
+            .replace(
+              /^"|"$/g,
+              ""
+            )
+            .trim()
+            .toLowerCase()
+        );
 
     console.log(
       "CSV HEADERS:",
       headers
     );
 
-    // --------------------------------
-    // البحث الدقيق عن Started bot
-    // --------------------------------
+    // =================================
+    // FIND STARTED BOT COLUMN
+    // =================================
 
     let startedBotColumn =
       headers.findIndex(
         (header) =>
-          header === "started bot"
+          header
+            .replace(
+              /\s+/g,
+              " "
+            )
+            .includes(
+              "started bot"
+            )
       );
-
-    // --------------------------------
-    // البحث الاحتياطي
-    // --------------------------------
 
     if (
       startedBotColumn === -1
     ) {
+
       startedBotColumn =
         headers.findIndex(
-          (header) =>
-            header.includes(
-              "started bot"
-            )
+          (header) => {
+
+            const normalized =
+              header
+                .replace(
+                  /[_-]/g,
+                  " "
+                )
+                .replace(
+                  /\s+/g,
+                  " "
+                )
+                .trim();
+
+            return (
+              normalized ===
+                "started bot" ||
+              normalized.includes(
+                "started bot"
+              )
+            );
+
+          }
         );
+
     }
 
     console.log(
@@ -534,60 +553,23 @@ async function getStartedBotFromCSV(page) {
       startedBotColumn
     );
 
-    // --------------------------------
-    // حماية مهمة جدًا
-    // لو العمود غير موجود لا نقرأ أي حاجة
-    // --------------------------------
-
     if (
       startedBotColumn === -1
     ) {
+
       console.log(
         "STARTED BOT COLUMN NOT FOUND."
       );
 
-      console.log(
-        "Headers detected:",
-        headers
-      );
-
       return null;
     }
 
-    // --------------------------------
-    // تأكيد أن العمود فعلًا Started bot
-    // --------------------------------
-
-    const selectedHeader =
-      headers[startedBotColumn];
-
-    if (
-      !selectedHeader.includes(
-        "started bot"
-      )
-    ) {
-      console.log(
-        "SAFETY CHECK FAILED."
-      );
-
-      console.log(
-        "Selected header:",
-        selectedHeader
-      );
-
-      return null;
-    }
-
-    console.log(
-      "Confirmed Started bot column:",
-      selectedHeader
-    );
-
-    // --------------------------------
-    // جمع Started bot
-    // --------------------------------
+    // =================================
+    // TOTAL STARTED BOT
+    // =================================
 
     let totalStartedBot = 0;
+
     let rowsWithValue = 0;
 
     for (
@@ -595,6 +577,7 @@ async function getStartedBotFromCSV(page) {
       i < lines.length;
       i++
     ) {
+
       const columns =
         splitCSVLine(
           lines[i],
@@ -613,24 +596,22 @@ async function getStartedBotFromCSV(page) {
           startedBotColumn
         ];
 
-      console.log(
-        `CSV row ${i}: Started bot raw =`,
-        JSON.stringify(rawValue)
-      );
-
       const value =
-        cleanMetricNumber(
+        cleanNumber(
           rawValue
         );
 
       if (
         value !== null
       ) {
+
         totalStartedBot +=
           value;
 
         rowsWithValue++;
+
       }
+
     }
 
     console.log(
@@ -646,23 +627,74 @@ async function getStartedBotFromCSV(page) {
     return totalStartedBot;
 
   } catch (error) {
+
     console.log(
       "Started bot CSV error:",
       error.message
     );
 
     return null;
+
   }
 }
 
-// ===============================
+// =====================================
+// SAVE HISTORY
+// =====================================
+
+async function saveViewsHistory(
+  campaignId,
+  views
+) {
+
+  console.log(
+    "Saving views history..."
+  );
+
+  const {
+    error
+  } =
+    await supabase
+      .from(
+        "campaign_stats_history"
+      )
+      .insert({
+        campaign_id:
+          campaignId,
+
+        impressions:
+          views,
+
+        recorded_at:
+          new Date().toISOString()
+      });
+
+  if (error) {
+
+    console.error(
+      "History insert error:",
+      error.message
+    );
+
+    return false;
+  }
+
+  console.log(
+    "VIEWS HISTORY SAVED"
+  );
+
+  return true;
+}
+
+// =====================================
 // PROCESS CAMPAIGN
-// ===============================
+// =====================================
 
 async function processCampaign(
   context,
   campaign
 ) {
+
   let lastError = null;
 
   for (
@@ -670,19 +702,25 @@ async function processCampaign(
     attempt <= MAX_RETRIES + 1;
     attempt++
   ) {
+
     let page = null;
 
     try {
+
       console.log(
         `Attempt ${attempt} for campaign: ${campaign.campaign_name}`
       );
 
-      // --------------------------------
-      // فتح الصفحة
-      // --------------------------------
+      // =================================
+      // NEW PAGE
+      // =================================
 
       page =
         await context.newPage();
+
+      // =================================
+      // OPEN TELEGRAM STATS
+      // =================================
 
       await page.goto(
         campaign.stats_url,
@@ -699,37 +737,43 @@ async function processCampaign(
         "Telegram page loaded."
       );
 
-      // --------------------------------
-      // انتظار Views
-      // --------------------------------
+      // =================================
+      // WAIT VIEWS
+      // =================================
 
       try {
+
         await page.waitForSelector(
           "text=Views",
           {
             timeout: 15000
           }
         );
+
       } catch (_) {
+
         console.log(
           "Views selector timeout."
         );
+
       }
 
       await page.waitForTimeout(
         2000
       );
 
-      // --------------------------------
-      // VIEWS
-      // --------------------------------
+      // =================================
+      // GET VIEWS
+      // =================================
 
       const views =
-        await getViews(page);
+        await getViews(
+          page
+        );
 
-      // --------------------------------
-      // STARTED BOT
-      // --------------------------------
+      // =================================
+      // GET STARTED BOT
+      // =================================
 
       const actions =
         await getStartedBotFromCSV(
@@ -750,24 +794,28 @@ async function processCampaign(
         actions
       );
 
-      // --------------------------------
-      // Views غير موجودة
-      // --------------------------------
+      // =================================
+      // VIEWS NOT FOUND
+      // =================================
 
       if (
         views === null
       ) {
+
         console.log(
           "Views NOT FOUND."
         );
 
         try {
+
           await page.screenshot({
             path:
               `telegram-${campaign.id}.png`,
+
             fullPage:
               true
           });
+
         } catch (_) {}
 
         await page.close();
@@ -775,32 +823,28 @@ async function processCampaign(
         return;
       }
 
-      // --------------------------------
-      // UPDATE DATA
-      // --------------------------------
+      // =================================
+      // UPDATE CAMPAIGN
+      // =================================
 
       const updateData = {
+
         impressions:
           views,
 
         last_updated:
           new Date().toISOString()
-      };
 
-      // --------------------------------
-      // Started bot
-      // --------------------------------
+      };
 
       if (
         actions !== null
       ) {
+
         updateData.actions =
           actions;
-      }
 
-      // --------------------------------
-      // SUPABASE UPDATE
-      // --------------------------------
+      }
 
       const {
         error: updateError
@@ -820,11 +864,14 @@ async function processCampaign(
       if (
         updateError
       ) {
+
         console.error(
           "Supabase update error:",
           updateError.message
         );
+
       } else {
+
         console.log(
           "UPDATED SUCCESSFULLY"
         );
@@ -843,6 +890,17 @@ async function processCampaign(
           "Started bot:",
           actions
         );
+
+
+        // =================================
+        // SAVE HISTORY
+        // =================================
+
+        await saveViewsHistory(
+          campaign.id,
+          views
+        );
+
       }
 
       await page.close();
@@ -850,6 +908,7 @@ async function processCampaign(
       return;
 
     } catch (error) {
+
       lastError =
         error;
 
@@ -859,15 +918,20 @@ async function processCampaign(
       );
 
       if (page) {
+
         try {
+
           await page.close();
+
         } catch (_) {}
+
       }
 
       if (
         attempt <=
         MAX_RETRIES
       ) {
+
         console.log(
           "Retrying..."
         );
@@ -875,8 +939,11 @@ async function processCampaign(
         await sleep(
           3000
         );
+
       }
+
     }
+
   }
 
   console.error(
@@ -885,17 +952,26 @@ async function processCampaign(
       ? lastError.message
       : "unknown error"
   );
+
 }
 
-// ===============================
+// =====================================
 // MAIN
-// ===============================
+// =====================================
 
 async function main() {
 
-  // --------------------------------
-  // قراءة الحملات من Supabase
-  // --------------------------------
+  console.log(
+    "================================"
+  );
+
+  console.log(
+    "Telegram Ads updater started."
+  );
+
+  // =================================
+  // GET CAMPAIGNS
+  // =================================
 
   const {
     data: campaigns,
@@ -922,29 +998,33 @@ async function main() {
       );
 
   if (error) {
+
     throw new Error(
       error.message
     );
+
   }
 
   if (
     !campaigns ||
     campaigns.length === 0
   ) {
+
     console.log(
       "No campaigns with stats_url."
     );
 
     return;
+
   }
 
   console.log(
     `Found ${campaigns.length} campaign(s).`
   );
 
-  // --------------------------------
-  // Browser
-  // --------------------------------
+  // =================================
+  // BROWSER
+  // =================================
 
   const browser =
     await chromium.launch({
@@ -965,9 +1045,9 @@ async function main() {
 
     });
 
-  // --------------------------------
-  // الحملات
-  // --------------------------------
+  // =================================
+  // PROCESS CAMPAIGNS
+  // =================================
 
   for (
     const campaign of campaigns
@@ -1010,7 +1090,12 @@ async function main() {
     await sleep(
       DELAY_BETWEEN_CAMPAIGNS_MS
     );
+
   }
+
+  // =================================
+  // CLOSE
+  // =================================
 
   await browser.close();
 
@@ -1021,11 +1106,12 @@ async function main() {
   console.log(
     "Telegram Ads update finished."
   );
+
 }
 
-// ===============================
+// =====================================
 // START
-// ===============================
+// =====================================
 
 main()
   .catch(
@@ -1038,5 +1124,6 @@ main()
       process.exit(
         1
       );
+
     }
   );
