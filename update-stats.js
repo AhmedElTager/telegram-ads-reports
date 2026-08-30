@@ -1,10 +1,27 @@
 const { createClient } = require("@supabase/supabase-js");
 const { chromium } = require("playwright");
+const fs = require("fs");
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
+
+// ===============================
+// الإعدادات
+// ===============================
+
+const DELAY_BETWEEN_CAMPAIGNS_MS = 4000;
+const MAX_RETRIES = 2;
+const NAV_TIMEOUT_MS = 60000;
+
+// ===============================
+// Sleep
+// ===============================
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 // ===============================
 // تنظيف الأرقام
@@ -16,8 +33,9 @@ function cleanNumber(value) {
   }
 
   const text = String(value)
-    .replace(/[,\.\s]/g, "")
-    .replace(/[^\d]/g, "");
+    .replace(/,/g, "")
+    .replace(/\s/g, "")
+    .replace(/[^\d.-]/g, "");
 
   if (!text) {
     return null;
@@ -33,36 +51,29 @@ function cleanNumber(value) {
 // ===============================
 
 async function getViews(page) {
-  await page.waitForTimeout(5000);
-
   const bodyText = await page.locator("body").innerText();
 
   console.log("PAGE URL:", page.url());
   console.log("PAGE TITLE:", await page.title());
 
-  let match = bodyText.match(
-    /Views[\s\S]{0,100}?([\d,]+(?:\.\d+)?)/i
-  );
+  // الطريقة الأولى
+  let match = bodyText.match(/Views[\s\S]{0,100}?([\d,]+)/i);
 
   if (match) {
     const views = cleanNumber(match[1]);
 
     if (views !== null) {
-      console.log("Views found:", views);
+      console.log("Views found from body:", views);
       return views;
     }
   }
 
-  // محاولة من العنصر نفسه
+  // الطريقة الثانية
   try {
-    const viewsLocator = page
-      .getByText("Views", { exact: true })
-      .first();
+    const viewsLocator = page.getByText("Views", { exact: true }).first();
 
     if (await viewsLocator.count()) {
-      const parentText = await viewsLocator
-        .locator("..")
-        .innerText();
+      const parentText = await viewsLocator.locator("..").innerText();
 
       console.log("Views parent:", parentText);
 
@@ -80,192 +91,368 @@ async function getViews(page) {
       }
     }
   } catch (error) {
-    console.log(
-      "Views element error:",
-      error.message
-    );
+    console.log("Views element error:", error.message);
+  }
+
+  // الطريقة الثالثة من HTML
+  try {
+    const html = await page.content();
+
+    match = html.match(/Views[\s\S]{0,500}?([\d,]+)/i);
+
+    if (match) {
+      const views = cleanNumber(match[1]);
+
+      if (views !== null) {
+        console.log("Views found from HTML:", views);
+        return views;
+      }
+    }
+  } catch (error) {
+    console.log("Views HTML error:", error.message);
   }
 
   return null;
 }
 
 // ===============================
-// قراءة Started bot / Actions
+// قراءة Started bot من CSV
 // ===============================
 
-async function getActions(page) {
+async function getStartedBotFromCSV(page) {
+  console.log("Trying to read Started bot from CSV...");
 
-  await page.waitForTimeout(3000);
-
-  console.log(
-    "Trying to read Started bot..."
-  );
-
-  // --------------------------------
-  // أول محاولة:
-  // البحث عن Started bot في الصفحة
-  // --------------------------------
-
-  let bodyText = await page.locator("body").innerText();
-
-  let match = bodyText.match(
-    /Started\s*bot[\s\S]{0,200}?([\d,]+)/i
-  );
-
-  if (match) {
-
-    const actions = cleanNumber(match[1]);
-
-    if (actions !== null) {
-
-      console.log(
-        "Started bot found from body:",
-        actions
-      );
-
-      return actions;
-    }
-  }
-
-  // --------------------------------
-  // ثاني محاولة:
-  // البحث عن Actions
-  // --------------------------------
-
-  match = bodyText.match(
-    /Actions[\s\S]{0,200}?([\d,]+)/i
-  );
-
-  if (match) {
-
-    const actions = cleanNumber(match[1]);
-
-    if (actions !== null) {
-
-      console.log(
-        "Actions found from body:",
-        actions
-      );
-
-      return actions;
-    }
-  }
-
-  // --------------------------------
-  // ثالث محاولة:
-  // الضغط على Started bot
-  // --------------------------------
+  let csvPath = null;
 
   try {
+    // --------------------------------
+    // العثور على Started bot
+    // --------------------------------
 
-    const startedBot = page
-      .getByText(
-        "Started bot",
-        {
-          exact: true
+    const startedBot = page.getByText("Started bot", { exact: true }).first();
+
+    if (!(await startedBot.count())) {
+      console.log("Started bot element NOT FOUND.");
+      return null;
+    }
+
+    console.log("Started bot element found.");
+
+    // --------------------------------
+    // الضغط على Started bot
+    // --------------------------------
+
+    try {
+      await startedBot.scrollIntoViewIfNeeded();
+      await startedBot.click({ force: true });
+      console.log("Started bot selected.");
+    } catch (clickError) {
+      console.log("Normal click failed:", clickError.message);
+
+      await startedBot.evaluate((el) => el.click());
+      console.log("Started bot selected using JS.");
+    }
+
+    // ننتظر تحديث الرسم البياني
+    await page.waitForTimeout(1500);
+
+    // --------------------------------
+    // البحث عن زر CSV قريب من Started bot
+    // بدل أول عنصر CSV في الصفحة كلها، نحاول نلاقي
+    // زر CSV جوه نفس الحاوية (container) الخاصة بالإحصائية
+    // اللي دوسنا عليها، عشان نتجنب لبس مع أقسام تانية
+    // --------------------------------
+
+    let csvButton = null;
+
+    try {
+      // نطلع لأقرب حاوية أب معقولة ونبحث جواها بس
+      const statSection = startedBot.locator(
+        "xpath=ancestor::*[self::div or self::section][1]"
+      );
+
+      const scopedCsv = statSection.getByText("CSV", { exact: true }).first();
+
+      if (await scopedCsv.count()) {
+        csvButton = scopedCsv;
+        console.log("CSV button found scoped to Started bot section.");
+      }
+    } catch (scopeError) {
+      console.log("Scoped CSV search failed:", scopeError.message);
+    }
+
+    // fallback: لو مفيش زر CSV جوه نفس القسم، ناخد أول واحد في الصفحة
+    if (!csvButton) {
+      const csvLinks = page.getByText("CSV", { exact: true });
+      const csvCount = await csvLinks.count();
+
+      console.log("CSV buttons found (page-wide):", csvCount);
+
+      if (csvCount === 0) {
+        console.log("CSV button NOT FOUND.");
+        return null;
+      }
+
+      csvButton = csvLinks.first();
+    }
+
+    await csvButton.scrollIntoViewIfNeeded();
+
+    // --------------------------------
+    // انتظار تحميل CSV
+    // --------------------------------
+
+    const downloadPromise = page.waitForEvent("download", { timeout: 20000 });
+
+    try {
+      await csvButton.click({ force: true });
+    } catch (clickError) {
+      console.log("CSV normal click failed:", clickError.message);
+      await csvButton.evaluate((el) => el.click());
+    }
+
+    const download = await downloadPromise;
+
+    console.log("CSV download started.");
+
+    // --------------------------------
+    // قراءة الملف
+    // --------------------------------
+
+    csvPath = await download.path();
+
+    if (!csvPath) {
+      console.log("CSV path not available.");
+      return null;
+    }
+
+    const csvText = fs.readFileSync(csvPath, "utf8");
+
+    console.log("CSV content preview:");
+    console.log(csvText.substring(0, 1000));
+
+    // --------------------------------
+    // تحليل CSV
+    // --------------------------------
+
+    const lines = csvText
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean);
+
+    if (lines.length < 2) {
+      console.log("CSV has no data.");
+      return 0;
+    }
+
+    // --------------------------------
+    // تحديد عمود Started bot
+    // --------------------------------
+
+    const headers = lines[0]
+      .split(",")
+      .map((h) => h.replace(/"/g, "").trim().toLowerCase());
+
+    console.log("CSV headers:", headers);
+
+    let actionColumn = headers.findIndex((header) =>
+      header.includes("started bot")
+    );
+
+    // بعض نسخ Telegram قد تستخدم "actions" بالظبط
+    // (تفادينا includes("action") لوحدها عشان منمسكش "reaction" غلط)
+    if (actionColumn === -1) {
+      actionColumn = headers.findIndex(
+        (header) => header === "action" || header === "actions"
+      );
+    }
+
+    console.log("Started bot column:", actionColumn);
+
+    // --------------------------------
+    // لو وجدنا العمود
+    // --------------------------------
+
+    if (actionColumn !== -1) {
+      let total = 0;
+
+      for (let i = 1; i < lines.length; i++) {
+        const columns = lines[i].split(",");
+
+        if (columns.length <= actionColumn) {
+          continue;
         }
-      )
-      .first();
 
-    if (await startedBot.count()) {
+        const value = cleanNumber(columns[actionColumn]);
 
-      console.log(
-        "Started bot button found."
-      );
-
-      await startedBot.click();
-
-      await page.waitForTimeout(1500);
-
-      bodyText =
-        await page.locator("body").innerText();
-
-      console.log(
-        "After Started bot click:"
-      );
-
-      console.log(
-        bodyText.substring(
-          Math.max(
-            0,
-            bodyText.indexOf("Started bot") - 300
-          ),
-          bodyText.indexOf("Started bot") + 700
-        )
-      );
-
-      // نبحث مرة أخرى عن رقم
-      match = bodyText.match(
-        /Started\s*bot[\s\S]{0,300}?([\d,]+)/i
-      );
-
-      if (match) {
-
-        const actions =
-          cleanNumber(match[1]);
-
-        if (actions !== null) {
-
-          console.log(
-            "Started bot after click:",
-            actions
-          );
-
-          return actions;
+        if (value !== null) {
+          total += value;
         }
       }
+
+      console.log("TOTAL STARTED BOT:", total);
+      return total;
     }
 
-  } catch (error) {
+    // --------------------------------
+    // لو لم نجد اسم العمود، مفيش تخمين
+    // نرجع null بدل ما نجمع أرقام غير موثوقة
+    // (زي timestamps ممكن تتقرا غلط كأرقام)
+    // --------------------------------
 
     console.log(
-      "Started bot click failed:",
-      error.message
+      "Started bot column not found — returning null instead of guessing."
     );
+
+    return null;
+  } catch (error) {
+    console.log("Started bot CSV error:", error.message);
+    return null;
+  } finally {
+    // --------------------------------
+    // تنظيف الملف المؤقت دايمًا
+    // --------------------------------
+
+    if (csvPath) {
+      try {
+        fs.unlinkSync(csvPath);
+        console.log("Temp CSV file cleaned up.");
+      } catch (cleanupError) {
+        console.log("CSV cleanup failed:", cleanupError.message);
+      }
+    }
   }
+}
 
-  // --------------------------------
-  // رابع محاولة:
-  // البحث داخل HTML
-  // --------------------------------
+// ===============================
+// معالجة حملة واحدة
+// ===============================
 
-  try {
+async function processCampaign(context, campaign) {
+  let lastError = null;
 
-    const html = await page.content();
+  for (let attempt = 1; attempt <= MAX_RETRIES + 1; attempt++) {
+    let page = null;
 
-    match = html.match(
-      /Started\s*bot[\s\S]{0,1000}?([\d,]+)/i
-    );
+    try {
+      console.log(`Attempt ${attempt} for campaign: ${campaign.campaign_name}`);
 
-    if (match) {
+      // --------------------------------
+      // فتح الصفحة
+      // --------------------------------
 
-      const actions =
-        cleanNumber(match[1]);
+      page = await context.newPage();
+
+      await page.goto(campaign.stats_url, {
+        waitUntil: "domcontentloaded",
+        timeout: NAV_TIMEOUT_MS,
+      });
+
+      console.log("Telegram page loaded.");
+
+      // --------------------------------
+      // انتظار Views
+      // --------------------------------
+
+      try {
+        await page.waitForSelector("text=Views", { timeout: 15000 });
+      } catch (_) {
+        console.log("Views selector timeout.");
+      }
+
+      await page.waitForTimeout(2000);
+
+      // --------------------------------
+      // Views
+      // --------------------------------
+
+      const views = await getViews(page);
+
+      // --------------------------------
+      // Started bot
+      // --------------------------------
+
+      const actions = await getStartedBotFromCSV(page);
+
+      console.log("================================");
+      console.log("REAL VIEWS:", views);
+      console.log("REAL STARTED BOT:", actions);
+
+      // --------------------------------
+      // Views غير موجودة
+      // --------------------------------
+
+      if (views === null) {
+        console.log("Views NOT FOUND.");
+
+        await page.screenshot({
+          path: `telegram-${campaign.id}.png`,
+          fullPage: true,
+        });
+
+        await page.close();
+        return;
+      }
+
+      // --------------------------------
+      // تجهيز بيانات Supabase
+      // --------------------------------
+
+      const updateData = {
+        impressions: views,
+        last_updated: new Date().toISOString(),
+      };
 
       if (actions !== null) {
+        updateData.actions = actions;
+      }
 
-        console.log(
-          "Started bot found from HTML:",
-          actions
-        );
+      // --------------------------------
+      // تحديث Supabase
+      // --------------------------------
 
-        return actions;
+      const { error: updateError } = await supabase
+        .from("campaigns")
+        .update(updateData)
+        .eq("id", campaign.id);
+
+      if (updateError) {
+        console.error("Supabase update error:", updateError.message);
+      } else {
+        console.log("UPDATED SUCCESSFULLY");
+        console.log("Campaign:", campaign.campaign_name);
+        console.log("Views:", views);
+        console.log("Started bot:", actions);
+      }
+
+      await page.close();
+      return;
+
+    } catch (error) {
+      lastError = error;
+
+      console.error(
+        `FAILED (attempt ${attempt}) ${campaign.campaign_name}:`,
+        error.message
+      );
+
+      if (page) {
+        try {
+          await page.close();
+        } catch (_) {}
+      }
+
+      if (attempt <= MAX_RETRIES) {
+        console.log("Retrying...");
+        await sleep(3000);
       }
     }
-
-  } catch (error) {
-
-    console.log(
-      "HTML extraction failed:",
-      error.message
-    );
   }
 
-  console.log(
-    "ACTIONS NOT FOUND."
+  console.error(
+    `All attempts failed for ${campaign.campaign_name}:`,
+    lastError ? lastError.message : "unknown error"
   );
-
-  return null;
 }
 
 // ===============================
@@ -273,14 +460,8 @@ async function getActions(page) {
 // ===============================
 
 async function main() {
-
-  const {
-    data: campaigns,
-    error
-  } = await supabase
-
+  const { data: campaigns, error } = await supabase
     .from("campaigns")
-
     .select(
       `
       id,
@@ -291,284 +472,61 @@ async function main() {
       actions
       `
     )
-
-    .not(
-      "stats_url",
-      "is",
-      null
-    );
+    .not("stats_url", "is", null);
 
   if (error) {
-
-    throw new Error(
-      error.message
-    );
-
+    throw new Error(error.message);
   }
 
-  if (
-    !campaigns ||
-    campaigns.length === 0
-  ) {
-
-    console.log(
-      "No campaigns with stats_url."
-    );
-
+  if (!campaigns || campaigns.length === 0) {
+    console.log("No campaigns with stats_url.");
     return;
   }
 
-  console.log(
-    `Found ${campaigns.length} campaign(s).`
-  );
+  console.log(`Found ${campaigns.length} campaign(s).`);
 
-  // ===============================
-  // تشغيل Chromium
-  // ===============================
+  // --------------------------------
+  // تشغيل المتصفح
+  // --------------------------------
 
-  const browser =
-    await chromium.launch({
-      headless: true
-    });
+  const browser = await chromium.launch({ headless: true });
 
-  const context =
-    await browser.newContext({
+  const context = await browser.newContext({
+    viewport: { width: 1280, height: 900 },
+    userAgent:
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131 Safari/537.36",
+    acceptDownloads: true,
+  });
 
-      viewport: {
-        width: 1280,
-        height: 900
-      },
+  // --------------------------------
+  // معالجة الحملات
+  // --------------------------------
 
-      userAgent:
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131 Safari/537.36"
+  for (const campaign of campaigns) {
+    console.log("================================");
+    console.log("Campaign:", campaign.campaign_name);
+    console.log("Report:", campaign.report_code);
+    console.log("URL:", campaign.stats_url);
+    console.log("Old Views:", campaign.impressions);
+    console.log("Old Actions:", campaign.actions);
 
-    });
+    await processCampaign(context, campaign);
 
-  const page =
-    await context.newPage();
-
-  // ===============================
-  // الحملات
-  // ===============================
-
-  for (
-    const campaign of campaigns
-  ) {
-
-    console.log(
-      "================================"
-    );
-
-    console.log(
-      "Campaign:",
-      campaign.campaign_name
-    );
-
-    console.log(
-      "Report:",
-      campaign.report_code
-    );
-
-    console.log(
-      "URL:",
-      campaign.stats_url
-    );
-
-    console.log(
-      "Old Views:",
-      campaign.impressions
-    );
-
-    console.log(
-      "Old Actions:",
-      campaign.actions
-    );
-
-    try {
-
-      // =============================
-      // فتح صفحة Telegram
-      // =============================
-
-      await page.goto(
-        campaign.stats_url,
-        {
-          waitUntil:
-            "networkidle",
-
-          timeout:
-            90000
-        }
-      );
-
-      console.log(
-        "Telegram page loaded."
-      );
-
-      // =============================
-      // Views
-      // =============================
-
-      const views =
-        await getViews(page);
-
-      // =============================
-      // Actions
-      // =============================
-
-      const actions =
-        await getActions(page);
-
-      console.log(
-        "--------------------------------"
-      );
-
-      console.log(
-        "REAL VIEWS:",
-        views
-      );
-
-      console.log(
-        "REAL ACTIONS:",
-        actions
-      );
-
-      // =============================
-      // لو Views مش موجودة
-      // =============================
-
-      if (views === null) {
-
-        console.log(
-          "Views NOT FOUND."
-        );
-
-        await page.screenshot({
-
-          path:
-            `telegram-${campaign.id}.png`,
-
-          fullPage: true
-
-        });
-
-        continue;
-      }
-
-      // =============================
-      // بيانات التحديث
-      // =============================
-
-      const updateData = {
-
-        impressions:
-          views,
-
-        last_updated:
-          new Date().toISOString()
-
-      };
-
-      // نحفظ Actions لو اتوجدت
-      if (actions !== null) {
-
-        updateData.actions =
-          actions;
-
-      }
-
-      // =============================
-      // تحديث Supabase
-      // =============================
-
-      const {
-        error: updateError
-      } = await supabase
-
-        .from("campaigns")
-
-        .update(
-          updateData
-        )
-
-        .eq(
-          "id",
-          campaign.id
-        );
-
-      // =============================
-      // نتيجة التحديث
-      // =============================
-
-      if (updateError) {
-
-        console.error(
-          "Supabase update error:",
-          updateError.message
-        );
-
-      } else {
-
-        console.log(
-          "UPDATED SUCCESSFULLY"
-        );
-
-        console.log(
-          "Campaign:",
-          campaign.campaign_name
-        );
-
-        console.log(
-          "Views:",
-          views
-        );
-
-        console.log(
-          "Actions:",
-          actions
-        );
-
-      }
-
-    } catch (error) {
-
-      console.error(
-        `FAILED ${campaign.campaign_name}:`,
-        error.message
-      );
-
-    }
-
+    await sleep(DELAY_BETWEEN_CAMPAIGNS_MS);
   }
-
-  // ===============================
-  // إغلاق المتصفح
-  // ===============================
 
   await browser.close();
 
-  console.log(
-    "================================"
-  );
-
-  console.log(
-    "Telegram Ads update finished."
-  );
+  console.log("================================");
+  console.log("Telegram Ads update finished.");
 }
 
 // ===============================
-// تشغيل
+// Start
 // ===============================
 
-main()
-  .catch(
-    (error) => {
-
-      console.error(
-        error
-      );
-
-      process.exit(1);
-
-    }
-  );
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
+                      
