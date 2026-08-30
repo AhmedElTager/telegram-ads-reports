@@ -1,6 +1,5 @@
 const { createClient } = require("@supabase/supabase-js");
 const { chromium } = require("playwright");
-const fs = require("fs");
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -21,7 +20,7 @@ function cleanNumber(value) {
   return Number.isFinite(number) ? number : null;
 }
 
-async function getViews(page) {
+async function getStats(page) {
   await page.waitForTimeout(8000);
 
   const bodyText = await page.locator("body").innerText();
@@ -29,176 +28,121 @@ async function getViews(page) {
   console.log("PAGE URL:", page.url());
   console.log("PAGE TITLE:", await page.title());
 
+  // =========================
+  // Views
+  // =========================
+
+  let views = null;
+
   let match = bodyText.match(
     /Views[\s\S]{0,100}?([\d,]+(?:\.\d+)?)/i
   );
 
   if (match) {
-    const views = cleanNumber(match[1]);
-
-    if (views !== null) {
-      console.log("Views found from body:", views);
-      return views;
-    }
+    views = cleanNumber(match[1]);
   }
 
-  const viewsLocator = page
-    .getByText("Views", { exact: true })
-    .first();
+  // =========================
+  // Actions
+  // =========================
 
-  if (await viewsLocator.count()) {
-    try {
-      const parentText = await viewsLocator
-        .locator("..")
-        .innerText();
+  let actions = null;
 
-      console.log("Views parent text:", parentText);
-
-      const numbers = parentText.match(/[\d,]+/g);
-
-      if (numbers && numbers.length) {
-        for (const number of numbers) {
-          const views = cleanNumber(number);
-
-          if (views !== null) {
-            console.log(
-              "Views found from element:",
-              views
-            );
-
-            return views;
-          }
-        }
-      }
-    } catch (error) {
-      console.log(
-        "Element extraction failed:",
-        error.message
-      );
-    }
-  }
-
-  const html = await page.content();
-
-  match = html.match(
-    /Views[\s\S]{0,500}?([\d,]+(?:\.\d+)?)/i
+  const actionMatch = bodyText.match(
+    /Actions[\s\S]{0,150}?([\d,]+(?:\.\d+)?)/i
   );
 
-  if (match) {
-    const views = cleanNumber(match[1]);
-
-    if (views !== null) {
-      console.log(
-        "Views found from HTML:",
-        views
-      );
-
-      return views;
-    }
+  if (actionMatch) {
+    actions = cleanNumber(actionMatch[1]);
   }
 
-  return null;
-}
+  // =========================
+  // محاولة إضافية للـ Views
+  // =========================
 
-/*
-  محاولة استخراج Actions من صفحة Telegram Ads
-*/
-async function getActions(page) {
-  await page.waitForTimeout(3000);
-
-  const bodyText = await page.locator("body").innerText();
-
-  console.log("Searching for actions...");
-
-  /*
-    Telegram يعرض أنواع الإجراءات مثل:
-    Started bot
-    Joined channel
-    Join
-  */
-
-  const patterns = [
-    /Started bot[\s\S]{0,100}?([\d,]+)/i,
-    /Joined channel[\s\S]{0,100}?([\d,]+)/i,
-    /Join[\s\S]{0,100}?([\d,]+)/i,
-    /Actions[\s\S]{0,100}?([\d,]+)/i
-  ];
-
-  for (const pattern of patterns) {
-    const match = bodyText.match(pattern);
-
-    if (match) {
-      const actions = cleanNumber(match[1]);
-
-      if (actions !== null) {
-        console.log(
-          "Actions found:",
-          actions
-        );
-
-        return actions;
-      }
-    }
-  }
-
-  /*
-    نحاول البحث عن عناصر Actions / Started bot
-  */
-  const labels = [
-    "Started bot",
-    "Joined channel",
-    "Actions"
-  ];
-
-  for (const label of labels) {
-    const locator = page
-      .getByText(label, { exact: true })
+  if (views === null) {
+    const viewsLocator = page
+      .getByText("Views", { exact: true })
       .first();
 
-    if (await locator.count()) {
+    if (await viewsLocator.count()) {
       try {
-        const parentText = await locator
+        const parentText = await viewsLocator
           .locator("..")
           .innerText();
 
-        console.log(
-          `${label} parent:`,
-          parentText
-        );
-
-        const numbers =
-          parentText.match(/[\d,]+/g);
+        const numbers = parentText.match(/[\d,]+/g);
 
         if (numbers && numbers.length) {
           for (const number of numbers) {
-            const actions = cleanNumber(number);
+            const value = cleanNumber(number);
 
-            if (actions !== null) {
-              console.log(
-                `Actions found from ${label}:`,
-                actions
-              );
-
-              return actions;
+            if (value !== null) {
+              views = value;
+              break;
             }
           }
         }
       } catch (error) {
         console.log(
-          `${label} extraction failed:`,
+          "Views element extraction failed:",
           error.message
         );
       }
     }
   }
 
-  console.log("Actions NOT FOUND.");
+  // =========================
+  // محاولة إضافية للـ Actions
+  // =========================
 
-  return null;
+  if (actions === null) {
+    const actionLocator = page
+      .getByText("Actions", { exact: true })
+      .first();
+
+    if (await actionLocator.count()) {
+      try {
+        const parentText = await actionLocator
+          .locator("..")
+          .innerText();
+
+        const numbers = parentText.match(/[\d,]+/g);
+
+        if (numbers && numbers.length) {
+          for (const number of numbers) {
+            const value = cleanNumber(number);
+
+            if (value !== null) {
+              actions = value;
+              break;
+            }
+          }
+        }
+      } catch (error) {
+        console.log(
+          "Actions element extraction failed:",
+          error.message
+        );
+      }
+    }
+  }
+
+  console.log("VIEWS:", views);
+  console.log("ACTIONS:", actions);
+
+  return {
+    views,
+    actions
+  };
 }
 
 async function main() {
-  const { data: campaigns, error } = await supabase
+
+  const {
+    data: campaigns,
+    error
+  } = await supabase
     .from("campaigns")
     .select(
       "id, campaign_name, report_code, stats_url, impressions, actions"
@@ -213,7 +157,6 @@ async function main() {
     console.log(
       "No campaigns with stats_url."
     );
-
     return;
   }
 
@@ -238,7 +181,10 @@ async function main() {
   const page = await context.newPage();
 
   for (const campaign of campaigns) {
-    console.log("--------------------------------");
+
+    console.log(
+      "--------------------------------"
+    );
 
     console.log(
       "Campaign:",
@@ -266,6 +212,7 @@ async function main() {
     );
 
     try {
+
       await page.goto(
         campaign.stats_url,
         {
@@ -278,23 +225,17 @@ async function main() {
         "Telegram page loaded."
       );
 
-      const views =
-        await getViews(page);
-
-      const actions =
-        await getActions(page);
-
-      console.log(
-        "REAL VIEWS:",
-        views
-      );
-
-      console.log(
-        "REAL ACTIONS:",
+      const {
+        views,
         actions
-      );
+      } = await getStats(page);
+
+      // =========================
+      // لو مفيش Views
+      // =========================
 
       if (views === null) {
+
         console.log(
           `Views NOT FOUND for ${
             campaign.report_code ||
@@ -311,39 +252,50 @@ async function main() {
         continue;
       }
 
-      /*
-        لو Actions مش موجودة،
-        نحافظ على القيمة القديمة
-      */
-      const finalActions =
-        actions !== null
-          ? actions
-          : campaign.actions || 0;
+      console.log(
+        "REAL VIEWS:",
+        views
+      );
 
-      const { error: updateError } =
-        await supabase
-          .from("campaigns")
-          .update({
-            impressions: views,
+      console.log(
+        "REAL ACTIONS:",
+        actions
+      );
 
-            actions: finalActions,
+      // =========================
+      // تحديث Supabase
+      // =========================
 
-            last_updated:
-              new Date().toISOString()
-          })
-          .eq(
-            "id",
-            campaign.id
-          );
+      const updateData = {
+        impressions: views,
+        last_updated:
+          new Date().toISOString()
+      };
+
+      if (actions !== null) {
+        updateData.actions = actions;
+      }
+
+      const {
+        error: updateError
+      } = await supabase
+        .from("campaigns")
+        .update(updateData)
+        .eq("id", campaign.id);
 
       if (updateError) {
+
         console.error(
           "Supabase update error:",
           updateError.message
         );
+
       } else {
+
         console.log(
-          `UPDATED SUCCESSFULLY: ${campaign.campaign_name}`
+          `UPDATED SUCCESSFULLY: ${
+            campaign.campaign_name
+          }`
         );
 
         console.log(
@@ -351,13 +303,16 @@ async function main() {
         );
 
         console.log(
-          `Actions = ${finalActions}`
+          `Actions = ${actions}`
         );
       }
 
     } catch (error) {
+
       console.error(
-        `FAILED ${campaign.campaign_name}:`,
+        `FAILED ${
+          campaign.campaign_name
+        }:`,
         error.message
       );
     }
@@ -365,7 +320,9 @@ async function main() {
 
   await browser.close();
 
-  console.log("--------------------------------");
+  console.log(
+    "--------------------------------"
+  );
 
   console.log(
     "Telegram Ads update finished."
@@ -373,7 +330,9 @@ async function main() {
 }
 
 main().catch((error) => {
+
   console.error(error);
 
   process.exit(1);
+
 });
