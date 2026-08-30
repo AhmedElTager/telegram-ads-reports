@@ -2,2210 +2,2002 @@
 <html lang="ar" dir="rtl">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>El Tager. Ads | تقارير إعلانات تيليجرام</title>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, Tahoma, sans-serif;
-      background:
-        radial-gradient(circle at top right, #062b62 0, #031936 30%, #020b1c 70%);
-      color: #fff;
-      min-height: 100vh;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background:
-        linear-gradient(
-          120deg,
-          rgba(0, 174, 255, .04),
-          transparent 40%,
-          rgba(0, 110, 255, .04)
-        );
-      z-index: -1;
-    }
-
-    /* =========================
-       TOP HEADER
-    ========================= */
-
-    .topbar {
-      width: 100%;
-      padding: 18px 25px;
-      border-bottom: 1px solid rgba(0, 174, 255, .35);
-      background: rgba(2, 16, 39, .90);
-      backdrop-filter: blur(12px);
-      position: sticky;
-      top: 0;
-      z-index: 20;
-    }
-
-    .topbar-inner {
-      max-width: 1150px;
-      margin: auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 13px;
-    }
-
-    .brand-icon {
-      width: 55px;
-      height: 55px;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 28px;
-      background: #087de9;
-      box-shadow:
-        0 0 15px rgba(0, 149, 255, .7),
-        inset 0 0 12px rgba(255,255,255,.15);
-    }
-
-    .brand-title {
-      font-size: 25px;
-      font-weight: bold;
-    }
-
-    .brand-subtitle {
-      color: #9db8d9;
-      font-size: 13px;
-      margin-top: 5px;
-    }
-
-    .client-box {
-      background: rgba(8, 54, 105, .75);
-      border: 1px solid rgba(0, 157, 255, .45);
-      border-radius: 30px;
-      padding: 10px 18px;
-      color: #d7eaff;
-      font-size: 14px;
-    }
-
-    /* =========================
-       CONTAINER
-    ========================= */
-
-    .container {
-      max-width: 1150px;
-      margin: 25px auto 50px;
-      padding: 0 16px;
-    }
-
-    /* =========================
-       LOADING
-    ========================= */
-
-    .loading {
-      text-align: center;
-      padding: 70px 15px;
-      color: #b9d2ed;
-      font-size: 18px;
-    }
-
-    .loader {
-      width: 45px;
-      height: 45px;
-      border: 4px solid rgba(0, 174, 255, .2);
-      border-top-color: #00aaff;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 18px;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    /* =========================
-       CAMPAIGN CARD
-    ========================= */
-
-    .campaign-card {
-      background: linear-gradient(
-        145deg,
-        rgba(5, 31, 67, .97),
-        rgba(2, 18, 43, .97)
-      );
-
-      border: 1px solid #008cff;
-      border-radius: 20px;
-      overflow: hidden;
-
-      box-shadow:
-        0 0 12px rgba(0, 136, 255, .35),
-        inset 0 0 25px rgba(0, 100, 255, .05);
-    }
-
-    /* =========================
-       AD PREVIEW
-    ========================= */
-
-    .ad-section {
-      padding: 22px;
-    }
-
-    .section-title {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-    }
-
-    .section-title h2 {
-      margin: 0;
-      font-size: 20px;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 8px 16px;
-      border-radius: 18px;
-      background: #087ee8;
-      color: white;
-      font-size: 13px;
-      font-weight: bold;
-      box-shadow: 0 0 12px rgba(0, 130, 255, .35);
-    }
-
-    .ad-preview {
-      display: grid;
-      grid-template-columns: 48% 52%;
-      min-height: 300px;
-      border: 1px solid rgba(0, 148, 255, .55);
-      border-radius: 16px;
-      overflow: hidden;
-      background: #031a39;
-    }
-
-    .ad-image-area {
-      min-height: 300px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #020f25;
-      padding: 10px;
-    }
-
-    .ad-image {
-      width: 100%;
-      height: 100%;
-      max-height: 390px;
-      object-fit: contain;
-      border-radius: 10px;
-      display: none;
-    }
-
-    .no-image {
-      color: #6f91b7;
-      font-size: 16px;
-    }
-
-    .ad-content {
-      padding: 30px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .ad-content h1 {
-      margin: 0 0 15px;
-      font-size: 27px;
-      line-height: 1.5;
-    }
-
-    .ad-text {
-      color: #cbdcf0;
-      line-height: 2;
-      white-space: pre-wrap;
-      font-size: 15px;
-    }
-
-    .open-button {
-      display: inline-flex;
-      width: fit-content;
-      margin-top: 22px;
-      padding: 13px 25px;
-      background: linear-gradient(135deg, #087ee8, #005bd4);
-      color: #fff;
-      text-decoration: none;
-      border-radius: 11px;
-      font-weight: bold;
-      box-shadow: 0 0 15px rgba(0, 122, 255, .35);
-      transition: .2s;
-    }
-
-    .open-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 22px rgba(0, 145, 255, .55);
-    }
-
-    /* =========================
-       STATS
-    ========================= */
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 18px;
-      margin-top: 18px;
-    }
-
-    .stat-card {
-      background: linear-gradient(
-        145deg,
-        rgba(4, 29, 63, .95),
-        rgba(2, 19, 43, .95)
-      );
-
-      border: 1px solid #007fe9;
-      border-radius: 18px;
-      padding: 24px;
-      min-height: 150px;
-
-      box-shadow:
-        0 0 10px rgba(0, 130, 255, .25),
-        inset 0 0 18px rgba(0, 130, 255, .04);
-    }
-
-    .stat-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: #d9e9fa;
-      font-size: 17px;
-    }
-
-    .stat-icon {
-      width: 43px;
-      height: 43px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #064a99;
-      box-shadow: 0 0 15px rgba(0, 136, 255, .4);
-      font-size: 21px;
-    }
-
-    .stat-value {
-      font-size: 38px;
-      font-weight: bold;
-      margin-top: 20px;
-      direction: ltr;
-      text-align: right;
-    }
-
-    .stat-description {
-      color: #7798bb;
-      font-size: 13px;
-      margin-top: 7px;
-    }
-
-    /* =========================
-       STATUS
-    ========================= */
-
-    .status-card {
-      margin-top: 18px;
-      background: linear-gradient(
-        145deg,
-        rgba(4, 29, 63, .95),
-        rgba(2, 19, 43, .95)
-      );
-
-      border: 1px solid #008cff;
-      border-radius: 18px;
-      padding: 24px;
-
-      box-shadow:
-        0 0 10px rgba(0, 130, 255, .25);
-    }
-
-    .status-title {
-      font-size: 18px;
-      color: #dcecff;
-      margin-bottom: 22px;
-    }
-
-    .status-main {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .status-text {
-      font-size: 29px;
-      font-weight: bold;
-      color: #00f58b;
-    }
-
-    .status-description {
-      color: #9eb8d3;
-      margin-top: 10px;
-    }
-
-    .check-circle {
-      width: 90px;
-      height: 90px;
-      border-radius: 50%;
-      border: 3px solid #00ee85;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 42px;
-      color: #00ee85;
-      box-shadow:
-        0 0 15px rgba(0, 240, 130, .55),
-        inset 0 0 20px rgba(0, 240, 130, .1);
-    }
-
-    .progress {
-      height: 11px;
-      background: #073252;
-      border-radius: 20px;
-      overflow: hidden;
-      margin-top: 22px;
-    }
-
-    .progress-bar {
-      height: 100%;
-      width: 100%;
-      background: #00ef86;
-      border-radius: 20px;
-      box-shadow: 0 0 10px rgba(0, 239, 134, .5);
-    }
-
-    /* =========================
-       CHART
-    ========================= */
-
-    .chart-card {
-      margin-top: 18px;
-      background: linear-gradient(
-        145deg,
-        rgba(4, 29, 63, .95),
-        rgba(2, 19, 43, .95)
-      );
-
-      border: 1px solid #008cff;
-      border-radius: 18px;
-      padding: 24px;
-
-      box-shadow:
-        0 0 10px rgba(0, 130, 255, .25);
-    }
-
-    .chart-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-
-    .chart-header h2 {
-      margin: 0;
-      font-size: 20px;
-    }
-
-    .chart-wrapper {
-      height: 300px;
-      position: relative;
-      overflow: hidden;
-      border-radius: 12px;
-      background:
-        linear-gradient(
-          to bottom,
-          rgba(0, 128, 255, .08),
-          rgba(0, 128, 255, .01)
-        );
-    }
-
-    canvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
-    .chart-empty {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #7898b8;
-      font-size: 14px;
-    }
-
-    /* =========================
-       DETAILS
-    ========================= */
-
-    .details-card {
-      margin-top: 18px;
-      background: linear-gradient(
-        145deg,
-        rgba(4, 29, 63, .95),
-        rgba(2, 19, 43, .95)
-      );
-
-      border: 1px solid #008cff;
-      border-radius: 18px;
-      padding: 24px;
-
-      box-shadow:
-        0 0 10px rgba(0, 130, 255, .25);
-    }
-
-    .details-title {
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 20px;
-    }
-
-    .details-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0 30px;
-    }
-
-    .detail {
-      padding: 17px 0;
-      border-bottom: 1px solid rgba(42, 105, 157, .25);
-    }
-
-    .detail-label {
-      color: #7696b8;
-      font-size: 13px;
-      margin-bottom: 7px;
-    }
-
-    .detail-value {
-      color: #e6f1fc;
-      font-size: 15px;
-      word-break: break-word;
-    }
-
-    .detail-value a {
-      color: #45b6ff;
-    }
-
-    .report-code {
-      display: inline-block;
-      direction: ltr;
-      background: #082d58;
-      border: 1px solid #0b72ca;
-      padding: 6px 12px;
-      border-radius: 9px;
-      font-family: monospace;
-    }
-
-    /* =========================
-       FOOTER
-    ========================= */
-
-    .footer {
-      margin-top: 20px;
-      padding: 18px;
-      background: rgba(4, 28, 59, .8);
-      border: 1px solid rgba(0, 125, 230, .35);
-      border-radius: 16px;
-
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 15px;
-
-      color: #8daac7;
-      font-size: 13px;
-    }
-
-    .footer-refresh {
-      color: #b5d4ef;
-    }
-
-    /* =========================
-       ERROR
-    ========================= */
-
-    .error {
-      display: none;
-      margin-top: 20px;
-      padding: 20px;
-      background: rgba(130, 20, 20, .35);
-      border: 1px solid #d83d3d;
-      border-radius: 14px;
-      text-align: center;
-      color: #ffd0d0;
-    }
-
-    /* =========================
-       NOT FOUND
-    ========================= */
-
-    .not-found {
-      display: none;
-      text-align: center;
-      padding: 80px 20px;
-      background: rgba(4, 29, 63, .95);
-      border: 1px solid #007fe9;
-      border-radius: 20px;
-    }
-
-    .not-found-icon {
-      font-size: 55px;
-      margin-bottom: 15px;
-    }
-
-    .not-found h2 {
-      margin: 0 0 10px;
-    }
-
-    .not-found p {
-      color: #91abc6;
-      line-height: 1.9;
-    }
-
-    /* =========================
-       RESPONSIVE
-    ========================= */
-
-    @media (max-width: 800px) {
-
-      .topbar {
-        padding: 13px 12px;
-      }
-
-      .topbar-inner {
-        flex-direction: row;
-      }
-
-      .brand-icon {
-        width: 45px;
-        height: 45px;
-        font-size: 23px;
-      }
-
-      .brand-title {
-        font-size: 19px;
-      }
-
-      .brand-subtitle {
-        font-size: 11px;
-      }
-
-      .client-box {
-        font-size: 11px;
-        padding: 8px 11px;
-      }
-
-      .container {
-        margin-top: 15px;
-        padding: 0 10px;
-      }
-
-      .ad-preview {
-        grid-template-columns: 1fr;
-      }
-
-      .ad-image-area {
-        min-height: 230px;
-      }
-
-      .ad-content {
-        padding: 22px;
-      }
-
-      .ad-content h1 {
-        font-size: 22px;
-      }
-
-      .stats {
-        grid-template-columns: 1fr;
-      }
-
-      .details-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .status-main {
-        align-items: flex-start;
-      }
-
-      .check-circle {
-        width: 70px;
-        height: 70px;
-        font-size: 32px;
-      }
-
-      .status-text {
-        font-size: 25px;
-      }
-
-      .chart-wrapper {
-        height: 240px;
-      }
-
-      .footer {
-        flex-direction: column;
-        text-align: center;
-      }
-    }
-
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>El Tager . Ads</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+*{
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  font-family:Arial,Tahoma,sans-serif;
+  background:
+    radial-gradient(circle at 90% 0%,rgba(0,150,255,.18),transparent 30%),
+    radial-gradient(circle at 10% 50%,rgba(0,80,255,.10),transparent 35%),
+    #020b20;
+  color:#fff;
+  min-height:100vh;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:100;
+  padding:14px 18px;
+  background:rgba(2,13,38,.92);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(0,174,255,.35);
+  box-shadow:0 0 25px rgba(0,130,255,.12);
+}
+
+.topbar-inner{
+  max-width:1200px;
+  margin:auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.brand-icon{
+  width:52px;
+  height:52px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:27px;
+  background:linear-gradient(145deg,#078cff,#004acb);
+  box-shadow:
+    0 0 12px #008cff,
+    inset 0 0 10px rgba(255,255,255,.2);
+}
+
+.brand-text h1{
+  margin:0;
+  font-size:22px;
+}
+
+.brand-text p{
+  margin:4px 0 0;
+  color:#9bb7d8;
+  font-size:12px;
+}
+
+.client-box{
+  display:none;
+  align-items:center;
+  gap:10px;
+  background:rgba(8,40,88,.8);
+  border:1px solid rgba(0,153,255,.5);
+  border-radius:30px;
+  padding:7px 13px;
+}
+
+.client-avatar{
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#087cff;
+}
+
+.client-name{
+  font-size:13px;
+}
+
+.logout{
+  border:0;
+  background:rgba(255,255,255,.08);
+  color:#fff;
+  border-radius:18px;
+  padding:8px 12px;
+  cursor:pointer;
+}
+
+/* =========================
+   MAIN
+========================= */
+
+.container{
+  max-width:1200px;
+  margin:28px auto;
+  padding:0 16px 40px;
+}
+
+/* =========================
+   LOGIN
+========================= */
+
+.login-card{
+  max-width:520px;
+  margin:80px auto;
+  padding:42px 25px;
+  text-align:center;
+  background:rgba(4,24,58,.9);
+  border:1px solid #008cff;
+  border-radius:24px;
+  box-shadow:
+    0 0 25px rgba(0,136,255,.28),
+    inset 0 0 25px rgba(0,70,180,.08);
+}
+
+.login-icon{
+  width:85px;
+  height:85px;
+  margin:auto auto 20px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:45px;
+  background:linear-gradient(145deg,#1298ff,#0051d8);
+  box-shadow:0 0 25px rgba(0,145,255,.55);
+}
+
+.login-card h2{
+  margin:0 0 12px;
+  font-size:27px;
+}
+
+.login-card p{
+  color:#a9bdd8;
+  line-height:1.9;
+  margin-bottom:25px;
+}
+
+.telegram-login{
+  display:flex;
+  justify-content:center;
+  margin-top:20px;
+}
+
+/* =========================
+   WELCOME
+========================= */
+
+.welcome{
+  display:none;
+  text-align:center;
+  padding:25px 0;
+}
+
+.welcome h2{
+  margin:0 0 8px;
+}
+
+.welcome p{
+  color:#9bb1cf;
+}
+
+/* =========================
+   CAMPAIGNS
+========================= */
+
+.section-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:18px;
+}
+
+.section-title h2{
+  margin:0;
+  font-size:22px;
+}
+
+.section-title span{
+  color:#7fa3c9;
+  font-size:13px;
+}
+
+.campaigns{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:18px;
+}
+
+.campaign{
+  position:relative;
+  overflow:hidden;
+  background:
+    linear-gradient(145deg,rgba(7,38,86,.96),rgba(2,17,45,.96));
+  border:1px solid rgba(0,157,255,.75);
+  border-radius:20px;
+  padding:18px;
+  box-shadow:
+    0 0 18px rgba(0,135,255,.18),
+    inset 0 0 25px rgba(0,100,255,.06);
+  transition:.2s;
+}
+
+.campaign:hover{
+  transform:translateY(-3px);
+  box-shadow:
+    0 0 28px rgba(0,153,255,.3);
+}
+
+.ad-image{
+  width:100%;
+  height:210px;
+  object-fit:cover;
+  border-radius:14px;
+  margin-bottom:15px;
+  border:1px solid rgba(0,170,255,.35);
+  display:none;
+}
+
+.ad-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+
+.ad-badge{
+  display:inline-block;
+  padding:7px 13px;
+  border-radius:20px;
+  background:#087bea;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.status{
+  padding:7px 12px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.status.active{
+  color:#00ff91;
+  background:rgba(0,255,140,.09);
+  border:1px solid rgba(0,255,140,.3);
+}
+
+.status.inactive{
+  color:#ff7c7c;
+  background:rgba(255,70,70,.08);
+  border:1px solid rgba(255,70,70,.3);
+}
+
+.campaign h3{
+  font-size:20px;
+  margin:18px 0 10px;
+}
+
+.ad-text{
+  color:#b7c8df;
+  line-height:1.8;
+  font-size:14px;
+  white-space:pre-wrap;
+  max-height:90px;
+  overflow:hidden;
+}
+
+.stats-mini{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:18px;
+}
+
+.mini{
+  background:rgba(0,0,0,.15);
+  border:1px solid rgba(0,153,255,.2);
+  border-radius:12px;
+  padding:12px;
+}
+
+.mini-title{
+  color:#8ca8c8;
+  font-size:12px;
+}
+
+.mini-value{
+  margin-top:6px;
+  font-size:22px;
+  font-weight:bold;
+}
+
+.details-btn{
+  width:100%;
+  margin-top:15px;
+  padding:13px;
+  border:0;
+  border-radius:12px;
+  background:linear-gradient(90deg,#087bea,#0056d6);
+  color:#fff;
+  font-size:15px;
+  font-weight:bold;
+  cursor:pointer;
+  box-shadow:0 0 15px rgba(0,130,255,.2);
+}
+
+/* =========================
+   DETAILS
+========================= */
+
+.details{
+  display:none;
+}
+
+.back-btn{
+  border:1px solid rgba(0,153,255,.5);
+  background:rgba(5,40,85,.8);
+  color:#fff;
+  padding:10px 16px;
+  border-radius:12px;
+  cursor:pointer;
+  margin-bottom:18px;
+}
+
+.report-card{
+  background:
+    linear-gradient(145deg,rgba(5,31,70,.97),rgba(2,14,38,.97));
+  border:1px solid #008cff;
+  border-radius:22px;
+  padding:22px;
+  box-shadow:0 0 25px rgba(0,130,255,.18);
+}
+
+.report-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  flex-wrap:wrap;
+}
+
+.report-header h2{
+  margin:0;
+  font-size:24px;
+}
+
+.report-name{
+  color:#91acd0;
+  margin-top:8px;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:15px;
+  margin-top:22px;
+}
+
+.stat{
+  background:rgba(0,15,40,.7);
+  border:1px solid rgba(0,145,255,.35);
+  border-radius:16px;
+  padding:20px;
+}
+
+.stat-title{
+  color:#8ca8ca;
+  font-size:13px;
+}
+
+.stat-value{
+  margin-top:10px;
+  font-size:32px;
+  font-weight:bold;
+}
+
+.stat-icon{
+  font-size:22px;
+}
+
+.ad-preview{
+  margin-top:20px;
+  background:rgba(0,12,32,.65);
+  border:1px solid rgba(0,145,255,.3);
+  border-radius:16px;
+  padding:18px;
+}
+
+.ad-preview h3{
+  margin-top:0;
+}
+
+.details-image{
+  width:100%;
+  max-height:450px;
+  object-fit:contain;
+  border-radius:14px;
+  display:none;
+  margin-bottom:15px;
+}
+
+.channel-btn{
+  display:inline-block;
+  margin-top:15px;
+  background:#078ce8;
+  color:#fff;
+  text-decoration:none;
+  padding:12px 18px;
+  border-radius:11px;
+  font-weight:bold;
+}
+
+.detail-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  margin-top:20px;
+}
+
+.detail{
+  padding:14px;
+  background:rgba(0,0,0,.15);
+  border:1px solid rgba(0,145,255,.2);
+  border-radius:12px;
+}
+
+.detail-label{
+  color:#7f9cbc;
+  font-size:12px;
+}
+
+.detail-value{
+  margin-top:7px;
+  font-size:14px;
+}
+
+/* =========================
+   STATES
+========================= */
+
+.loading,
+.empty,
+.error{
+  text-align:center;
+  padding:45px 20px;
+  color:#a6bad4;
+}
+
+.error{
+  color:#ff9a9a;
+}
+
+.spinner{
+  width:40px;
+  height:40px;
+  border:3px solid rgba(255,255,255,.15);
+  border-top-color:#0798ff;
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+  margin:0 auto 15px;
+}
+
+@keyframes spin{
+  to{
+    transform:rotate(360deg);
+  }
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.footer{
+  text-align:center;
+  color:#6482a6;
+  font-size:12px;
+  margin-top:35px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:750px){
+
+  .brand-text h1{
+    font-size:18px;
+  }
+
+  .brand-text p{
+    font-size:10px;
+  }
+
+  .brand-icon{
+    width:44px;
+    height:44px;
+    font-size:23px;
+  }
+
+  .client-box{
+    padding:5px 8px;
+  }
+
+  .client-name{
+    display:none;
+  }
+
+  .campaigns{
+    grid-template-columns:1fr;
+  }
+
+  .stats{
+    grid-template-columns:1fr;
+  }
+
+  .detail-grid{
+    grid-template-columns:1fr;
+  }
+
+  .login-card{
+    margin:45px auto;
+  }
+
+}
+
+</style>
 
 </head>
 
 <body>
 
-  <!-- =========================
-       HEADER
-  ========================== -->
+<!-- =========================
+     HEADER
+========================= -->
 
-  <header class="topbar">
+<header class="topbar">
 
-    <div class="topbar-inner">
+  <div class="topbar-inner">
 
-      <div class="brand">
+    <div class="brand">
 
-        <div class="brand-icon">
-          📊
-        </div>
+      <div class="brand-icon">
+        📊
+      </div>
 
-        <div>
+      <div class="brand-text">
 
-          <div class="brand-title">
-            El Tager. Ads
-          </div>
+        <h1>
+          El Tager . Ads
+        </h1>
 
-          <div class="brand-subtitle">
-            تقارير إعلانات تيليجرام
-          </div>
-
-        </div>
+        <p>
+          تقارير إعلانات تيليجرام
+        </p>
 
       </div>
+
+    </div>
+
+    <div
+      id="clientBox"
+      class="client-box"
+    >
+
+      <img
+        id="clientAvatar"
+        class="client-avatar"
+        alt=""
+      >
 
       <div
-        id="clientBox"
-        class="client-box"
+        id="clientName"
+        class="client-name"
       >
-        مرحبًا بك في تقريرك
+        العميل
+      </div>
+
+      <button
+        id="logoutBtn"
+        class="logout"
+      >
+        تسجيل الخروج
+      </button>
+
+    </div>
+
+  </div>
+
+</header>
+
+
+<main class="container">
+
+
+<!-- =========================
+     LOGIN SCREEN
+========================= -->
+
+<section
+  id="loginScreen"
+  class="login-card"
+>
+
+  <div class="login-icon">
+    ✈️
+  </div>
+
+  <h2>
+    مرحبًا بك في El Tager . Ads
+  </h2>
+
+  <p>
+    لتتمكن من مشاهدة إعلاناتك وتقارير الحملات
+    والإحصائيات الخاصة بك، قم بتسجيل الدخول
+    باستخدام حساب Telegram.
+  </p>
+
+  <div
+    id="telegramLogin"
+    class="telegram-login"
+  ></div>
+
+  <div
+    id="loginMessage"
+    style="margin-top:20px;color:#7895b7;font-size:12px;"
+  >
+    تسجيل الدخول آمن وسريع
+  </div>
+
+</section>
+
+
+<!-- =========================
+     LOADING
+========================= -->
+
+<div
+  id="loading"
+  class="loading"
+  style="display:none;"
+>
+
+  <div class="spinner"></div>
+
+  جاري تحميل إعلاناتك...
+
+</div>
+
+
+<!-- =========================
+     DASHBOARD
+========================= -->
+
+<section
+  id="dashboard"
+  style="display:none;"
+>
+
+  <div class="welcome">
+
+    <h2>
+      إعلاناتك
+    </h2>
+
+    <p>
+      جميع الحملات الإعلانية المرتبطة بحسابك
+    </p>
+
+  </div>
+
+  <div class="section-title">
+
+    <h2>
+      📢 حملاتك الإعلانية
+    </h2>
+
+    <span id="campaignCount">
+      0 حملة
+    </span>
+
+  </div>
+
+  <div
+    id="campaigns"
+    class="campaigns"
+  ></div>
+
+  <div
+    id="empty"
+    class="empty"
+    style="display:none;"
+  >
+    لا توجد إعلانات مرتبطة بحساب Telegram الخاص بك حاليًا.
+  </div>
+
+</section>
+
+
+<!-- =========================
+     DETAILS
+========================= -->
+
+<section
+  id="details"
+  class="details"
+>
+
+  <button
+    id="backBtn"
+    class="back-btn"
+  >
+    ← العودة إلى الإعلانات
+  </button>
+
+  <div
+    id="reportCard"
+    class="report-card"
+  >
+
+    <div class="report-header">
+
+      <div>
+
+        <h2>
+          📊 إحصائيات الإعلان
+        </h2>
+
+        <div
+          id="detailCampaignName"
+          class="report-name"
+        >
+          —
+        </div>
+
+      </div>
+
+      <span
+        id="detailStatus"
+        class="status active"
+      >
+        ● نشطة
+      </span>
+
+    </div>
+
+
+    <div class="stats">
+
+      <div class="stat">
+
+        <div class="stat-title">
+          👁️ مرات الظهور
+        </div>
+
+        <div
+          id="detailImpressions"
+          class="stat-value"
+        >
+          0
+        </div>
+
+      </div>
+
+
+      <div class="stat">
+
+        <div
+          id="detailActionsTitle"
+          class="stat-title"
+        >
+          👆 التفاعلات
+        </div>
+
+        <div
+          id="detailActions"
+          class="stat-value"
+        >
+          0
+        </div>
+
+      </div>
+
+
+      <div class="stat">
+
+        <div class="stat-title">
+          🟢 حالة الحملة
+        </div>
+
+        <div
+          id="detailStatusValue"
+          class="stat-value"
+        >
+          —
+        </div>
+
       </div>
 
     </div>
 
-  </header>
 
+    <div class="ad-preview">
 
-  <main class="container">
+      <h3>
+        محتوى الإعلان
+      </h3>
 
-    <!-- LOADING -->
+      <img
+        id="detailImage"
+        class="details-image"
+        alt="صورة الإعلان"
+      >
 
-    <div
-      id="loading"
-      class="loading"
-    >
-
-      <div class="loader"></div>
-
-      جاري تحميل التقرير...
-
-    </div>
-
-
-    <!-- NOT FOUND -->
-
-    <div
-      id="notFound"
-      class="not-found"
-    >
-
-      <div class="not-found-icon">
-        🔍
+      <div
+        id="detailText"
+        style="line-height:1.9;color:#c0cee0;"
+      >
+        —
       </div>
 
-      <h2>
-        لم يتم العثور على التقرير
-      </h2>
-
-      <p>
-        رابط التقرير غير صحيح أو أن التقرير غير موجود.
-        <br>
-        تأكد من استخدام الرابط الذي تم إرساله إليك.
-      </p>
+      <a
+        id="channelBtn"
+        class="channel-btn"
+        href="#"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        📢 فتح الإعلان
+      </a>
 
     </div>
 
 
-    <!-- REPORT -->
+    <div class="detail-grid">
+
+      <div class="detail">
+
+        <div class="detail-label">
+          نوع الإعلان
+        </div>
+
+        <div
+          id="detailType"
+          class="detail-value"
+        >
+          —
+        </div>
+
+      </div>
+
+
+      <div class="detail">
+
+        <div class="detail-label">
+          تاريخ البدء
+        </div>
+
+        <div
+          id="detailStart"
+          class="detail-value"
+        >
+          —
+        </div>
+
+      </div>
+
+
+      <div class="detail">
+
+        <div class="detail-label">
+          تاريخ الانتهاء
+        </div>
+
+        <div
+          id="detailEnd"
+          class="detail-value"
+        >
+          —
+        </div>
+
+      </div>
+
+
+      <div class="detail">
+
+        <div class="detail-label">
+          كود التقرير
+        </div>
+
+        <div
+          id="detailCode"
+          class="detail-value"
+        >
+          —
+        </div>
+
+      </div>
+
+    </div>
+
 
     <div
-      id="report"
-      style="display:none;"
+      id="lastUpdated"
+      style="text-align:center;color:#6f8dab;font-size:12px;margin-top:20px;"
     >
-
-      <!-- =====================
-           AD
-      ====================== -->
-
-      <section class="campaign-card">
-
-        <div class="ad-section">
-
-          <div class="section-title">
-
-            <h2>
-              محتوى الإعلان
-            </h2>
-
-            <span class="badge">
-              Ad
-            </span>
-
-          </div>
-
-          <div class="ad-preview">
-
-            <div class="ad-image-area">
-
-              <img
-                id="adImage"
-                class="ad-image"
-                alt="صورة الإعلان"
-              >
-
-              <div
-                id="noImage"
-                class="no-image"
-              >
-                لا توجد صورة للإعلان
-              </div>
-
-            </div>
-
-            <div class="ad-content">
-
-              <h1 id="campaignName">
-                —
-              </h1>
-
-              <div
-                id="adText"
-                class="ad-text"
-              >
-                —
-              </div>
-
-              <a
-                id="openButton"
-                class="open-button"
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                📢 فتح الإعلان
-              </a>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </section>
-
-
-      <!-- =====================
-           STATS
-      ====================== -->
-
-      <section class="stats">
-
-        <div class="stat-card">
-
-          <div class="stat-head">
-
-            <span>
-              مرات الظهور
-            </span>
-
-            <span class="stat-icon">
-              👁️
-            </span>
-
-          </div>
-
-          <div
-            id="impressions"
-            class="stat-value"
-          >
-            0
-          </div>
-
-          <div class="stat-description">
-            إجمالي مشاهدات الإعلان
-          </div>
-
-        </div>
-
-
-        <div class="stat-card">
-
-          <div class="stat-head">
-
-            <span>
-              حالة الحملة
-            </span>
-
-            <span class="stat-icon">
-              🛡️
-            </span>
-
-          </div>
-
-          <div
-            id="smallStatus"
-            class="stat-value"
-            style="color:#00ef86;"
-          >
-            —
-          </div>
-
-          <div class="stat-description">
-            حالة الإعلان الحالية
-          </div>
-
-        </div>
-
-      </section>
-
-
-      <!-- =====================
-           STATUS
-      ====================== -->
-
-      <section class="status-card">
-
-        <div class="status-title">
-          حالة الحملة
-        </div>
-
-        <div class="status-main">
-
-          <div>
-
-            <div
-              id="statusText"
-              class="status-text"
-            >
-              ● نشطة
-            </div>
-
-            <div class="status-description">
-              الحملة جارية بشكل طبيعي
-            </div>
-
-          </div>
-
-          <div class="check-circle">
-            ✓
-          </div>
-
-        </div>
-
-        <div class="progress">
-
-          <div
-            id="progressBar"
-            class="progress-bar"
-          ></div>
-
-        </div>
-
-      </section>
-
-
-      <!-- =====================
-           CHART
-      ====================== -->
-
-      <section class="chart-card">
-
-        <div class="chart-header">
-
-          <h2>
-            📊 أداء الحملة
-          </h2>
-
-          <span class="badge">
-            آخر البيانات
-          </span>
-
-        </div>
-
-        <div class="chart-wrapper">
-
-          <canvas id="viewsChart"></canvas>
-
-          <div
-            id="chartEmpty"
-            class="chart-empty"
-            style="display:none;"
-          >
-            لا توجد بيانات تاريخية كافية حتى الآن
-          </div>
-
-        </div>
-
-      </section>
-
-
-      <!-- =====================
-           DETAILS
-      ====================== -->
-
-      <section class="details-card">
-
-        <div class="details-title">
-          📄 تفاصيل الحملة
-        </div>
-
-        <div class="details-grid">
-
-          <div class="detail">
-
-            <div class="detail-label">
-              اسم الحملة
-            </div>
-
-            <div
-              id="detailCampaignName"
-              class="detail-value"
-            >
-              —
-            </div>
-
-          </div>
-
-
-          <div class="detail">
-
-            <div class="detail-label">
-              نوع الإعلان
-            </div>
-
-            <div
-              id="detailType"
-              class="detail-value"
-            >
-              إعلان تيليجرام
-            </div>
-
-          </div>
-
-
-          <div class="detail">
-
-            <div class="detail-label">
-              تاريخ البدء
-            </div>
-
-            <div
-              id="startDate"
-              class="detail-value"
-            >
-              —
-            </div>
-
-          </div>
-
-
-          <div class="detail">
-
-            <div class="detail-label">
-              تاريخ الانتهاء
-            </div>
-
-            <div
-              id="endDate"
-              class="detail-value"
-            >
-              —
-            </div>
-
-          </div>
-
-
-          <div class="detail">
-
-            <div class="detail-label">
-              رابط الإعلان
-            </div>
-
-            <div class="detail-value">
-
-              <a
-                id="channelLink"
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                فتح الرابط
-              </a>
-
-            </div>
-
-          </div>
-
-
-          <div class="detail">
-
-            <div class="detail-label">
-              كود التقرير
-            </div>
-
-            <div
-              id="reportCode"
-              class="detail-value report-code"
-            >
-              —
-            </div>
-
-        </section>
-
-      <!-- =========================
-           FOOTER
-      ========================== -->
-
-      <footer class="footer">
-
-        <div id="updated">
-          آخر تحديث للبيانات: —
-        </div>
-
-        <div class="footer-refresh">
-          🔄 يتم تحديث البيانات تلقائيًا
-        </div>
-
-      </footer>
-
+      آخر تحديث: —
     </div>
 
+  </div>
 
-    <!-- =========================
-         ERROR
-    ========================== -->
-
-    <div
-      id="error"
-      class="error"
-    ></div>
-
-  </main>
+</section>
 
 
-  <script>
-
-    /* =================================
-       SUPABASE
-    ================================= */
-
-    const SUPABASE_URL =
-      "https://oxclimxygexnezblrhpz.supabase.co";
-
-    const SUPABASE_KEY =
-      "sb_publishable_LakP2nXyrFIvnpwzj8GEvA_90dL9_LK";
+<div
+  id="errorBox"
+  class="error"
+  style="display:none;"
+></div>
 
 
-    const supabaseClient =
-      window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
+<div class="footer">
+  El Tager . Ads — شفافية ونتائج حقيقية
+</div>
+
+</main>
+
+
+<script>
+
+/* =====================================================
+   SUPABASE
+===================================================== */
+
+const SUPABASE_URL =
+  "https://oxclimxygexnezblrhpz.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_LakP2nXyrFIvnpwzj8GEvA_90dL9_LK";
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+/* =====================================================
+   TELEGRAM BOT
+===================================================== */
+
+const TELEGRAM_BOT =
+  "TagerReportsBot";
+
+
+/* =====================================================
+   ELEMENTS
+===================================================== */
+
+const loginScreen =
+  document.getElementById("loginScreen");
+
+const loading =
+  document.getElementById("loading");
+
+const dashboard =
+  document.getElementById("dashboard");
+
+const details =
+  document.getElementById("details");
+
+const campaignsBox =
+  document.getElementById("campaigns");
+
+const emptyBox =
+  document.getElementById("empty");
+
+const errorBox =
+  document.getElementById("errorBox");
+
+const clientBox =
+  document.getElementById("clientBox");
+
+
+/* =====================================================
+   NUMBER FORMAT
+===================================================== */
+
+function formatNumber(value){
+
+  return Number(value || 0)
+    .toLocaleString("en-US");
+
+}
+
+
+/* =====================================================
+   DATE FORMAT
+===================================================== */
+
+function formatDate(value){
+
+  if(!value){
+    return "—";
+  }
+
+  try{
+
+    return new Date(value)
+      .toLocaleDateString("ar-EG");
+
+  }catch(e){
+
+    return "—";
+
+  }
+
+}
+
+
+/* =====================================================
+   CAMPAIGN TYPE
+===================================================== */
+
+function getCampaignType(url){
+
+  const text =
+    String(url || "").toLowerCase();
+
+  if(
+    text.includes("bot") ||
+    text.includes("_bot")
+  ){
+
+    return "إعلان بوت";
+
+  }
+
+  return "إعلان قناة";
+
+}
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+function isActive(status){
+
+  const value =
+    String(status || "")
+      .toLowerCase();
+
+  return (
+    value === "active" ||
+    value === "نشطة" ||
+    value === "نشط"
+  );
+
+}
+
+
+/* =====================================================
+   SHOW ERROR
+===================================================== */
+
+function showError(message){
+
+  errorBox.style.display = "block";
+
+  errorBox.textContent =
+    "❌ " + message;
+
+}
+
+
+/* =====================================================
+   TELEGRAM LOGIN
+===================================================== */
+
+/*
+  Telegram Login Widget
+*/
+
+function createTelegramLogin(){
+
+  const container =
+    document.getElementById(
+      "telegramLogin"
+    );
+
+  container.innerHTML = "";
+
+  const script =
+    document.createElement("script");
+
+  script.src =
+    "https://telegram.org/js/telegram-widget.js?22";
+
+  script.setAttribute(
+    "data-telegram-login",
+    TELEGRAM_BOT
+  );
+
+  script.setAttribute(
+    "data-size",
+    "large"
+  );
+
+  script.setAttribute(
+    "data-radius",
+    "10"
+  );
+
+  script.setAttribute(
+    "data-request-access",
+    "write"
+  );
+
+  script.setAttribute(
+    "data-userpic",
+    "true"
+  );
+
+  script.setAttribute(
+    "data-onauth",
+    "onTelegramAuth(user)"
+  );
+
+  script.async = true;
+
+  container.appendChild(script);
+
+}
+
+
+/* =====================================================
+   TELEGRAM AUTH CALLBACK
+===================================================== */
+
+window.onTelegramAuth =
+async function(user){
+
+  console.log(
+    "Telegram user:",
+    user
+  );
+
+  /*
+    نخزن بيانات المستخدم مؤقتًا
+    في المتصفح.
+
+    بعد ذلك يتم البحث عن telegram_user_id
+    في جدول clients.
+  */
+
+  localStorage.setItem(
+    "telegram_user",
+    JSON.stringify(user)
+  );
+
+  await startDashboard(user);
+
+};
+
+
+/* =====================================================
+   START DASHBOARD
+===================================================== */
+
+async function startDashboard(user){
+
+  try{
+
+    loginScreen.style.display =
+      "none";
+
+    loading.style.display =
+      "block";
+
+    dashboard.style.display =
+      "none";
+
+    details.style.display =
+      "none";
+
+    errorBox.style.display =
+      "none";
+
+
+    /*
+      بيانات العميل
+    */
+
+    document.getElementById(
+      "clientName"
+    ).textContent =
+      (
+        user.first_name ||
+        ""
+      ) +
+      (
+        user.last_name
+          ? " " + user.last_name
+          : ""
       );
 
 
-    /* =================================
-       ELEMENTS
-    ================================= */
-
-    const loading =
-      document.getElementById("loading");
-
-    const report =
-      document.getElementById("report");
-
-    const notFound =
-      document.getElementById("notFound");
-
-    const errorBox =
-      document.getElementById("error");
+    const avatar =
+      document.getElementById(
+        "clientAvatar"
+      );
 
 
-    /* =================================
-       FORMAT NUMBER
-    ================================= */
+    if(user.photo_url){
 
-    function formatNumber(value) {
+      avatar.src =
+        user.photo_url;
 
-      return Number(
-        value || 0
-      ).toLocaleString("en-US");
+    }else{
+
+      avatar.src =
+        "https://via.placeholder.com/80";
 
     }
 
 
-    /* =================================
-       FORMAT DATE
-    ================================= */
+    clientBox.style.display =
+      "flex";
 
-    function formatDate(value) {
 
-      if (!value) {
-        return "—";
-      }
+    /*
+      البحث عن العميل
+    */
 
-      const date =
-        new Date(value);
-
-      if (
-        Number.isNaN(
-          date.getTime()
+    const {
+      data: client,
+      error: clientError
+    } =
+      await supabaseClient
+        .from("clients")
+        .select("id,telegram_user_id")
+        .eq(
+          "telegram_user_id",
+          user.id
         )
-      ) {
-        return "—";
-      }
+        .maybeSingle();
 
-      return date.toLocaleDateString(
-        "ar-EG"
+
+    if(clientError){
+
+      console.error(
+        clientError
+      );
+
+      throw new Error(
+        "تعذر الاتصال ببيانات العملاء."
       );
 
     }
 
 
-    /* =================================
-       FORMAT DATE TIME
-    ================================= */
+    if(!client){
 
-    function formatDateTime(value) {
-
-      if (!value) {
-        return "—";
-      }
-
-      const date =
-        new Date(value);
-
-      if (
-        Number.isNaN(
-          date.getTime()
-        )
-      ) {
-        return "—";
-      }
-
-      return date.toLocaleString(
-        "ar-EG"
-      );
-
-    }
-
-
-    /* =================================
-       CHECK STATUS
-    ================================= */
-
-    function isActive(status) {
-
-      const text =
-        String(
-          status || ""
-        )
-        .toLowerCase()
-        .trim();
-
-
-      return (
-        text === "active" ||
-        text === "نشطة" ||
-        text === "نشط" ||
-        text === "running"
-      );
-
-    }
-
-
-    /* =================================
-       DRAW CHART
-    ================================= */
-
-    function drawChart(history) {
-
-      const canvas =
-        document.getElementById(
-          "viewsChart"
-        );
-
-      const empty =
-        document.getElementById(
-          "chartEmpty"
-        );
-
-      const wrapper =
-        canvas.parentElement;
-
-
-      const width =
-        wrapper.clientWidth;
-
-      const height =
-        wrapper.clientHeight;
-
-
-      const dpr =
-        window.devicePixelRatio || 1;
-
-
-      canvas.width =
-        width * dpr;
-
-      canvas.height =
-        height * dpr;
-
-      canvas.style.width =
-        width + "px";
-
-      canvas.style.height =
-        height + "px";
-
-
-      const ctx =
-        canvas.getContext("2d");
-
-
-      ctx.scale(
-        dpr,
-        dpr
-      );
-
-
-      if (
-        !history ||
-        history.length === 0
-      ) {
-
-        empty.style.display =
-          "flex";
-
-        return;
-
-      }
-
-
-      empty.style.display =
+      loading.style.display =
         "none";
 
+      dashboard.style.display =
+        "block";
 
-      const values =
-        history.map(
-          item =>
-            Number(
-              item.impressions ??
-              item.views ??
-              0
-            )
-        );
+      emptyBox.style.display =
+        "block";
 
+      document.getElementById(
+        "campaignCount"
+      ).textContent =
+        "0 حملة";
 
-      if (
-        values.length === 0
-      ) {
-
-        empty.style.display =
-          "flex";
-
-        return;
-
-      }
-
-
-      const max =
-        Math.max(
-          ...values,
-          1
-        );
-
-
-      const min =
-        Math.min(
-          ...values,
-          0
-        );
-
-
-      const paddingLeft = 45;
-      const paddingRight = 15;
-      const paddingTop = 20;
-      const paddingBottom = 40;
-
-
-      const chartWidth =
-        width -
-        paddingLeft -
-        paddingRight;
-
-
-      const chartHeight =
-        height -
-        paddingTop -
-        paddingBottom;
-
-
-      /* GRID */
-
-      ctx.strokeStyle =
-        "rgba(65,145,205,.16)";
-
-      ctx.lineWidth = 1;
-
-
-      for (
-        let i = 0;
-        i <= 4;
-        i++
-      ) {
-
-        const y =
-          paddingTop +
-          chartHeight *
-          (i / 4);
-
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-          paddingLeft,
-          y
-        );
-
-        ctx.lineTo(
-          width -
-          paddingRight,
-          y
-        );
-
-        ctx.stroke();
-
-      }
-
-
-      /* POINTS */
-
-      const points = [];
-
-
-      values.forEach(
-        (value, index) => {
-
-          const x =
-            paddingLeft +
-            (
-              values.length === 1
-                ? chartWidth / 2
-                : chartWidth *
-                  index /
-                  (values.length - 1)
-            );
-
-
-          const ratio =
-            max === min
-              ? .5
-              : (
-                  value - min
-                ) /
-                (
-                  max - min
-                );
-
-
-          const y =
-            paddingTop +
-            chartHeight *
-            (
-              1 - ratio
-            );
-
-
-          points.push({
-            x,
-            y,
-            value
-          });
-
-        }
-      );
-
-
-      /* AREA */
-
-      if (
-        points.length > 1
-      ) {
-
-        const gradient =
-          ctx.createLinearGradient(
-            0,
-            paddingTop,
-            0,
-            height
-          );
-
-
-        gradient.addColorStop(
-          0,
-          "rgba(0,150,255,.35)"
-        );
-
-
-        gradient.addColorStop(
-          1,
-          "rgba(0,150,255,.01)"
-        );
-
-
-        ctx.beginPath();
-
-
-        ctx.moveTo(
-          points[0].x,
-          height -
-          paddingBottom
-        );
-
-
-        points.forEach(
-          point => {
-
-            ctx.lineTo(
-              point.x,
-              point.y
-            );
-
-          }
-        );
-
-
-        ctx.lineTo(
-          points[
-            points.length - 1
-          ].x,
-          height -
-          paddingBottom
-        );
-
-
-        ctx.closePath();
-
-
-        ctx.fillStyle =
-          gradient;
-
-        ctx.fill();
-
-      }
-
-
-      /* LINE */
-
-      ctx.beginPath();
-
-
-      points.forEach(
-        (point, index) => {
-
-          if (index === 0) {
-
-            ctx.moveTo(
-              point.x,
-              point.y
-            );
-
-          } else {
-
-            ctx.lineTo(
-              point.x,
-              point.y
-            );
-
-          }
-
-        }
-      );
-
-
-      ctx.strokeStyle =
-        "#18a8ff";
-
-      ctx.lineWidth = 3;
-
-      ctx.stroke();
-
-
-      /* POINTS */
-
-      points.forEach(
-        point => {
-
-          ctx.beginPath();
-
-
-          ctx.arc(
-            point.x,
-            point.y,
-            4,
-            0,
-            Math.PI * 2
-          );
-
-
-          ctx.fillStyle =
-            "#ffffff";
-
-          ctx.fill();
-
-
-          ctx.strokeStyle =
-            "#009dff";
-
-          ctx.lineWidth = 2;
-
-          ctx.stroke();
-
-        }
-      );
-
-
-      /* Y LABELS */
-
-      ctx.fillStyle =
-        "#7c9cbb";
-
-      ctx.font =
-        "11px Arial";
-
-      ctx.textAlign =
-        "right";
-
-
-      for (
-        let i = 0;
-        i <= 4;
-        i++
-      ) {
-
-        const value =
-          max -
-          (
-            max - min
-          ) *
-          (
-            i / 4
-          );
-
-
-        const y =
-          paddingTop +
-          chartHeight *
-          (
-            i / 4
-          ) +
-          4;
-
-
-        ctx.fillText(
-          Math.round(
-            value
-          ).toLocaleString(
-            "en-US"
-          ),
-          paddingLeft - 8,
-          y
-        );
-
-      }
+      return;
 
     }
 
 
-    /* =================================
-       LOAD HISTORY
-    ================================= */
+    /*
+      تحميل حملات العميل
+    */
 
-    async function loadHistory(
-      campaignId,
-      currentViews
-    ) {
-
-      try {
-
-        const {
-          data,
-          error
-        } =
-          await supabaseClient
-
-            .from(
-              "views_history"
-            )
-
-            .select("*")
-
-            .eq(
-              "campaign_id",
-              campaignId
-            )
-
-            .order(
-              "created_at",
-              {
-                ascending: true
-              }
-            )
-
-            .limit(100);
-
-
-        if (
-          !error &&
-          data &&
-          data.length
-        ) {
-
-          drawChart(
-            data
-          );
-
-          return;
-
-        }
-
-      } catch (_) {}
+    const {
+      data: campaigns,
+      error: campaignsError
+    } =
+      await supabaseClient
+        .from("campaigns")
+        .select(`
+          id,
+          campaign_name,
+          impressions,
+          actions,
+          status,
+          ad_text,
+          ad_image,
+          channel_url,
+          start_date,
+          end_date,
+          last_updated,
+          report_code,
+          client_id
+        `)
+        .eq(
+          "client_id",
+          client.id
+        )
+        .order(
+          "created_at",
+          {
+            ascending:false
+          }
+             )
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        );
 
 
-      /* FALLBACK */
+    if(campaignsError){
 
-      drawChart([
-        {
-          impressions:
-            Number(
-              currentViews || 0
-            )
-        }
-      ]);
+      console.error(
+        campaignsError
+      );
+
+      throw new Error(
+        "تعذر تحميل الحملات."
+      );
 
     }
 
 
-    /* =================================
-       LOAD CAMPAIGN
-    ================================= */
+    /* =====================================================
+       SHOW CAMPAIGNS
+    ===================================================== */
 
-    async function loadCampaign() {
-
-      try {
-
-        const params =
-          new URLSearchParams(
-            window.location.search
-          );
+    campaignsBox.innerHTML = "";
 
 
-        const code =
-          params.get("code");
+    if(
+      !campaigns ||
+      campaigns.length === 0
+    ){
+
+      emptyBox.style.display =
+        "block";
+
+      document.getElementById(
+        "campaignCount"
+      ).textContent =
+        "0 حملة";
+
+    }else{
+
+      emptyBox.style.display =
+        "none";
+
+      document.getElementById(
+        "campaignCount"
+      ).textContent =
+        campaigns.length +
+        " حملة";
 
 
-        if (!code) {
+      campaigns.forEach(
+        campaign => {
 
-          loading.style.display =
-            "none";
+          const card =
+            document.createElement(
+              "div"
+            );
 
-          notFound.style.display =
-            "block";
-
-          return;
-
-        }
-
-
-        /* GET CAMPAIGN */
-
-        const {
-          data,
-          error
-        } =
-          await supabaseClient
-
-            .from(
-              "campaigns"
-            )
-
-            .select(
-              `
-              id,
-              campaign_name,
-              impressions,
-              actions,
-              status,
-              ad_text,
-              ad_image,
-              channel_url,
-              last_updated,
-              report_code,
-              start_date,
-              end_date
-              `
-            )
-
-            .eq(
-              "report_code",
-              code
-            )
-
-            .maybeSingle();
+          card.className =
+            "campaign";
 
 
-        if (error) {
+          /* ===============================
+             IMAGE
+          =============================== */
 
-          console.error(
-            error
-          );
+          let imageHTML = "";
 
-          throw new Error(
-            "حدث خطأ أثناء تحميل التقرير."
-          );
+          if(campaign.ad_image){
 
-        }
+            imageHTML = `
+              <img
+                src="${campaign.ad_image}"
+                class="ad-image"
+                style="display:block;"
+                alt="صورة الإعلان"
+              >
+            `;
 
-
-        if (!data) {
-
-          loading.style.display =
-            "none";
-
-          notFound.style.display =
-            "block";
-
-          return;
-
-        }
+          }
 
 
-        /* =================================
-           CAMPAIGN NAME
-        ================================= */
+          /* ===============================
+             STATUS
+          =============================== */
 
-        const campaignName =
-          data.campaign_name ||
-          "حملة إعلانية";
-
-
-        document.getElementById(
-          "campaignName"
-        ).textContent =
-          campaignName;
-
-
-        document.getElementById(
-          "detailCampaignName"
-        ).textContent =
-          campaignName;
-
-
-        /* =================================
-           IMPRESSIONS
-        ================================= */
-
-        document.getElementById(
-          "impressions"
-        ).textContent =
-          formatNumber(
-            data.impressions
-          );
-
-
-        /* =================================
-           STATUS
-        ================================= */
-
-        const active =
-          isActive(
-            data.status
-          );
-
-
-        const statusText =
-          document.getElementById(
-            "statusText"
-          );
-
-
-        const smallStatus =
-          document.getElementById(
-            "smallStatus"
-          );
-
-
-        if (active) {
-
-          statusText.textContent =
-            "● نشطة";
-
-          statusText.style.color =
-            "#00ef86";
-
-
-          smallStatus.textContent =
-            "نشطة";
-
-          smallStatus.style.color =
-            "#00ef86";
-
-        } else {
-
-          statusText.textContent =
-            "● " +
-            (
-              data.status ||
-              "غير نشطة"
+          const active =
+            isActive(
+              campaign.status
             );
 
 
-          statusText.style.color =
-            "#ff6565";
+          const statusText =
+            active
+              ? "● نشطة"
+              : "● غير نشطة";
 
 
-          smallStatus.textContent =
-            data.status ||
-            "غير نشطة";
+          /* ===============================
+             CAMPAIGN TYPE
+          =============================== */
+
+          const type =
+            getCampaignType(
+              campaign.channel_url
+            );
 
 
-          smallStatus.style.color =
-            "#ff6565";
+          /* ===============================
+             CARD
+          =============================== */
+
+          card.innerHTML = `
+
+            ${imageHTML}
+
+            <div class="ad-top">
+
+              <span class="ad-badge">
+                ${type}
+              </span>
+
+              <span
+                class="status ${
+                  active
+                    ? "active"
+                    : "inactive"
+                }"
+              >
+                ${statusText}
+              </span>
+
+            </div>
+
+
+            <h3>
+              ${campaign.campaign_name || "حملة إعلانية"}
+            </h3>
+
+
+            <div class="ad-text">
+              ${campaign.ad_text || "لا يوجد وصف للإعلان"}
+            </div>
+
+
+            <div class="stats-mini">
+
+              <div class="mini">
+
+                <div class="mini-title">
+                  👁️ مرات الظهور
+                </div>
+
+                <div class="mini-value">
+                  ${formatNumber(
+                    campaign.impressions
+                  )}
+                </div>
+
+              </div>
+
+
+              <div class="mini">
+
+                <div class="mini-title">
+                  👆 التفاعلات
+                </div>
+
+                <div class="mini-value">
+                  ${formatNumber(
+                    campaign.actions
+                  )}
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <button
+              class="details-btn"
+            >
+              📊 فتح التقرير
+            </button>
+
+          `;
+
+
+          const button =
+            card.querySelector(
+              ".details-btn"
+            );
+
+
+          button.addEventListener(
+            "click",
+            () => {
+
+              showCampaignDetails(
+                campaign
+              );
+
+            }
+          );
+
+
+          campaignsBox.appendChild(
+            card
+          );
 
         }
+      );
+
+    }
 
 
-        /* =================================
-           PROGRESS
-        ================================= */
+    /* =====================================================
+       SHOW DASHBOARD
+    ===================================================== */
 
-        const progress =
-          document.getElementById(
-            "progressBar"
+    loading.style.display =
+      "none";
+
+    dashboard.style.display =
+      "block";
+
+    details.style.display =
+      "none";
+
+    errorBox.style.display =
+      "none";
+
+
+  }catch(error){
+
+    console.error(
+      error
+    );
+
+
+    loading.style.display =
+      "none";
+
+    dashboard.style.display =
+      "none";
+
+    details.style.display =
+      "none";
+
+    errorBox.style.display =
+      "block";
+
+
+    errorBox.textContent =
+      "❌ " +
+      (
+        error.message ||
+        "حدث خطأ غير متوقع."
+      );
+
+  }
+
+}
+
+
+/* =====================================================
+   SHOW CAMPAIGN DETAILS
+===================================================== */
+
+function showCampaignDetails(
+  campaign
+){
+
+  dashboard.style.display =
+    "none";
+
+  details.style.display =
+    "block";
+
+
+  /* ===============================
+     NAME
+  =============================== */
+
+  document.getElementById(
+    "detailCampaignName"
+  ).textContent =
+    campaign.campaign_name ||
+    "حملة إعلانية";
+
+
+  /* ===============================
+     IMPRESSIONS
+  =============================== */
+
+  document.getElementById(
+    "detailImpressions"
+  ).textContent =
+    formatNumber(
+      campaign.impressions
+    );
+
+
+  /* ===============================
+     ACTIONS
+  =============================== */
+
+  document.getElementById(
+    "detailActions"
+  ).textContent =
+    formatNumber(
+      campaign.actions
+    );
+
+
+  /* ===============================
+     STATUS
+  =============================== */
+
+  const active =
+    isActive(
+      campaign.status
+    );
+
+
+  const statusElement =
+    document.getElementById(
+      "detailStatus"
+    );
+
+
+  statusElement.textContent =
+    active
+      ? "● نشطة"
+      : "● غير نشطة";
+
+
+  statusElement.className =
+    "status " +
+    (
+      active
+        ? "active"
+        : "inactive"
+    );
+
+
+  document.getElementById(
+    "detailStatusValue"
+  ).textContent =
+    active
+      ? "نشطة 🟢"
+      : "غير نشطة 🔴";
+
+
+  /* ===============================
+     AD TEXT
+  =============================== */
+
+  document.getElementById(
+    "detailText"
+  ).textContent =
+    campaign.ad_text ||
+    "لا يوجد نص للإعلان";
+
+
+  /* ===============================
+     IMAGE
+  =============================== */
+
+  const detailImage =
+    document.getElementById(
+      "detailImage"
+    );
+
+
+  if(campaign.ad_image){
+
+    detailImage.src =
+      campaign.ad_image;
+
+    detailImage.style.display =
+      "block";
+
+  }else{
+
+    detailImage.removeAttribute(
+      "src"
+    );
+
+    detailImage.style.display =
+      "none";
+
+  }
+
+
+  /* ===============================
+     CHANNEL / AD LINK
+  =============================== */
+
+  const channelBtn =
+    document.getElementById(
+      "channelBtn"
+    );
+
+
+  if(campaign.channel_url){
+
+    channelBtn.href =
+      campaign.channel_url;
+
+    channelBtn.style.display =
+      "inline-block";
+
+  }else{
+
+    channelBtn.removeAttribute(
+      "href"
+    );
+
+    channelBtn.style.display =
+      "none";
+
+  }
+
+
+  /* ===============================
+     TYPE
+  =============================== */
+
+  document.getElementById(
+    "detailType"
+  ).textContent =
+    getCampaignType(
+      campaign.channel_url
+    );
+
+
+  /* ===============================
+     START DATE
+  =============================== */
+
+  document.getElementById(
+    "detailStart"
+  ).textContent =
+    formatDate(
+      campaign.start_date
+    );
+
+
+  /* ===============================
+     END DATE
+  =============================== */
+
+  document.getElementById(
+    "detailEnd"
+  ).textContent =
+    formatDate(
+      campaign.end_date
+    );
+
+
+  /* ===============================
+     REPORT CODE
+  =============================== */
+
+  document.getElementById(
+    "detailCode"
+  ).textContent =
+    campaign.report_code
+      ? "#" + campaign.report_code
+      : "—";
+
+
+  /* ===============================
+     LAST UPDATED
+  =============================== */
+
+  document.getElementById(
+    "lastUpdated"
+  ).textContent =
+    campaign.last_updated
+      ? "آخر تحديث: " +
+        formatDate(
+          campaign.last_updated
+        )
+      : "آخر تحديث: —";
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
+}
+
+
+/* =====================================================
+   BACK BUTTON
+===================================================== */
+
+document.getElementById(
+  "backBtn"
+).addEventListener(
+  "click",
+  () => {
+
+    details.style.display =
+      "none";
+
+    dashboard.style.display =
+      "block";
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+
+  }
+);
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+document.getElementById(
+  "logoutBtn"
+).addEventListener(
+  "click",
+  () => {
+
+    localStorage.removeItem(
+      "telegram_user"
+    );
+
+    clientBox.style.display =
+      "none";
+
+    dashboard.style.display =
+      "none";
+
+    details.style.display =
+      "none";
+
+    errorBox.style.display =
+      "none";
+
+    campaignsBox.innerHTML =
+      "";
+
+    emptyBox.style.display =
+      "none";
+
+    loginScreen.style.display =
+      "block";
+
+    createTelegramLogin();
+
+  }
+);
+
+
+/* =====================================================
+   START
+===================================================== */
+
+createTelegramLogin();
+
+
+/* =====================================================
+   CHECK SAVED LOGIN
+===================================================== */
+
+const savedUser =
+  localStorage.getItem(
+    "telegram_user"
+  );
+
+
+if(savedUser){
+
+  try{
+
+    const user =
+      JSON.parse(
+        savedUser
+      );
+
+    startDashboard(
+      user
+    );
+
+  }catch(error){
+
+    console.error(
+      error
+    );
+
+    localStorage.removeItem(
+      "telegram_user"
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   AUTO REFRESH
+===================================================== */
+
+setInterval(
+  () => {
+
+    const saved =
+      localStorage.getItem(
+        "telegram_user"
+      );
+
+    if(saved){
+
+      try{
+
+        const user =
+          JSON.parse(
+            saved
           );
 
-
-        progress.style.width =
-          active
-            ? "100%"
-            : "35%";
-
-
-        /* =================================
-           AD TEXT
-        ================================= */
-
-        document.getElementById(
-          "adText"
-        ).textContent =
-          data.ad_text ||
-          "لا يوجد نص للإعلان.";
-
-
-        /* =================================
-           AD IMAGE
-        ================================= */
-
-        const image =
-          document.getElementById(
-            "adImage"
-          );
-
-
-        const noImage =
-          document.getElementById(
-            "noImage"
-          );
-
-
-        if (
-          data.ad_image &&
-          String(
-            data.ad_image
-          ).trim()
-        ) {
-
-          image.src =
-            data.ad_image;
-
-          image.style.display =
-            "block";
-
-          noImage.style.display =
-            "none";
-
-        } else {
-
-          image.style.display =
-            "none";
-
-          noImage.style.display =
-            "block";
-
-        }
-
-
-        /* =================================
-           AD LINK
-        ================================= */
-
-        const button =
-          document.getElementById(
-            "openButton"
-          );
-
-
-        const link =
-          document.getElementById(
-            "channelLink"
-          );
-
-
-        if (
-          data.channel_url &&
-          String(
-            data.channel_url
-          ).trim()
-        ) {
-
-          button.href =
-            data.channel_url;
-
-          link.href =
-            data.channel_url;
-
-          button.style.display =
-            "inline-flex";
-
-          link.textContent =
-            "فتح الرابط";
-
-        } else {
-
-          button.style.display =
-            "none";
-
-          link.removeAttribute(
-            "href"
-          );
-
-          link.textContent =
-            "لا يوجد رابط";
-
-        }
-
-
-        /* =================================
-           TYPE
-        ================================= */
-
-        const channelUrl =
-          String(
-            data.channel_url || ""
-          ).toLowerCase();
-
-
-        document.getElementById(
-          "detailType"
-        ).textContent =
-          channelUrl.includes("bot")
-            ? "إعلان بوت"
-            : "إعلان قناة";
-
-
-        /* =================================
-           DATES
-        ================================= */
-
-        document.getElementById(
-          "startDate"
-        ).textContent =
-          formatDate(
-            data.start_date
-          );
-
-
-        document.getElementById(
-          "endDate"
-        ).textContent =
-          formatDate(
-            data.end_date
-          );
-
-
-        /* =================================
-           REPORT CODE
-        ================================= */
-
-        document.getElementById(
-          "reportCode"
-        ).textContent =
-          "#" +
-          (
-            data.report_code ||
-            code
-          );
-
-
-        /* =================================
-           LAST UPDATED
-        ================================= */
-
-        document.getElementById(
-          "updated"
-        ).textContent =
-          "آخر تحديث للبيانات: " +
-          formatDateTime(
-            data.last_updated
-          );
-
-
-        /* =================================
-           SHOW REPORT
-        ================================= */
-
-        loading.style.display =
-          "none";
-
-        notFound.style.display =
-          "none";
-
-        errorBox.style.display =
-          "none";
-
-        report.style.display =
-          "block";
-
-
-        /* =================================
-           HISTORY
-        ================================= */
-
-        await loadHistory(
-          data.id,
-          data.impressions
+        startDashboard(
+          user
         );
 
-
-      } catch (error) {
+      }catch(error){
 
         console.error(
           error
         );
 
-
-        loading.style.display =
-          "none";
-
-        report.style.display =
-          "none";
-
-        notFound.style.display =
-          "none";
-
-        errorBox.style.display =
-          "block";
-
-
-        errorBox.textContent =
-          "❌ " +
-          (
-            error.message ||
-            "حدث خطأ غير متوقع."
-          );
-
       }
 
     }
 
+  },
+  5 * 60 * 1000
+);
 
-    /* =================================
-       START
-    ================================= */
-
-    loadCampaign();
-
-
-    /* =================================
-       AUTO REFRESH
-       كل دقيقة
-    ================================= */
-
-    setInterval(
-      () => {
-
-        loadCampaign();
-
-      },
-      60 * 1000
-    );
-
-
-    /* =================================
-       RESIZE
-    ================================= */
-
-    window.addEventListener(
-      "resize",
-      () => {
-
-        loadCampaign();
-
-      }
-    );
-
-  </script>
-
+</script>
 
 </body>
 
-            </html>
+</html>
