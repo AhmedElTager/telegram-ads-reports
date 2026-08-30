@@ -2,7 +2,7 @@ name: Update Telegram Ads Stats
 
 on:
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 jobs:
@@ -26,6 +26,7 @@ jobs:
 
       - name: Update Telegram statistics
         env:
-          SUPABASE_URL: "https://oxclmxyegnezblrhpz.supabase.co"
-          SUPABASE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: node update-stats.js
