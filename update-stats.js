@@ -6,136 +6,271 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
+// ===============================
+// تنظيف الأرقام
+// ===============================
+
 function cleanNumber(value) {
-  if (value === null || value === undefined) return null;
+  if (value === null || value === undefined) {
+    return null;
+  }
 
   const text = String(value)
     .replace(/[,\.\s]/g, "")
     .replace(/[^\d]/g, "");
 
-  if (!text) return null;
+  if (!text) {
+    return null;
+  }
 
   const number = Number(text);
 
   return Number.isFinite(number) ? number : null;
 }
 
-async function getStats(page) {
-  await page.waitForTimeout(8000);
+// ===============================
+// قراءة Views
+// ===============================
+
+async function getViews(page) {
+  await page.waitForTimeout(5000);
 
   const bodyText = await page.locator("body").innerText();
 
   console.log("PAGE URL:", page.url());
   console.log("PAGE TITLE:", await page.title());
 
-  // =========================
-  // Views
-  // =========================
-
-  let views = null;
-
   let match = bodyText.match(
     /Views[\s\S]{0,100}?([\d,]+(?:\.\d+)?)/i
   );
 
   if (match) {
-    views = cleanNumber(match[1]);
+    const views = cleanNumber(match[1]);
+
+    if (views !== null) {
+      console.log("Views found:", views);
+      return views;
+    }
   }
 
-  // =========================
-  // Actions
-  // =========================
-
-  let actions = null;
-
-  const actionMatch = bodyText.match(
-    /Actions[\s\S]{0,150}?([\d,]+(?:\.\d+)?)/i
-  );
-
-  if (actionMatch) {
-    actions = cleanNumber(actionMatch[1]);
-  }
-
-  // =========================
-  // محاولة إضافية للـ Views
-  // =========================
-
-  if (views === null) {
+  // محاولة من العنصر نفسه
+  try {
     const viewsLocator = page
       .getByText("Views", { exact: true })
       .first();
 
     if (await viewsLocator.count()) {
-      try {
-        const parentText = await viewsLocator
-          .locator("..")
-          .innerText();
+      const parentText = await viewsLocator
+        .locator("..")
+        .innerText();
 
-        const numbers = parentText.match(/[\d,]+/g);
+      console.log("Views parent:", parentText);
 
-        if (numbers && numbers.length) {
-          for (const number of numbers) {
-            const value = cleanNumber(number);
+      const numbers = parentText.match(/[\d,]+/g);
 
-            if (value !== null) {
-              views = value;
-              break;
-            }
+      if (numbers) {
+        for (const n of numbers) {
+          const value = cleanNumber(n);
+
+          if (value !== null) {
+            console.log("Views found from element:", value);
+            return value;
           }
         }
-      } catch (error) {
-        console.log(
-          "Views element extraction failed:",
-          error.message
-        );
       }
+    }
+  } catch (error) {
+    console.log(
+      "Views element error:",
+      error.message
+    );
+  }
+
+  return null;
+}
+
+// ===============================
+// قراءة Started bot / Actions
+// ===============================
+
+async function getActions(page) {
+
+  await page.waitForTimeout(3000);
+
+  console.log(
+    "Trying to read Started bot..."
+  );
+
+  // --------------------------------
+  // أول محاولة:
+  // البحث عن Started bot في الصفحة
+  // --------------------------------
+
+  let bodyText = await page.locator("body").innerText();
+
+  let match = bodyText.match(
+    /Started\s*bot[\s\S]{0,200}?([\d,]+)/i
+  );
+
+  if (match) {
+
+    const actions = cleanNumber(match[1]);
+
+    if (actions !== null) {
+
+      console.log(
+        "Started bot found from body:",
+        actions
+      );
+
+      return actions;
     }
   }
 
-  // =========================
-  // محاولة إضافية للـ Actions
-  // =========================
+  // --------------------------------
+  // ثاني محاولة:
+  // البحث عن Actions
+  // --------------------------------
 
-  if (actions === null) {
-    const actionLocator = page
-      .getByText("Actions", { exact: true })
+  match = bodyText.match(
+    /Actions[\s\S]{0,200}?([\d,]+)/i
+  );
+
+  if (match) {
+
+    const actions = cleanNumber(match[1]);
+
+    if (actions !== null) {
+
+      console.log(
+        "Actions found from body:",
+        actions
+      );
+
+      return actions;
+    }
+  }
+
+  // --------------------------------
+  // ثالث محاولة:
+  // الضغط على Started bot
+  // --------------------------------
+
+  try {
+
+    const startedBot = page
+      .getByText(
+        "Started bot",
+        {
+          exact: true
+        }
+      )
       .first();
 
-    if (await actionLocator.count()) {
-      try {
-        const parentText = await actionLocator
-          .locator("..")
-          .innerText();
+    if (await startedBot.count()) {
 
-        const numbers = parentText.match(/[\d,]+/g);
+      console.log(
+        "Started bot button found."
+      );
 
-        if (numbers && numbers.length) {
-          for (const number of numbers) {
-            const value = cleanNumber(number);
+      await startedBot.click();
 
-            if (value !== null) {
-              actions = value;
-              break;
-            }
-          }
+      await page.waitForTimeout(1500);
+
+      bodyText =
+        await page.locator("body").innerText();
+
+      console.log(
+        "After Started bot click:"
+      );
+
+      console.log(
+        bodyText.substring(
+          Math.max(
+            0,
+            bodyText.indexOf("Started bot") - 300
+          ),
+          bodyText.indexOf("Started bot") + 700
+        )
+      );
+
+      // نبحث مرة أخرى عن رقم
+      match = bodyText.match(
+        /Started\s*bot[\s\S]{0,300}?([\d,]+)/i
+      );
+
+      if (match) {
+
+        const actions =
+          cleanNumber(match[1]);
+
+        if (actions !== null) {
+
+          console.log(
+            "Started bot after click:",
+            actions
+          );
+
+          return actions;
         }
-      } catch (error) {
-        console.log(
-          "Actions element extraction failed:",
-          error.message
-        );
       }
     }
+
+  } catch (error) {
+
+    console.log(
+      "Started bot click failed:",
+      error.message
+    );
   }
 
-  console.log("VIEWS:", views);
-  console.log("ACTIONS:", actions);
+  // --------------------------------
+  // رابع محاولة:
+  // البحث داخل HTML
+  // --------------------------------
 
-  return {
-    views,
-    actions
-  };
+  try {
+
+    const html = await page.content();
+
+    match = html.match(
+      /Started\s*bot[\s\S]{0,1000}?([\d,]+)/i
+    );
+
+    if (match) {
+
+      const actions =
+        cleanNumber(match[1]);
+
+      if (actions !== null) {
+
+        console.log(
+          "Started bot found from HTML:",
+          actions
+        );
+
+        return actions;
+      }
+    }
+
+  } catch (error) {
+
+    console.log(
+      "HTML extraction failed:",
+      error.message
+    );
+  }
+
+  console.log(
+    "ACTIONS NOT FOUND."
+  );
+
+  return null;
 }
+
+// ===============================
+// Main
+// ===============================
 
 async function main() {
 
@@ -143,20 +278,43 @@ async function main() {
     data: campaigns,
     error
   } = await supabase
+
     .from("campaigns")
+
     .select(
-      "id, campaign_name, report_code, stats_url, impressions, actions"
+      `
+      id,
+      campaign_name,
+      report_code,
+      stats_url,
+      impressions,
+      actions
+      `
     )
-    .not("stats_url", "is", null);
+
+    .not(
+      "stats_url",
+      "is",
+      null
+    );
 
   if (error) {
-    throw new Error(error.message);
+
+    throw new Error(
+      error.message
+    );
+
   }
 
-  if (!campaigns || campaigns.length === 0) {
+  if (
+    !campaigns ||
+    campaigns.length === 0
+  ) {
+
     console.log(
       "No campaigns with stats_url."
     );
+
     return;
   }
 
@@ -164,26 +322,41 @@ async function main() {
     `Found ${campaigns.length} campaign(s).`
   );
 
-  const browser = await chromium.launch({
-    headless: true
-  });
+  // ===============================
+  // تشغيل Chromium
+  // ===============================
 
-  const context = await browser.newContext({
-    viewport: {
-      width: 1280,
-      height: 900
-    },
+  const browser =
+    await chromium.launch({
+      headless: true
+    });
 
-    userAgent:
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131 Safari/537.36"
-  });
+  const context =
+    await browser.newContext({
 
-  const page = await context.newPage();
+      viewport: {
+        width: 1280,
+        height: 900
+      },
 
-  for (const campaign of campaigns) {
+      userAgent:
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131 Safari/537.36"
+
+    });
+
+  const page =
+    await context.newPage();
+
+  // ===============================
+  // الحملات
+  // ===============================
+
+  for (
+    const campaign of campaigns
+  ) {
 
     console.log(
-      "--------------------------------"
+      "================================"
     );
 
     console.log(
@@ -202,22 +375,29 @@ async function main() {
     );
 
     console.log(
-      "Old impressions:",
+      "Old Views:",
       campaign.impressions
     );
 
     console.log(
-      "Old actions:",
+      "Old Actions:",
       campaign.actions
     );
 
     try {
 
+      // =============================
+      // فتح صفحة Telegram
+      // =============================
+
       await page.goto(
         campaign.stats_url,
         {
-          waitUntil: "networkidle",
-          timeout: 90000
+          waitUntil:
+            "networkidle",
+
+          timeout:
+            90000
         }
       );
 
@@ -225,32 +405,23 @@ async function main() {
         "Telegram page loaded."
       );
 
-      const {
-        views,
-        actions
-      } = await getStats(page);
+      // =============================
+      // Views
+      // =============================
 
-      // =========================
-      // لو مفيش Views
-      // =========================
+      const views =
+        await getViews(page);
 
-      if (views === null) {
+      // =============================
+      // Actions
+      // =============================
 
-        console.log(
-          `Views NOT FOUND for ${
-            campaign.report_code ||
-            campaign.id
-          }`
-        );
+      const actions =
+        await getActions(page);
 
-        await page.screenshot({
-          path:
-            `telegram-${campaign.id}.png`,
-          fullPage: true
-        });
-
-        continue;
-      }
+      console.log(
+        "--------------------------------"
+      );
 
       console.log(
         "REAL VIEWS:",
@@ -262,26 +433,72 @@ async function main() {
         actions
       );
 
-      // =========================
-      // تحديث Supabase
-      // =========================
+      // =============================
+      // لو Views مش موجودة
+      // =============================
+
+      if (views === null) {
+
+        console.log(
+          "Views NOT FOUND."
+        );
+
+        await page.screenshot({
+
+          path:
+            `telegram-${campaign.id}.png`,
+
+          fullPage: true
+
+        });
+
+        continue;
+      }
+
+      // =============================
+      // بيانات التحديث
+      // =============================
 
       const updateData = {
-        impressions: views,
+
+        impressions:
+          views,
+
         last_updated:
           new Date().toISOString()
+
       };
 
+      // نحفظ Actions لو اتوجدت
       if (actions !== null) {
-        updateData.actions = actions;
+
+        updateData.actions =
+          actions;
+
       }
+
+      // =============================
+      // تحديث Supabase
+      // =============================
 
       const {
         error: updateError
       } = await supabase
+
         .from("campaigns")
-        .update(updateData)
-        .eq("id", campaign.id);
+
+        .update(
+          updateData
+        )
+
+        .eq(
+          "id",
+          campaign.id
+        );
+
+      // =============================
+      // نتيجة التحديث
+      // =============================
 
       if (updateError) {
 
@@ -293,35 +510,45 @@ async function main() {
       } else {
 
         console.log(
-          `UPDATED SUCCESSFULLY: ${
-            campaign.campaign_name
-          }`
+          "UPDATED SUCCESSFULLY"
         );
 
         console.log(
-          `Views = ${views}`
+          "Campaign:",
+          campaign.campaign_name
         );
 
         console.log(
-          `Actions = ${actions}`
+          "Views:",
+          views
         );
+
+        console.log(
+          "Actions:",
+          actions
+        );
+
       }
 
     } catch (error) {
 
       console.error(
-        `FAILED ${
-          campaign.campaign_name
-        }:`,
+        `FAILED ${campaign.campaign_name}:`,
         error.message
       );
+
     }
+
   }
+
+  // ===============================
+  // إغلاق المتصفح
+  // ===============================
 
   await browser.close();
 
   console.log(
-    "--------------------------------"
+    "================================"
   );
 
   console.log(
@@ -329,10 +556,19 @@ async function main() {
   );
 }
 
-main().catch((error) => {
+// ===============================
+// تشغيل
+// ===============================
 
-  console.error(error);
+main()
+  .catch(
+    (error) => {
 
-  process.exit(1);
+      console.error(
+        error
+      );
 
-});
+      process.exit(1);
+
+    }
+  );
