@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -101,7 +102,7 @@
 
     .stats {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, 1fr);
       gap: 15px;
       margin-top: 25px;
     }
@@ -122,6 +123,12 @@
     .stat-value {
       font-size: 30px;
       font-weight: bold;
+    }
+
+    .stat-description {
+      color: #888;
+      font-size: 12px;
+      margin-top: 7px;
     }
 
     .ad-preview {
@@ -207,7 +214,18 @@
       line-height: 1.8;
     }
 
-    @media (max-width: 600px) {
+    .type-badge {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 6px 12px;
+      background: #eef6ff;
+      color: #1877c9;
+      border-radius: 15px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    @media (max-width: 700px) {
 
       .stats {
         grid-template-columns: 1fr;
@@ -233,20 +251,13 @@
 
 <body>
 
-  <!-- =========================
-       TOP BAR
-  ========================== -->
-
   <div class="topbar">
     📊 تقارير إعلانات تيليجرام
   </div>
 
-
   <div class="container">
 
-    <!-- =========================
-         LOADING
-    ========================== -->
+    <!-- LOADING -->
 
     <div
       id="loading"
@@ -256,9 +267,7 @@
     </div>
 
 
-    <!-- =========================
-         MAIN REPORT
-    ========================== -->
+    <!-- MAIN REPORT -->
 
     <div
       id="report"
@@ -281,8 +290,15 @@
             —
           </div>
 
-        </div>
+          <div
+            id="campaignType"
+            class="type-badge"
+            style="display:none;"
+          >
+            إعلان تيليجرام
+          </div>
 
+        </div>
 
         <span
           id="status"
@@ -294,11 +310,11 @@
       </div>
 
 
-      <!-- =========================
-           STATISTICS
-      ========================== -->
+      <!-- STATISTICS -->
 
       <div class="stats">
+
+        <!-- VIEWS -->
 
         <div class="stat">
 
@@ -315,6 +331,36 @@
 
         </div>
 
+
+        <!-- ACTIONS -->
+
+        <div class="stat">
+
+          <div
+            id="actionsTitle"
+            class="stat-title"
+          >
+            التفاعلات
+          </div>
+
+          <div
+            id="actions"
+            class="stat-value"
+          >
+            0
+          </div>
+
+          <div
+            id="actionsDescription"
+            class="stat-description"
+          >
+            التفاعلات المسجلة
+          </div>
+
+        </div>
+
+
+        <!-- STATUS -->
 
         <div class="stat">
 
@@ -334,9 +380,7 @@
       </div>
 
 
-      <!-- =========================
-           AD PREVIEW
-      ========================== -->
+      <!-- AD PREVIEW -->
 
       <div class="ad-preview">
 
@@ -352,14 +396,12 @@
             alt="صورة الإعلان"
           >
 
-
           <div
             id="adText"
             class="ad-text"
           >
             لا يوجد نص للإعلان.
           </div>
-
 
           <a
             id="channelButton"
@@ -368,7 +410,7 @@
             target="_blank"
             rel="noopener noreferrer"
           >
-            زيارة القناة
+            فتح الإعلان
           </a>
 
         </div>
@@ -376,9 +418,7 @@
       </div>
 
 
-      <!-- =========================
-           LAST UPDATED
-      ========================== -->
+      <!-- LAST UPDATED -->
 
       <div
         id="updated"
@@ -390,9 +430,7 @@
     </div>
 
 
-    <!-- =========================
-         HOME / NO CODE
-    ========================== -->
+    <!-- WELCOME -->
 
     <div
       id="welcome"
@@ -418,9 +456,7 @@
     </div>
 
 
-    <!-- =========================
-         REPORT NOT FOUND
-    ========================== -->
+    <!-- NOT FOUND -->
 
     <div
       id="notFound"
@@ -445,9 +481,7 @@
     </div>
 
 
-    <!-- =========================
-         ERROR
-    ========================== -->
+    <!-- ERROR -->
 
     <div
       id="error"
@@ -459,9 +493,9 @@
 
   <script>
 
-    /* =====================================
-       SUPABASE SETTINGS
-    ===================================== */
+    // =====================================
+    // SUPABASE SETTINGS
+    // =====================================
 
     const SUPABASE_URL =
       "https://oxclimxygexnezblrhpz.supabase.co";
@@ -477,9 +511,9 @@
       );
 
 
-    /* =====================================
-       ELEMENTS
-    ===================================== */
+    // =====================================
+    // ELEMENTS
+    // =====================================
 
     const loading =
       document.getElementById(
@@ -507,9 +541,9 @@
       );
 
 
-    /* =====================================
-       SHOW WELCOME
-    ===================================== */
+    // =====================================
+    // SHOW WELCOME
+    // =====================================
 
     function showWelcome() {
 
@@ -527,13 +561,12 @@
 
       welcome.style.display =
         "block";
-
     }
 
 
-    /* =====================================
-       SHOW NOT FOUND
-    ===================================== */
+    // =====================================
+    // SHOW NOT FOUND
+    // =====================================
 
     function showNotFound() {
 
@@ -551,13 +584,122 @@
 
       notFound.style.display =
         "block";
-
     }
 
 
-    /* =====================================
-       LOAD CAMPAIGN
-    ===================================== */
+    // =====================================
+    // FORMAT NUMBER
+    // =====================================
+
+    function formatNumber(value) {
+
+      const number =
+        Number(value || 0);
+
+      return number.toLocaleString(
+        "en-US"
+      );
+    }
+
+
+    // =====================================
+    // DETECT CAMPAIGN TYPE
+    // =====================================
+
+    function detectCampaignType(url) {
+
+      if (!url) {
+        return "إعلان تيليجرام";
+      }
+
+      const text =
+        String(url).toLowerCase();
+
+      if (
+        text.includes("bot") ||
+        text.includes("_bot")
+      ) {
+        return "إعلان بوت";
+      }
+
+      return "إعلان قناة";
+    }
+
+
+    // =====================================
+    // SET ACTION LABEL
+    // =====================================
+
+    function setActionLabel(
+      campaign
+    ) {
+
+      const title =
+        document.getElementById(
+          "actionsTitle"
+        );
+
+      const description =
+        document.getElementById(
+          "actionsDescription"
+        );
+
+      const type =
+        detectCampaignType(
+          campaign.channel_url
+        );
+
+
+      /*
+        لو الرابط شكله بوت
+      */
+
+      if (
+        type === "إعلان بوت"
+      ) {
+
+        title.textContent =
+          "بدأوا البوت";
+
+        description.textContent =
+          "عدد المستخدمين الذين بدأوا البوت";
+
+      }
+
+      /*
+        لو قناة
+      */
+
+      else if (
+        type === "إعلان قناة"
+      ) {
+
+        title.textContent =
+          "الضغطات";
+
+        description.textContent =
+          "عدد الضغطات المسجلة";
+
+      }
+
+      /*
+        أي نوع آخر
+      */
+
+      else {
+
+        title.textContent =
+          "التفاعلات";
+
+        description.textContent =
+          "التفاعلات المسجلة";
+      }
+    }
+
+
+    // =====================================
+    // LOAD CAMPAIGN
+    // =====================================
 
     async function loadCampaign() {
 
@@ -566,6 +708,10 @@
         /*
           قراءة Report Code
           من الرابط
+
+          مثال:
+
+          ?code=112
         */
 
         const params =
@@ -579,9 +725,7 @@
 
 
         /*
-          إذا لم يوجد code
-          نعرض الصفحة الرئيسية
-          بدون بيانات أي عميل
+          لا يوجد كود
         */
 
         if (!code) {
@@ -589,36 +733,45 @@
           showWelcome();
 
           return;
-
         }
 
 
         /*
-          البحث عن الحملة
-          الخاصة بهذا الكود فقط
+          قراءة الحملة
         */
 
         const {
           data,
           error
-        } = await supabaseClient
+        } =
+          await supabaseClient
 
-          .from("campaigns")
+            .from("campaigns")
 
-          .select(
-            "campaign_name, impressions, status, ad_text, ad_image, channel_url, last_updated, report_code"
-          )
+            .select(
+              `
+              campaign_name,
+              impressions,
+              actions,
+              status,
+              ad_text,
+              ad_image,
+              channel_url,
+              last_updated,
+              report_code
+              `
+            )
 
-          .eq(
-            "report_code",
-            code
-          )
+            .eq(
+              "report_code",
+              code
+            )
 
-          .maybeSingle();
+            .maybeSingle();
 
 
         /*
-          لو Supabase رجع خطأ
+          Supabase Error
         */
 
         if (error) {
@@ -630,12 +783,11 @@
           throw new Error(
             "حدث خطأ أثناء تحميل التقرير."
           );
-
         }
 
 
         /*
-          لو الكود غير موجود
+          الكود غير موجود
         */
 
         if (!data) {
@@ -643,13 +795,12 @@
           showNotFound();
 
           return;
-
         }
 
 
-        /* =================================
-           CAMPAIGN NAME
-        ================================= */
+        // =================================
+        // CAMPAIGN NAME
+        // =================================
 
         document.getElementById(
           "campaignName"
@@ -658,23 +809,63 @@
           "حملة إعلانية";
 
 
-        /* =================================
-           IMPRESSIONS
-        ================================= */
+        // =================================
+        // CAMPAIGN TYPE
+        // =================================
+
+        const campaignType =
+          document.getElementById(
+            "campaignType"
+          );
+
+        const detectedType =
+          detectCampaignType(
+            data.channel_url
+          );
+
+        campaignType.textContent =
+          detectedType;
+
+        campaignType.style.display =
+          "inline-block";
+
+
+        // =================================
+        // VIEWS
+        // =================================
 
         document.getElementById(
           "impressions"
         ).textContent =
-          Number(
-            data.impressions || 0
-          ).toLocaleString(
-            "en-US"
+          formatNumber(
+            data.impressions
           );
 
 
-        /* =================================
-           STATUS VALUE
-        ================================= */
+        // =================================
+        // ACTIONS
+        // =================================
+
+        document.getElementById(
+          "actions"
+        ).textContent =
+          formatNumber(
+            data.actions
+          );
+
+
+        // =================================
+        // ACTION LABEL
+        // =================================
+
+        setActionLabel(
+          data
+        );
+
+
+        // =================================
+        // STATUS VALUE
+        // =================================
 
         document.getElementById(
           "statusValue"
@@ -683,9 +874,9 @@
           "—";
 
 
-        /* =================================
-           STATUS BADGE
-        ================================= */
+        // =================================
+        // STATUS BADGE
+        // =================================
 
         const status =
           document.getElementById(
@@ -693,9 +884,18 @@
           );
 
 
+        const currentStatus =
+          String(
+            data.status ||
+            ""
+          ).toLowerCase();
+
+
         if (
-          data.status ===
-          "Active"
+          currentStatus ===
+            "active" ||
+          currentStatus ===
+            "نشطة"
         ) {
 
           status.textContent =
@@ -715,13 +915,12 @@
 
           status.className =
             "status inactive";
-
         }
 
 
-        /* =================================
-           AD TEXT
-        ================================= */
+        // =================================
+        // AD TEXT
+        // =================================
 
         document.getElementById(
           "adText"
@@ -730,59 +929,93 @@
           "لا يوجد نص للإعلان.";
 
 
-        /* =================================
-           AD IMAGE
-        ================================= */
+        // =================================
+        // AD IMAGE
+        // =================================
+
+        const image =
+          document.getElementById(
+            "adImage"
+          );
+
 
         if (
           data.ad_image &&
-          data.ad_image.trim() !== ""
+          String(
+            data.ad_image
+          ).trim() !== ""
         ) {
-
-          const image =
-            document.getElementById(
-              "adImage"
-            );
-
 
           image.src =
             data.ad_image;
 
-
           image.style.display =
             "block";
 
+        } else {
+
+          image.removeAttribute(
+            "src"
+          );
+
+          image.style.display =
+            "none";
         }
 
 
-        /* =================================
-           CHANNEL BUTTON
-        ================================= */
+        // =================================
+        // BOT / CHANNEL BUTTON
+        // =================================
+
+        const button =
+          document.getElementById(
+            "channelButton"
+          );
+
 
         if (
           data.channel_url &&
-          data.channel_url.trim() !== ""
+          String(
+            data.channel_url
+          ).trim() !== ""
         ) {
-
-          const button =
-            document.getElementById(
-              "channelButton"
-            );
-
 
           button.href =
             data.channel_url;
 
 
+          /*
+            تغيير النص حسب الرابط
+          */
+
+          if (
+            detectedType ===
+            "إعلان بوت"
+          ) {
+
+            button.textContent =
+              "🤖 فتح البوت";
+
+          } else {
+
+            button.textContent =
+              "📢 فتح القناة";
+          }
+
+
           button.style.display =
             "inline-block";
 
+        } else {
+
+          button.style.display =
+            "none";
         }
 
 
-        /* =================================
-           LAST UPDATED
-        ================================= */
+        // =================================
+        // LAST UPDATED
+        // =================================
 
         if (
           data.last_updated
@@ -802,12 +1035,18 @@
               "ar-EG"
             );
 
+        } else {
+
+          document.getElementById(
+            "updated"
+          ).textContent =
+            "آخر تحديث: —";
         }
 
 
-        /* =================================
-           SHOW REPORT
-        ================================= */
+        // =================================
+        // SHOW REPORT
+        // =================================
 
         loading.style.display =
           "none";
@@ -846,34 +1085,41 @@
         report.style.display =
           "none";
 
-
         errorBox.style.display =
           "block";
 
-
         errorBox.textContent =
           "❌ " +
-          error.message;
-
+          (
+            error.message ||
+            "حدث خطأ غير متوقع."
+          );
       }
 
     }
-/* =====================================
-   START
-===================================== */
 
-loadCampaign();
 
-/* =====================================
-   AUTO REFRESH
-   تحديث التقرير تلقائيًا كل دقيقة
-===================================== */
+    // =====================================
+    // START
+    // =====================================
 
-setInterval(() => {
     loadCampaign();
-}, 60 * 1000);
 
-</script>
+
+    // =====================================
+    // AUTO REFRESH
+    // كل دقيقة
+    // =====================================
+
+    setInterval(
+      () => {
+        loadCampaign();
+      },
+      60 * 1000
+    );
+
+  </script>
 
 </body>
-</html>
+
+  </html>
