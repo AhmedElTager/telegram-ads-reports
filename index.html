@@ -14,97 +14,106 @@ body{
 margin:0;
 font-family:Arial,Tahoma,sans-serif;
 color:#fff;
-background:radial-gradient(circle at 90% 0%,#07538b33,transparent 30%),#020b20;
-min-height:100vh
+background:
+radial-gradient(circle at 90% 0%,rgba(0,150,255,.18),transparent 30%),
+radial-gradient(circle at 10% 50%,rgba(0,80,255,.10),transparent 35%),
+#020b20;
+min-height:100vh;
 }
 
 .topbar{
 position:sticky;
 top:0;
-z-index:10;
-padding:12px 16px;
-background:#020d26ee;
-backdrop-filter:blur(12px);
-border-bottom:1px solid #008cff66
+z-index:100;
+padding:14px 18px;
+background:rgba(2,13,38,.92);
+backdrop-filter:blur(14px);
+border-bottom:1px solid rgba(0,174,255,.35);
+box-shadow:0 0 25px rgba(0,130,255,.12);
 }
 
 .top{
-max-width:1150px;
+max-width:1200px;
 margin:auto;
 display:flex;
 justify-content:space-between;
 align-items:center;
-gap:10px
+gap:15px;
 }
 
 .brand{
 display:flex;
 align-items:center;
-gap:10px
+gap:12px;
 }
 
 .icon{
-width:50px;
-height:50px;
+width:52px;
+height:52px;
 border-radius:50%;
-display:grid;
-place-items:center;
-font-size:25px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:27px;
 background:linear-gradient(145deg,#078cff,#004acb);
-box-shadow:0 0 18px #008cff
+box-shadow:0 0 12px #008cff,inset 0 0 10px rgba(255,255,255,.2);
 }
 
 .brand h1{
 margin:0;
-font-size:22px
+font-size:22px;
 }
 
 .brand p{
 margin:4px 0 0;
 color:#9bb7d8;
-font-size:12px
+font-size:12px;
 }
 
 .client{
 display:none;
 align-items:center;
-gap:8px;
-background:#082858cc;
-border:1px solid #0099ff66;
+gap:10px;
+background:rgba(8,40,88,.8);
+border:1px solid rgba(0,153,255,.5);
 border-radius:30px;
-padding:6px
+padding:7px 13px;
 }
 
 .avatar{
 width:34px;
 height:34px;
 border-radius:50%;
-object-fit:cover
+object-fit:cover;
+background:#087cff;
 }
 
-.logout,.back{
+.logout{
 border:0;
-background:#ffffff14;
+background:rgba(255,255,255,.08);
 color:#fff;
-border-radius:16px;
-padding:8px 12px
+border-radius:18px;
+padding:8px 12px;
+cursor:pointer;
 }
 
 .container{
-max-width:1150px;
-margin:24px auto;
-padding:0 15px 40px
+max-width:1200px;
+margin:28px auto;
+padding:0 16px 40px;
 }
 
 .login{
-max-width:600px;
-margin:55px auto;
-padding:38px 24px;
+max-width:520px;
+margin:80px auto;
+padding:42px 25px;
 text-align:center;
-background:linear-gradient(145deg,#051f46f7,#020e26f7);
+background:rgba(4,24,58,.9);
 border:1px solid #008cff;
 border-radius:24px;
-box-shadow:0 0 28px #0088ff40
+box-shadow:
+0 0 25px rgba(0,136,255,.28),
+inset 0 0 25px rgba(0,70,180,.08);
 }
 
 .loginIcon{
@@ -112,191 +121,185 @@ width:85px;
 height:85px;
 margin:auto auto 20px;
 border-radius:50%;
-display:grid;
-place-items:center;
-font-size:43px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:45px;
 background:linear-gradient(145deg,#1298ff,#0051d8);
-box-shadow:0 0 25px #0091ff8c
+box-shadow:0 0 25px rgba(0,145,255,.55);
 }
 
 .login h2{
-font-size:27px
+margin:0 0 12px;
+font-size:27px;
 }
 
 .login p{
 color:#a9bdd8;
-line-height:1.9
+line-height:1.9;
+margin-bottom:25px;
 }
 
-.tg{
+.telegram-login{
 display:flex;
 justify-content:center;
-min-height:45px
+margin-top:20px;
+min-height:45px;
 }
 
-.loading,.empty,.error{
+.loading,
+.empty,
+.error{
 text-align:center;
-padding:45px 15px;
-color:#a6bad4
+padding:45px 20px;
+color:#a6bad4;
 }
 
 .error{
-color:#ff9999
+color:#ff9a9a;
 }
 
-.spin{
+.spinner{
 width:40px;
 height:40px;
-margin:auto;
-border:3px solid #ffffff20;
+border:3px solid rgba(255,255,255,.15);
 border-top-color:#0798ff;
 border-radius:50%;
-animation:s 1s linear infinite
+animation:spin 1s linear infinite;
+margin:0 auto 15px;
 }
 
-@keyframes s{
-to{transform:rotate(360deg)}
+@keyframes spin{
+to{transform:rotate(360deg);}
 }
 
 .head{
 display:flex;
 justify-content:space-between;
 align-items:center;
-margin:10px 0 18px
+margin-bottom:18px;
 }
 
 .head h2{
-margin:0
+margin:0;
+font-size:22px;
+}
+
+.head p{
+color:#7fa3c9;
+font-size:13px;
 }
 
 .count{
 padding:8px 13px;
 border-radius:20px;
-background:#06366eb3;
-border:1px solid #0099ff55;
+background:#06366e;
+border:1px solid rgba(0,153,255,.35);
 color:#a8c9ee;
-font-size:13px
+font-size:13px;
 }
 
-.grid{
+.campaigns{
 display:grid;
 grid-template-columns:repeat(2,1fr);
-gap:18px
+gap:18px;
 }
 
-.card{
+.campaign{
 overflow:hidden;
-background:linear-gradient(145deg,#072656f5,#02112df5);
-border:1px solid #009dffbb;
+background:
+linear-gradient(145deg,rgba(7,38,86,.96),rgba(2,17,45,.96));
+border:1px solid rgba(0,157,255,.75);
 border-radius:20px;
-box-shadow:0 0 18px #0087ff2e
+padding:18px;
+box-shadow:0 0 18px rgba(0,135,255,.18);
 }
 
-.adimg{
+.ad-image{
 width:100%;
-height:230px;
+height:210px;
 object-fit:cover;
-display:block
+border-radius:14px;
+margin-bottom:15px;
+border:1px solid rgba(0,170,255,.35);
+display:block;
 }
 
-.body{
-padding:18px
-}
-
-.row{
+.ad-top{
 display:flex;
 justify-content:space-between;
 align-items:center;
-gap:8px
+gap:10px;
 }
 
 .badge{
+display:inline-block;
 padding:7px 13px;
 border-radius:20px;
 background:#087bea;
 font-size:12px;
-font-weight:bold
+font-weight:bold;
 }
 
 .status{
 padding:7px 12px;
 border-radius:20px;
 font-size:12px;
-font-weight:bold
+font-weight:bold;
 }
 
-.active{
+.status.active{
 color:#00ff91;
-background:#00ff910f;
-border:1px solid #00ff914d
+background:rgba(0,255,140,.09);
+border:1px solid rgba(0,255,140,.3);
 }
 
-.inactive{
+.status.inactive{
 color:#ff7c7c;
-background:#ff46460d;
-border:1px solid #ff46464d
+background:rgba(255,70,70,.08);
+border:1px solid rgba(255,70,70,.3);
 }
 
-.card h3{
-margin:17px 0 9px;
-font-size:20px
+.campaign h3{
+font-size:20px;
+margin:18px 0 10px;
 }
 
-.text{
+.ad-text{
 color:#b7c8df;
 line-height:1.8;
 font-size:14px;
 white-space:pre-wrap;
-max-height:85px;
-overflow:hidden
+max-height:90px;
+overflow:hidden;
 }
 
-.metric{
-margin-top:17px;
-padding:16px;
-border-radius:15px;
-background:#000c204d;
-border:1px solid #0091ff40
+.stats-mini{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-top:18px;
 }
 
-.label{
+.mini{
+background:rgba(0,0,0,.15);
+border:1px solid rgba(0,153,255,.2);
+border-radius:12px;
+padding:12px;
+}
+
+.mini-title{
 color:#8ca8c8;
-font-size:12px
+font-size:12px;
 }
 
-.value{
+.mini-value{
 margin-top:6px;
-font-size:30px;
-font-weight:bold
+font-size:22px;
+font-weight:bold;
 }
 
-.barline{
-margin-top:14px
-}
-
-.barhead{
-display:flex;
-justify-content:space-between;
-color:#9bb5d4;
-font-size:12px
-}
-
-.bar{
-height:9px;
-margin-top:8px;
-border-radius:20px;
-background:#00b4dc29;
-overflow:hidden
-}
-
-.bar span{
-display:block;
-height:100%;
-background:#00ee8a;
-border-radius:20px
-}
-
-.open{
+.details-btn{
 width:100%;
 margin-top:15px;
 padding:13px;
@@ -305,87 +308,98 @@ border-radius:12px;
 background:linear-gradient(90deg,#087bea,#0056d6);
 color:#fff;
 font-size:15px;
-font-weight:bold
+font-weight:bold;
+cursor:pointer;
 }
 
 .details{
-display:none
+display:none;
 }
 
-.back{
-border:1px solid #0099ff80;
-background:#052855cc;
-margin-bottom:18px
+.back-btn{
+border:1px solid rgba(0,153,255,.5);
+background:rgba(5,40,85,.8);
+color:#fff;
+padding:10px 16px;
+border-radius:12px;
+cursor:pointer;
+margin-bottom:18px;
 }
 
 .report{
-background:linear-gradient(145deg,#051f46f7,#020e26f7);
+background:
+linear-gradient(145deg,rgba(5,31,70,.97),rgba(2,14,38,.97));
 border:1px solid #008cff;
 border-radius:22px;
 padding:22px;
-box-shadow:0 0 25px #0082ff2e
+box-shadow:0 0 25px rgba(0,130,255,.18);
 }
 
-.reportHead{
+.report-header{
 display:flex;
 justify-content:space-between;
 align-items:center;
-gap:10px
+gap:15px;
+flex-wrap:wrap;
 }
 
-.reportHead h2{
-margin:0
+.report-header h2{
+margin:0;
+font-size:24px;
 }
 
-.name{
+.report-name{
 color:#91acd0;
-margin-top:8px
+margin-top:8px;
 }
 
 .stats{
 display:grid;
-grid-template-columns:1fr 1fr;
+grid-template-columns:repeat(3,1fr);
 gap:15px;
-margin-top:22px
+margin-top:22px;
 }
 
 .stat{
-background:#000f28b3;
-border:1px solid #0091ff59;
+background:rgba(0,15,40,.7);
+border:1px solid rgba(0,145,255,.35);
 border-radius:16px;
-padding:20px
+padding:20px;
 }
 
-.stat .value{
-font-size:32px
+.stat-title{
+color:#8ca8ca;
+font-size:13px;
 }
 
-.green{
-color:#00ff91
+.stat-value{
+margin-top:10px;
+font-size:32px;
+font-weight:bold;
 }
 
-.preview{
+.ad-preview{
 margin-top:20px;
-background:#000c20a6;
-border:1px solid #0091ff4d;
+background:rgba(0,12,32,.65);
+border:1px solid rgba(0,145,255,.3);
 border-radius:16px;
-padding:18px
+padding:18px;
 }
 
-.preview h3{
-margin-top:0
+.ad-preview h3{
+margin-top:0;
 }
 
-.detailImg{
+.details-image{
 width:100%;
 max-height:450px;
 object-fit:contain;
 border-radius:14px;
 display:none;
-margin-bottom:15px
+margin-bottom:15px;
 }
 
-.channel{
+.channel-btn{
 display:inline-block;
 margin-top:15px;
 background:#078ce8;
@@ -393,85 +407,78 @@ color:#fff;
 text-decoration:none;
 padding:12px 18px;
 border-radius:11px;
-font-weight:bold
+font-weight:bold;
 }
 
-.detailsGrid{
+.detail-grid{
 display:grid;
-grid-template-columns:1fr 1fr;
+grid-template-columns:repeat(2,1fr);
 gap:12px;
-margin-top:20px
+margin-top:20px;
 }
 
 .detail{
 padding:14px;
-background:#00000026;
-border:1px solid #0091ff33;
-border-radius:12px
+background:rgba(0,0,0,.15);
+border:1px solid rgba(0,145,255,.2);
+border-radius:12px;
 }
 
-.dl{
+.detail-label{
 color:#7f9cbc;
-font-size:12px
+font-size:12px;
 }
 
-.dv{
+.detail-value{
 margin-top:7px;
-font-size:14px
-}
-
-.note{
-margin-top:20px;
-padding:16px;
-border-radius:14px;
-background:#00000029;
-border:1px solid #0091ff33
+font-size:14px;
 }
 
 .footer{
 text-align:center;
 color:#6482a6;
 font-size:12px;
-margin-top:35px
+margin-top:35px;
 }
 
 @media(max-width:750px){
 
 .brand h1{
-font-size:18px
+font-size:18px;
 }
 
 .brand p{
-font-size:10px
+font-size:10px;
 }
 
 .icon{
 width:44px;
-height:44px
+height:44px;
+font-size:23px;
 }
 
-.clientName{
-display:none
+.client{
+padding:5px 8px;
 }
 
-.grid{
-grid-template-columns:1fr
+.client-name{
+display:none;
+}
+
+.campaigns{
+grid-template-columns:1fr;
+}
+
+.stats{
+grid-template-columns:1fr;
+}
+
+.detail-grid{
+grid-template-columns:1fr;
 }
 
 .login{
-margin:38px auto
-}
-
-.stats,.detailsGrid{
-grid-template-columns:1fr
-}
-
-.head h2{
-font-size:20px
-}
-
-.adimg{
-height:220px
+margin:45px auto;
 }
 
 }
@@ -486,24 +493,44 @@ height:220px
 
 <div class="brand">
 
-<div class="icon">📊</div>
+<div class="icon">
+📊
+</div>
 
 <div>
-<h1>El Tager . Ads</h1>
-<p>تقارير إعلانات تيليجرام</p>
-</div>
+
+<h1>
+El Tager . Ads
+</h1>
+
+<p>
+تقارير إعلانات تيليجرام
+</p>
 
 </div>
 
-<div id="client" class="client">
+</div>
 
-<img id="avatar" class="avatar">
 
-<span id="clientName" class="clientName">
+<div id="clientBox" class="client">
+
+<img
+id="clientAvatar"
+class="avatar"
+alt=""
+>
+
+<div
+id="clientName"
+class="client-name"
+>
 العميل
-</span>
+</div>
 
-<button id="logout" class="logout">
+<button
+id="logoutBtn"
+class="logout"
+>
 تسجيل الخروج
 </button>
 
@@ -513,95 +540,138 @@ height:220px
 
 </header>
 
+
 <main class="container">
 
-<section id="login" class="login">
 
-<div class="loginIcon">✈️</div>
+<section
+id="loginScreen"
+class="login"
+>
+
+<div class="loginIcon">
+✈️
+</div>
 
 <h2>
 مرحبًا بك في El Tager . Ads
 </h2>
 
 <p>
-لمشاهدة إعلاناتك وتقارير حملاتك والإحصائيات الخاصة بك،
-قم بتسجيل الدخول باستخدام حساب Telegram.
+لتتمكن من مشاهدة إعلاناتك وتقارير الحملات
+والإحصائيات الخاصة بك، قم بتسجيل الدخول
+باستخدام حساب Telegram.
 </p>
 
-<div id="tg" class="tg"></div>
+<div
+id="telegramLogin"
+class="telegram-login"
+></div>
 
-<div style="margin-top:18px;color:#7895b7;font-size:12px">
+<div
+style="margin-top:20px;color:#7895b7;font-size:12px;"
+>
 تسجيل الدخول آمن وسريع
 </div>
 
 </section>
 
 
-<div id="loading" class="loading" style="display:none">
+<div
+id="loading"
+class="loading"
+style="display:none;"
+>
 
-<div class="spin"></div>
+<div class="spinner"></div>
 
-<p>
 جاري تحميل إعلاناتك...
-</p>
 
 </div>
 
 
-<section id="dashboard" style="display:none">
+<section
+id="dashboard"
+style="display:none;"
+>
 
 <div class="head">
 
 <div>
 
 <h2>
-📢 إعلاناتك
+📢 حملاتك الإعلانية
 </h2>
 
-<p style="color:#7898bd;font-size:13px">
-الحملات المرتبطة بحساب Telegram الخاص بك
+<p>
+جميع الحملات المرتبطة بحسابك
 </p>
 
 </div>
 
-<div id="count" class="count">
+<span
+id="campaignCount"
+class="count"
+>
 0 حملة
-</div>
+</span>
 
 </div>
 
-<div id="campaigns" class="grid"></div>
 
-<div id="empty" class="empty" style="display:none">
+<div
+id="campaigns"
+class="campaigns"
+></div>
+
+
+<div
+id="empty"
+class="empty"
+style="display:none;"
+>
 لا توجد إعلانات مرتبطة بحساب Telegram الخاص بك حاليًا.
 </div>
 
 </section>
 
 
-<section id="details" class="details">
+<section
+id="details"
+class="details"
+>
 
-<button id="back" class="back">
+<button
+id="backBtn"
+class="back-btn"
+>
 ← العودة إلى الإعلانات
 </button>
 
+
 <div class="report">
 
-<div class="reportHead">
+<div class="report-header">
 
 <div>
 
 <h2>
-📊 تقرير الحملة
+📊 إحصائيات الإعلان
 </h2>
 
-<div id="dName" class="name">
+<div
+id="detailCampaignName"
+class="report-name"
+>
 —
 </div>
 
 </div>
 
-<span id="dStatus" class="status active">
+<span
+id="detailStatus"
+class="status active"
+>
 ● نشطة
 </span>
 
@@ -610,13 +680,17 @@ height:220px
 
 <div class="stats">
 
+
 <div class="stat">
 
-<div class="label">
+<div class="stat-title">
 👁️ مرات الظهور
 </div>
 
-<div id="dViews" class="value">
+<div
+id="detailImpressions"
+class="stat-value"
+>
 0
 </div>
 
@@ -625,11 +699,31 @@ height:220px
 
 <div class="stat">
 
-<div class="label">
+<div class="stat-title">
 🟢 حالة الحملة
 </div>
 
-<div id="dStatusValue" class="value green">
+<div
+id="detailStatusValue"
+class="stat-value"
+>
+—
+</div>
+
+</div>
+
+
+<div class="stat">
+
+<div class="stat-title">
+📌 نوع الإعلان
+</div>
+
+<div
+id="detailType"
+class="stat-value"
+style="font-size:20px;"
+>
 —
 </div>
 
@@ -638,50 +732,54 @@ height:220px
 </div>
 
 
-<div class="preview">
+<div class="ad-preview">
 
 <h3>
 محتوى الإعلان
 </h3>
 
-<img id="dImg" class="detailImg">
 
-<div id="dText" style="line-height:1.9;color:#c0cee0">
+<img
+id="detailImage"
+class="details-image"
+alt="صورة الإعلان"
+>
+
+
+<div
+id="detailText"
+style="line-height:1.9;color:#c0cee0;"
+>
 —
 </div>
 
-<a id="channel"
-class="channel"
+
+<a
+id="channelBtn"
+class="channel-btn"
+href="#"
 target="_blank"
-rel="noopener">
+rel="noopener noreferrer"
+>
 📢 فتح الإعلان
 </a>
 
 </div>
 
 
-<div class="detailsGrid">
-
-<div class="detail">
-
-<div class="dl">
-نوع الإعلان
-</div>
-
-<div id="dType" class="dv">
-—
-</div>
-
-</div>
+<div class="detail-grid">
 
 
 <div class="detail">
 
-<div class="dl">
+<div class="detail-label">
 تاريخ البدء
 </div>
 
-<div id="dStart" class="dv">
+<div
+id="detailStart"
+class="detail-value"
+>
 —
 </div>
 
@@ -690,11 +788,14 @@ rel="noopener">
 
 <div class="detail">
 
-<div class="dl">
+<div class="detail-label">
 تاريخ الانتهاء
 </div>
 
-<div id="dEnd" class="dv">
+<div
+id="detailEnd"
+class="detail-value"
+>
 —
 </div>
 
@@ -703,36 +804,35 @@ rel="noopener">
 
 <div class="detail">
 
-<div class="dl">
+<div class="detail-label">
 كود التقرير
 </div>
 
-<div id="dCode" class="dv">
+<div
+id="detailCode"
+class="detail-value"
+>
 —
 </div>
 
 </div>
 
+
+<div class="detail">
+
+<div class="detail-label">
+آخر تحديث
 </div>
 
-
-<div class="note">
-
-<div class="dl">
-📝 ملاحظات
-</div>
-
-<div id="dNote"
-style="margin-top:8px;color:#b8c9df">
-لا توجد ملاحظات حاليًا.
+<div
+id="lastUpdated"
+class="detail-value"
+>
+—
 </div>
 
 </div>
 
-
-<div id="updated"
-style="text-align:center;color:#6f8dab;font-size:12px;margin-top:20px">
-آخر تحديث: —
 </div>
 
 </div>
@@ -740,10 +840,11 @@ style="text-align:center;color:#6f8dab;font-size:12px;margin-top:20px">
 </section>
 
 
-<div id="error"
+<div
+id="errorBox"
 class="error"
-style="display:none">
-</div>
+style="display:none;"
+></div>
 
 
 <div class="footer">
@@ -755,11 +856,15 @@ El Tager . Ads — شفافية ونتائج حقيقية
 
 <script>
 
+/* =========================
+   SUPABASE
+========================= */
+
 const SUPABASE_URL =
 "https://oxclimxygexnezblrhpz.supabase.co";
 
 const SUPABASE_KEY =
-"sb_publishable_LakP2nXyrFIvnpwzj8GEvA_90dL9_LK";
+"sb_publishable_LakP2nXyrFIvnpwz8JGEvA_90dL9_LK";
 
 const supabaseClient =
 window.supabase.createClient(
@@ -767,28 +872,65 @@ SUPABASE_URL,
 SUPABASE_KEY
 );
 
+
+/* =========================
+   TELEGRAM BOT
+========================= */
+
 const TELEGRAM_BOT =
 "ElTagerReportsBot";
 
-const $ =
-id => document.getElementById(id);
+
+/* =========================
+   ELEMENTS
+========================= */
+
+const loginScreen =
+document.getElementById("loginScreen");
+
+const loading =
+document.getElementById("loading");
+
+const dashboard =
+document.getElementById("dashboard");
+
+const details =
+document.getElementById("details");
+
+const campaignsBox =
+document.getElementById("campaigns");
+
+const emptyBox =
+document.getElementById("empty");
+
+const errorBox =
+document.getElementById("errorBox");
+
+const clientBox =
+document.getElementById("clientBox");
 
 
-function num(v){
+/* =========================
+   HELPERS
+========================= */
 
-return Number(v || 0)
+function formatNumber(value){
+
+return Number(value || 0)
 .toLocaleString("en-US");
 
 }
 
 
-function date(v){
+function formatDate(value){
 
-if(!v)return "—";
+if(!value){
+return "—";
+}
 
 try{
 
-return new Date(v)
+return new Date(value)
 .toLocaleDateString("ar-EG");
 
 }catch{
@@ -800,20 +942,16 @@ return "—";
 }
 
 
-function datetime(v){
+function formatDateTime(value){
 
-if(!v)return "—";
+if(!value){
+return "—";
+}
 
 try{
 
-return new Date(v)
-.toLocaleString("ar-EG",{
-year:"numeric",
-month:"2-digit",
-day:"2-digit",
-hour:"2-digit",
-minute:"2-digit"
-});
+return new Date(value)
+.toLocaleString("ar-EG");
 
 }catch{
 
@@ -824,35 +962,45 @@ return "—";
 }
 
 
-function active(v){
+function isActive(status){
 
-v=String(v||"")
+const value =
+String(status || "")
 .toLowerCase()
 .trim();
 
-return v==="active" ||
-v==="نشطة" ||
-v==="نشط";
+return (
+value === "active" ||
+value === "نشطة" ||
+value === "نشط"
+);
 
 }
 
 
-function type(url){
+function getCampaignType(url){
 
-return String(url||"")
-.toLowerCase()
-.includes("bot")
-?
-"إعلان بوت"
-:
-"إعلان قناة";
+const text =
+String(url || "")
+.toLowerCase();
+
+if(
+text.includes("bot") ||
+text.includes("_bot")
+){
+
+return "إعلان بوت";
+
+}
+
+return "إعلان قناة";
 
 }
 
 
-function esc(v){
+function escapeHtml(value){
 
-return String(v??"")
+return String(value ?? "")
 .replaceAll("&","&amp;")
 .replaceAll("<","&lt;")
 .replaceAll(">","&gt;")
@@ -862,137 +1010,192 @@ return String(v??"")
 }
 
 
-function loginWidget(){
+/* =========================
+   TELEGRAM LOGIN
+========================= */
 
-const c=$("tg");
+function createTelegramLogin(){
 
-c.innerHTML="";
+const container =
+document.getElementById(
+"telegramLogin"
+);
 
-const s=document.createElement("script");
+container.innerHTML = "";
 
-s.src=
+const script =
+document.createElement("script");
+
+script.src =
 "https://telegram.org/js/telegram-widget.js?22";
 
-s.setAttribute(
+script.setAttribute(
 "data-telegram-login",
 TELEGRAM_BOT
 );
 
-s.setAttribute(
+script.setAttribute(
 "data-size",
 "large"
 );
 
-s.setAttribute(
+script.setAttribute(
 "data-radius",
 "10"
 );
 
-s.setAttribute(
+script.setAttribute(
 "data-userpic",
 "true"
 );
 
-s.setAttribute(
+script.setAttribute(
 "data-request-access",
 "write"
 );
 
-s.setAttribute(
+script.setAttribute(
 "data-onauth",
 "onTelegramAuth(user)"
 );
 
-s.async=true;
+script.async = true;
 
-c.appendChild(s);
+container.appendChild(script);
 
 }
 
 
+/* =========================
+   TELEGRAM CALLBACK
+========================= */
+
 window.onTelegramAuth =
-async user => {
+async function(user){
+
+console.log(
+"Telegram user:",
+user
+);
 
 localStorage.setItem(
 "telegram_user",
 JSON.stringify(user)
 );
 
-await loadDashboard(user);
+await startDashboard(user);
 
 };
 
 
-function err(msg){
+/* =========================
+   START DASHBOARD
+========================= */
 
-$("error").style.display="block";
-
-$("error").textContent=
-"❌ "+msg;
-
-}
-
-
-async function loadDashboard(user){
+async function startDashboard(user){
 
 try{
 
-$("login").style.display="none";
+loginScreen.style.display =
+"none";
 
-$("loading").style.display="block";
+loading.style.display =
+"block";
 
-$("dashboard").style.display="none";
+dashboard.style.display =
+"none";
 
-$("details").style.display="none";
+details.style.display =
+"none";
 
-$("error").style.display="none";
+errorBox.style.display =
+"none";
 
 
-$("clientName").textContent =
+document.getElementById(
+"clientName"
+).textContent =
 (
-(user.first_name||"")+
-(user.last_name?
-" "+user.last_name:"")
-) || "العميل";
+user.first_name ||
+""
+) +
+(
+user.last_name
+?
+" " + user.last_name
+:
+""
+);
 
 
-$("avatar").src =
+document.getElementById(
+"clientAvatar"
+).src =
 user.photo_url ||
 "https://ui-avatars.com/api/?name=Client&background=087cff&color=fff";
 
 
-$("client").style.display="flex";
+clientBox.style.display =
+"flex";
 
 
-/* البحث عن العميل */
+/*
+========================================
+البحث عن العميل باستخدام Telegram ID
+========================================
+*/
 
 let {
 data:client,
-error:ce
+error:clientError
 } =
 await supabaseClient
 .from("clients")
-.select("id,name,telegram_user_id")
-.eq("telegram_user_id",user.id)
+.select(
+"id,name,telegram_user_id"
+)
+.eq(
+"telegram_user_id",
+user.id
+)
 .maybeSingle();
 
 
-if(ce)
+if(clientError){
+
+console.error(
+"CLIENT SEARCH ERROR:",
+clientError
+);
+
 throw new Error(
 "تعذر الاتصال ببيانات العملاء."
 );
 
+}
 
-/* لو العميل غير موجود يتم تسجيله تلقائيًا */
+
+/*
+========================================
+لو العميل غير موجود
+نقوم بإنشائه تلقائيًا
+========================================
+*/
 
 if(!client){
 
-const clientName =
+const fullName =
 (
-(user.first_name||"")+
-(user.last_name?
-" "+user.last_name:"")
-).trim() || "عميل";
+(user.first_name || "") +
+(
+user.last_name
+?
+" " + user.last_name
+:
+""
+)
+).trim() ||
+"عميل جديد";
 
 
 const {
@@ -1003,69 +1206,121 @@ await supabaseClient
 .from("clients")
 .insert({
 
-name:clientName,
+name:
+fullName,
 
-telegram_user_id:user.id
+telegram_user_id:
+user.id
 
 })
-.select("id,name,telegram_user_id")
+.select(
+"id,name,telegram_user_id"
+)
 .single();
 
 
-if(insertError)
-throw new Error(
-"تعذر تسجيل العميل تلقائيًا: "+
-insertError.message
+if(insertError){
+
+console.error(
+"CLIENT INSERT ERROR:",
+insertError
 );
 
-
-client=newClient;
+throw new Error(
+"تعذر تسجيل العميل تلقائيًا."
+);
 
 }
 
 
-/* تحميل حملات العميل */
+client =
+newClient;
+
+}
+
+
+/*
+========================================
+تحميل حملات العميل فقط
+========================================
+*/
 
 const {
 data:campaigns,
-error:ca
+error:campaignsError
 } =
 await supabaseClient
 .from("campaigns")
-.select(
-"id,campaign_name,impressions,actions,status,ad_text,ad_image,channel_url,start_date,end_date,last_updated,report_code,client_id"
+.select(`
+id,
+campaign_name,
+impressions,
+actions,
+status,
+ad_text,
+ad_image,
+channel_url,
+start_date,
+end_date,
+last_updated,
+report_code,
+client_id
+`)
+.eq(
+"client_id",
+client.id
 )
-.eq("client_id",client.id)
 .order(
 "created_at",
-{ascending:false}
+{
+ascending:false
+}
 );
 
 
-if(ca)
+if(campaignsError){
+
+console.error(
+"CAMPAIGNS ERROR:",
+campaignsError
+);
+
 throw new Error(
 "تعذر تحميل الحملات."
 );
 
-
-render(campaigns||[]);
-
-
-$("loading").style.display="none";
-
-$("dashboard").style.display="block";
+}
 
 
-}catch(e){
+renderCampaigns(
+campaigns || []
+);
 
-console.error(e);
 
-$("loading").style.display="none";
+loading.style.display =
+"none";
 
-$("dashboard").style.display="none";
+dashboard.style.display =
+"block";
 
-err(
-e.message ||
+
+}catch(error){
+
+console.error(error);
+
+loading.style.display =
+"none";
+
+dashboard.style.display =
+"none";
+
+errorBox.style.display =
+"block";
+
+errorBox.textContent =
+"❌ " +
+(
+error.message ||
 "حدث خطأ غير متوقع."
 );
 
@@ -1074,239 +1329,342 @@ e.message ||
 }
 
 
-function render(list){
+/* =========================
+   RENDER CAMPAIGNS
+========================= */
 
-$("campaigns").innerHTML="";
+function renderCampaigns(list){
 
-$("empty").style.display =
-list.length ? "none" : "block";
+campaignsBox.innerHTML =
+"";
 
-$("count").textContent =
-list.length+" حملة";
+emptyBox.style.display =
+list.length
+?
+"none"
+:
+"block";
 
 
-list.forEach(c=>{
+document.getElementById(
+"campaignCount"
+).textContent =
+list.length +
+" حملة";
 
-const a=active(c.status);
 
-const el=
+list.forEach(campaign=>{
+
+const active =
+isActive(
+campaign.status
+);
+
+
+const card =
 document.createElement("div");
 
-el.className="card";
+card.className =
+"campaign";
 
 
-el.innerHTML=
+card.innerHTML =
 
-(c.ad_image?
+(
+campaign.ad_image
+?
 
-`<img class="adimg"
-src="${esc(c.ad_image)}"
-onerror="this.style.display='none'">`
+`
+<img
+class="ad-image"
+src="${escapeHtml(campaign.ad_image)}"
+alt="الإعلان"
+onerror="this.style.display='none'"
+>
+`
 
-:"")
+:
+""
+)
 
 +
 
-`<div class="body">
+`
 
-<div class="row">
+<div class="ad-top">
 
 <span class="badge">
-Ad
+إعلان
 </span>
 
 <span class="status ${
-a?'active':'inactive'
+active
+?
+"active"
+:
+"inactive"
 }">
-${a?'● نشطة':'● غير نشطة'}
+
+${
+active
+?
+"● نشطة"
+:
+"● غير نشطة"
+}
+
 </span>
 
 </div>
 
+
 <h3>
-${esc(
-c.campaign_name||
+${escapeHtml(
+campaign.campaign_name ||
 "حملة إعلانية"
 )}
 </h3>
 
-<div class="text">
-${esc(
-c.ad_text||
+
+<div class="ad-text">
+${escapeHtml(
+campaign.ad_text ||
 "لا يوجد وصف للإعلان"
 )}
 </div>
 
-<div class="metric">
 
-<div class="label">
+<div class="stats-mini">
+
+<div class="mini">
+
+<div class="mini-title">
 👁️ مرات الظهور
 </div>
 
-<div class="value">
-${num(c.impressions)}
+<div class="mini-value">
+${formatNumber(
+campaign.impressions
+)}
 </div>
 
 </div>
 
-<div class="barline">
 
-<div class="barhead">
+<div class="mini">
 
-<span>
-حالة الحملة
-</span>
-
-<span>
-${a?
-"جارية بشكل طبيعي":
-"متوقفة"}
-</span>
-
+<div class="mini-title">
+🟢 الحالة
 </div>
 
-<div class="bar">
-
-<span style="width:${
-a?100:35
-}%"></span>
+<div class="mini-value">
+${
+active
+?
+"نشطة"
+:
+"متوقفة"
+}
+</div>
 
 </div>
 
 </div>
 
-<button class="open">
+
+<button
+class="details-btn"
+>
 📊 فتح التقرير
 </button>
 
-</div>`;
+`;
 
 
-el.querySelector(".open")
-.onclick=()=>show(c);
+card
+.querySelector(".details-btn")
+.onclick =
+function(){
+
+showDetails(
+campaign
+);
+
+};
 
 
-$("campaigns")
-.appendChild(el);
+campaignsBox
+.appendChild(card);
 
 });
 
 }
 
 
-function show(c){
+/* =========================
+   DETAILS
+========================= */
 
-$("dashboard")
-.style.display="none";
+function showDetails(campaign){
 
-$("details")
-.style.display="block";
+dashboard.style.display =
+"none";
+
+details.style.display =
+"block";
 
 
-$("dName").textContent =
-c.campaign_name||
+document.getElementById(
+"detailCampaignName"
+).textContent =
+campaign.campaign_name ||
 "حملة إعلانية";
 
 
-$("dViews").textContent =
-num(c.impressions);
+document.getElementById(
+"detailImpressions"
+).textContent =
+formatNumber(
+campaign.impressions
+);
 
 
-const a=active(c.status);
+const active =
+isActive(
+campaign.status
+);
 
 
-$("dStatus").textContent =
-a?
-"● نشطة":
+const status =
+document.getElementById(
+"detailStatus"
+);
+
+
+status.textContent =
+active
+?
+"● نشطة"
+:
 "● غير نشطة";
 
 
-$("dStatus").className =
-"status "+
-(a?"active":"inactive");
+status.className =
+"status " +
+(
+active
+?
+"active"
+:
+"inactive"
+);
 
 
-$("dStatusValue").textContent =
-a?
-"نشطة 🟢":
+document.getElementById(
+"detailStatusValue"
+).textContent =
+active
+?
+"نشطة 🟢"
+:
 "غير نشطة 🔴";
 
 
-$("dStatusValue").className =
-"value "+
-(a?"green":"");
+document.getElementById(
+"detailType"
+).textContent =
+getCampaignType(
+campaign.channel_url
+);
 
 
-$("dText").textContent =
-c.ad_text||
+document.getElementById(
+"detailText"
+).textContent =
+campaign.ad_text ||
 "لا يوجد نص للإعلان";
 
 
-if(c.ad_image){
+const image =
+document.getElementById(
+"detailImage"
+);
 
-$("dImg").src=c.ad_image;
 
-$("dImg").style.display=
+if(campaign.ad_image){
+
+image.src =
+campaign.ad_image;
+
+image.style.display =
 "block";
 
 }else{
 
-$("dImg").style.display=
+image.style.display =
 "none";
 
 }
 
 
-if(c.channel_url){
+const channel =
+document.getElementById(
+"channelBtn"
+);
 
-$("channel").href=
-c.channel_url;
 
-$("channel").style.display=
+if(campaign.channel_url){
+
+channel.href =
+campaign.channel_url;
+
+channel.style.display =
 "inline-block";
 
 }else{
 
-$("channel").style.display=
+channel.style.display =
 "none";
 
 }
 
 
-$("dType").textContent =
-type(c.channel_url);
+document.getElementById(
+"detailStart"
+).textContent =
+formatDate(
+campaign.start_date
+);
 
 
-$("dStart").textContent =
-date(c.start_date);
+document.getElementById(
+"detailEnd"
+).textContent =
+formatDate(
+campaign.end_date
+);
 
 
-$("dEnd").textContent =
-date(c.end_date);
-
-
-$("dCode").textContent =
-c.report_code?
-"#"+c.report_code:
+document.getElementById(
+"detailCode"
+).textContent =
+campaign.report_code
+?
+"#" +
+campaign.report_code
+:
 "—";
 
 
-$("dNote").textContent =
-a?
-"الحملة جارية بشكل طبيعي حاليًا."
-:
-"الحملة غير نشطة حاليًا.";
+document.getElementById(
+"lastUpdated"
+).textContent =
+formatDateTime(
+campaign.last_updated
+);
 
 
-$("updated").textContent =
-c.last_updated?
-"آخر تحديث: "+
-datetime(c.last_updated)
-:
-"آخر تحديث: —";
-
-
-scrollTo({
+window.scrollTo({
 top:0,
 behavior:"smooth"
 });
@@ -1314,13 +1672,22 @@ behavior:"smooth"
 }
 
 
-$("back").onclick=()=>{
+/* =========================
+   BACK
+========================= */
 
-$("details").style.display="none";
+document.getElementById(
+"backBtn"
+).onclick =
+function(){
 
-$("dashboard").style.display="block";
+details.style.display =
+"none";
 
-scrollTo({
+dashboard.style.display =
+"block";
+
+window.scrollTo({
 top:0,
 behavior:"smooth"
 });
@@ -1328,44 +1695,68 @@ behavior:"smooth"
 };
 
 
-$("logout").onclick=()=>{
+/* =========================
+   LOGOUT
+========================= */
+
+document.getElementById(
+"logoutBtn"
+).onclick =
+function(){
 
 localStorage.removeItem(
 "telegram_user"
 );
 
-$("client").style.display="none";
+clientBox.style.display =
+"none";
 
-$("dashboard").style.display="none";
+dashboard.style.display =
+"none";
 
-$("details").style.display="none";
+details.style.display =
+"none";
 
-$("error").style.display="none";
+errorBox.style.display =
+"none";
 
-$("login").style.display="block";
+loginScreen.style.display =
+"block";
 
-loginWidget();
+createTelegramLogin();
 
 };
 
 
-loginWidget();
+/* =========================
+   START
+========================= */
+
+createTelegramLogin();
 
 
-const saved =
+/*
+لو المستخدم سجل دخول قبل كده
+*/
+
+const savedUser =
 localStorage.getItem(
 "telegram_user"
 );
 
 
-if(saved){
+if(savedUser){
 
 try{
 
-const u=JSON.parse(saved);
+const user =
+JSON.parse(savedUser);
 
-if(u&&u.id)
-loadDashboard(u);
+if(user && user.id){
+
+startDashboard(user);
+
+}
 
 }catch{
 
@@ -1378,29 +1769,37 @@ localStorage.removeItem(
 }
 
 
-/* تحديث البيانات كل 5 دقائق */
+/*
+تحديث البيانات كل 5 دقائق
+*/
 
-setInterval(()=>{
+setInterval(
+function(){
 
-const s =
+const saved =
 localStorage.getItem(
 "telegram_user"
 );
 
-if(s){
+if(!saved)
+return;
 
 try{
 
-const u=JSON.parse(s);
+const user =
+JSON.parse(saved);
 
-if(u&&u.id)
-loadDashboard(u);
+if(user && user.id){
 
-}catch{}
+startDashboard(user);
 
 }
 
-},300000);
+}catch{}
+
+},
+300000
+);
 
 </script>
 
