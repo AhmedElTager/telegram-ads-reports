@@ -6,8 +6,10 @@
 <title>El Tager . Ads</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 *{box-sizing:border-box}
+
 body{
 margin:0;
 font-family:Arial,Tahoma,sans-serif;
@@ -15,6 +17,7 @@ color:#fff;
 background:radial-gradient(circle at 90% 0%,#07538b33,transparent 30%),#020b20;
 min-height:100vh
 }
+
 .topbar{
 position:sticky;
 top:0;
@@ -24,6 +27,7 @@ background:#020d26ee;
 backdrop-filter:blur(12px);
 border-bottom:1px solid #008cff66
 }
+
 .top{
 max-width:1150px;
 margin:auto;
@@ -32,11 +36,13 @@ justify-content:space-between;
 align-items:center;
 gap:10px
 }
+
 .brand{
 display:flex;
 align-items:center;
 gap:10px
 }
+
 .icon{
 width:50px;
 height:50px;
@@ -47,12 +53,18 @@ font-size:25px;
 background:linear-gradient(145deg,#078cff,#004acb);
 box-shadow:0 0 18px #008cff
 }
-.brand h1{margin:0;font-size:22px}
+
+.brand h1{
+margin:0;
+font-size:22px
+}
+
 .brand p{
 margin:4px 0 0;
 color:#9bb7d8;
 font-size:12px
 }
+
 .client{
 display:none;
 align-items:center;
@@ -62,12 +74,14 @@ border:1px solid #0099ff66;
 border-radius:30px;
 padding:6px
 }
+
 .avatar{
 width:34px;
 height:34px;
 border-radius:50%;
 object-fit:cover
 }
+
 .logout,.back{
 border:0;
 background:#ffffff14;
@@ -75,11 +89,13 @@ color:#fff;
 border-radius:16px;
 padding:8px 12px
 }
+
 .container{
 max-width:1150px;
 margin:24px auto;
 padding:0 15px 40px
 }
+
 .login{
 max-width:600px;
 margin:55px auto;
@@ -90,6 +106,7 @@ border:1px solid #008cff;
 border-radius:24px;
 box-shadow:0 0 28px #0088ff40
 }
+
 .loginIcon{
 width:85px;
 height:85px;
@@ -101,22 +118,32 @@ font-size:43px;
 background:linear-gradient(145deg,#1298ff,#0051d8);
 box-shadow:0 0 25px #0091ff8c
 }
-.login h2{font-size:27px}
+
+.login h2{
+font-size:27px
+}
+
 .login p{
 color:#a9bdd8;
 line-height:1.9
 }
+
 .tg{
 display:flex;
 justify-content:center;
 min-height:45px
 }
+
 .loading,.empty,.error{
 text-align:center;
 padding:45px 15px;
 color:#a6bad4
 }
-.error{color:#ff9999}
+
+.error{
+color:#ff9999
+}
+
 .spin{
 width:40px;
 height:40px;
@@ -126,14 +153,22 @@ border-top-color:#0798ff;
 border-radius:50%;
 animation:s 1s linear infinite
 }
-@keyframes s{to{transform:rotate(360deg)}}
+
+@keyframes s{
+to{transform:rotate(360deg)}
+}
+
 .head{
 display:flex;
 justify-content:space-between;
 align-items:center;
 margin:10px 0 18px
 }
-.head h2{margin:0}
+
+.head h2{
+margin:0
+}
+
 .count{
 padding:8px 13px;
 border-radius:20px;
@@ -142,11 +177,13 @@ border:1px solid #0099ff55;
 color:#a8c9ee;
 font-size:13px
 }
+
 .grid{
 display:grid;
 grid-template-columns:repeat(2,1fr);
 gap:18px
 }
+
 .card{
 overflow:hidden;
 background:linear-gradient(145deg,#072656f5,#02112df5);
@@ -154,19 +191,25 @@ border:1px solid #009dffbb;
 border-radius:20px;
 box-shadow:0 0 18px #0087ff2e
 }
+
 .adimg{
 width:100%;
 height:230px;
 object-fit:cover;
 display:block
 }
-.body{padding:18px}
+
+.body{
+padding:18px
+}
+
 .row{
 display:flex;
 justify-content:space-between;
 align-items:center;
 gap:8px
 }
+
 .badge{
 padding:7px 13px;
 border-radius:20px;
@@ -174,26 +217,31 @@ background:#087bea;
 font-size:12px;
 font-weight:bold
 }
+
 .status{
 padding:7px 12px;
 border-radius:20px;
 font-size:12px;
 font-weight:bold
 }
+
 .active{
 color:#00ff91;
 background:#00ff910f;
 border:1px solid #00ff914d
 }
+
 .inactive{
 color:#ff7c7c;
 background:#ff46460d;
 border:1px solid #ff46464d
 }
+
 .card h3{
 margin:17px 0 9px;
 font-size:20px
 }
+
 .text{
 color:#b7c8df;
 line-height:1.8;
@@ -202,6 +250,7 @@ white-space:pre-wrap;
 max-height:85px;
 overflow:hidden
 }
+
 .metric{
 margin-top:17px;
 padding:16px;
@@ -209,22 +258,29 @@ border-radius:15px;
 background:#000c204d;
 border:1px solid #0091ff40
 }
+
 .label{
 color:#8ca8c8;
 font-size:12px
 }
+
 .value{
 margin-top:6px;
 font-size:30px;
 font-weight:bold
 }
-.barline{margin-top:14px}
+
+.barline{
+margin-top:14px
+}
+
 .barhead{
 display:flex;
 justify-content:space-between;
 color:#9bb5d4;
 font-size:12px
 }
+
 .bar{
 height:9px;
 margin-top:8px;
@@ -232,12 +288,14 @@ border-radius:20px;
 background:#00b4dc29;
 overflow:hidden
 }
+
 .bar span{
 display:block;
 height:100%;
 background:#00ee8a;
 border-radius:20px
 }
+
 .open{
 width:100%;
 margin-top:15px;
@@ -249,12 +307,17 @@ color:#fff;
 font-size:15px;
 font-weight:bold
 }
-.details{display:none}
+
+.details{
+display:none
+}
+
 .back{
 border:1px solid #0099ff80;
 background:#052855cc;
 margin-bottom:18px
 }
+
 .report{
 background:linear-gradient(145deg,#051f46f7,#020e26f7);
 border:1px solid #008cff;
@@ -262,31 +325,45 @@ border-radius:22px;
 padding:22px;
 box-shadow:0 0 25px #0082ff2e
 }
+
 .reportHead{
 display:flex;
 justify-content:space-between;
 align-items:center;
 gap:10px
 }
-.reportHead h2{margin:0}
+
+.reportHead h2{
+margin:0
+}
+
 .name{
 color:#91acd0;
 margin-top:8px
 }
+
 .stats{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:15px;
 margin-top:22px
 }
+
 .stat{
 background:#000f28b3;
 border:1px solid #0091ff59;
 border-radius:16px;
 padding:20px
 }
-.stat .value{font-size:32px}
-.green{color:#00ff91}
+
+.stat .value{
+font-size:32px
+}
+
+.green{
+color:#00ff91
+}
+
 .preview{
 margin-top:20px;
 background:#000c20a6;
@@ -294,7 +371,11 @@ border:1px solid #0091ff4d;
 border-radius:16px;
 padding:18px
 }
-.preview h3{margin-top:0}
+
+.preview h3{
+margin-top:0
+}
+
 .detailImg{
 width:100%;
 max-height:450px;
@@ -303,6 +384,7 @@ border-radius:14px;
 display:none;
 margin-bottom:15px
 }
+
 .channel{
 display:inline-block;
 margin-top:15px;
@@ -313,26 +395,31 @@ padding:12px 18px;
 border-radius:11px;
 font-weight:bold
 }
+
 .detailsGrid{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:12px;
 margin-top:20px
 }
+
 .detail{
 padding:14px;
 background:#00000026;
 border:1px solid #0091ff33;
 border-radius:12px
 }
+
 .dl{
 color:#7f9cbc;
 font-size:12px
 }
+
 .dv{
 margin-top:7px;
 font-size:14px
 }
+
 .note{
 margin-top:20px;
 padding:16px;
@@ -340,22 +427,53 @@ border-radius:14px;
 background:#00000029;
 border:1px solid #0091ff33
 }
+
 .footer{
 text-align:center;
 color:#6482a6;
 font-size:12px;
 margin-top:35px
 }
+
 @media(max-width:750px){
-.brand h1{font-size:18px}
-.brand p{font-size:10px}
-.icon{width:44px;height:44px}
-.clientName{display:none}
-.grid{grid-template-columns:1fr}
-.login{margin:38px auto}
-.stats,.detailsGrid{grid-template-columns:1fr}
-.head h2{font-size:20px}
-.adimg{height:220px}
+
+.brand h1{
+font-size:18px
+}
+
+.brand p{
+font-size:10px
+}
+
+.icon{
+width:44px;
+height:44px
+}
+
+.clientName{
+display:none
+}
+
+.grid{
+grid-template-columns:1fr
+}
+
+.login{
+margin:38px auto
+}
+
+.stats,.detailsGrid{
+grid-template-columns:1fr
+}
+
+.head h2{
+font-size:20px
+}
+
+.adimg{
+height:220px
+}
+
 }
 </style>
 </head>
@@ -363,23 +481,36 @@ margin-top:35px
 <body>
 
 <header class="topbar">
+
 <div class="top">
 
 <div class="brand">
+
 <div class="icon">📊</div>
+
 <div>
 <h1>El Tager . Ads</h1>
 <p>تقارير إعلانات تيليجرام</p>
 </div>
+
 </div>
 
 <div id="client" class="client">
+
 <img id="avatar" class="avatar">
-<span id="clientName" class="clientName">العميل</span>
-<button id="logout" class="logout">تسجيل الخروج</button>
+
+<span id="clientName" class="clientName">
+العميل
+</span>
+
+<button id="logout" class="logout">
+تسجيل الخروج
+</button>
+
 </div>
 
 </div>
+
 </header>
 
 <main class="container">
@@ -388,7 +519,9 @@ margin-top:35px
 
 <div class="loginIcon">✈️</div>
 
-<h2>مرحبًا بك في El Tager . Ads</h2>
+<h2>
+مرحبًا بك في El Tager . Ads
+</h2>
 
 <p>
 لمشاهدة إعلاناتك وتقارير حملاتك والإحصائيات الخاصة بك،
@@ -403,23 +536,37 @@ margin-top:35px
 
 </section>
 
+
 <div id="loading" class="loading" style="display:none">
+
 <div class="spin"></div>
-<p>جاري تحميل إعلاناتك...</p>
+
+<p>
+جاري تحميل إعلاناتك...
+</p>
+
 </div>
+
 
 <section id="dashboard" style="display:none">
 
 <div class="head">
 
 <div>
-<h2>📢 إعلاناتك</h2>
+
+<h2>
+📢 إعلاناتك
+</h2>
+
 <p style="color:#7898bd;font-size:13px">
 الحملات المرتبطة بحساب Telegram الخاص بك
 </p>
+
 </div>
 
-<div id="count" class="count">0 حملة</div>
+<div id="count" class="count">
+0 حملة
+</div>
 
 </div>
 
@@ -430,6 +577,7 @@ margin-top:35px
 </div>
 
 </section>
+
 
 <section id="details" class="details">
 
@@ -442,8 +590,15 @@ margin-top:35px
 <div class="reportHead">
 
 <div>
-<h2>📊 تقرير الحملة</h2>
-<div id="dName" class="name">—</div>
+
+<h2>
+📊 تقرير الحملة
+</h2>
+
+<div id="dName" class="name">
+—
+</div>
+
 </div>
 
 <span id="dStatus" class="status active">
@@ -452,23 +607,42 @@ margin-top:35px
 
 </div>
 
+
 <div class="stats">
 
 <div class="stat">
-<div class="label">👁️ مرات الظهور</div>
-<div id="dViews" class="value">0</div>
+
+<div class="label">
+👁️ مرات الظهور
 </div>
+
+<div id="dViews" class="value">
+0
+</div>
+
+</div>
+
 
 <div class="stat">
-<div class="label">🟢 حالة الحملة</div>
-<div id="dStatusValue" class="value green">—</div>
+
+<div class="label">
+🟢 حالة الحملة
+</div>
+
+<div id="dStatusValue" class="value green">
+—
 </div>
 
 </div>
+
+</div>
+
 
 <div class="preview">
 
-<h3>محتوى الإعلان</h3>
+<h3>
+محتوى الإعلان
+</h3>
 
 <img id="dImg" class="detailImg">
 
@@ -485,33 +659,68 @@ rel="noopener">
 
 </div>
 
+
 <div class="detailsGrid">
 
 <div class="detail">
-<div class="dl">نوع الإعلان</div>
-<div id="dType" class="dv">—</div>
+
+<div class="dl">
+نوع الإعلان
 </div>
+
+<div id="dType" class="dv">
+—
+</div>
+
+</div>
+
 
 <div class="detail">
-<div class="dl">تاريخ البدء</div>
-<div id="dStart" class="dv">—</div>
+
+<div class="dl">
+تاريخ البدء
 </div>
+
+<div id="dStart" class="dv">
+—
+</div>
+
+</div>
+
 
 <div class="detail">
-<div class="dl">تاريخ الانتهاء</div>
-<div id="dEnd" class="dv">—</div>
+
+<div class="dl">
+تاريخ الانتهاء
 </div>
+
+<div id="dEnd" class="dv">
+—
+</div>
+
+</div>
+
 
 <div class="detail">
-<div class="dl">كود التقرير</div>
-<div id="dCode" class="dv">—</div>
+
+<div class="dl">
+كود التقرير
+</div>
+
+<div id="dCode" class="dv">
+—
 </div>
 
 </div>
+
+</div>
+
 
 <div class="note">
 
-<div class="dl">📝 ملاحظات</div>
+<div class="dl">
+📝 ملاحظات
+</div>
 
 <div id="dNote"
 style="margin-top:8px;color:#b8c9df">
@@ -520,15 +729,22 @@ style="margin-top:8px;color:#b8c9df">
 
 </div>
 
+
 <div id="updated"
 style="text-align:center;color:#6f8dab;font-size:12px;margin-top:20px">
 آخر تحديث: —
 </div>
 
 </div>
+
 </section>
 
-<div id="error" class="error" style="display:none"></div>
+
+<div id="error"
+class="error"
+style="display:none">
+</div>
+
 
 <div class="footer">
 El Tager . Ads — شفافية ونتائج حقيقية
@@ -536,13 +752,14 @@ El Tager . Ads — شفافية ونتائج حقيقية
 
 </main>
 
+
 <script>
 
 const SUPABASE_URL =
 "https://oxclimxygexnezblrhpz.supabase.co";
 
 const SUPABASE_KEY =
-"sb_publishable_LakP2nXyrFIvnpwz8JGEvA_90dL9_LK";
+"sb_publishable_LakP2nXyrFIvnpwzj8GEvA_90dL9_LK";
 
 const supabaseClient =
 window.supabase.createClient(
@@ -556,61 +773,94 @@ const TELEGRAM_BOT =
 const $ =
 id => document.getElementById(id);
 
+
 function num(v){
-return Number(v||0).toLocaleString("en-US");
+
+return Number(v || 0)
+.toLocaleString("en-US");
+
 }
+
 
 function date(v){
-if(!v)return"—";
+
+if(!v)return "—";
+
 try{
-return new Date(v).toLocaleDateString("ar-EG");
+
+return new Date(v)
+.toLocaleDateString("ar-EG");
+
 }catch{
-return"—";
-}
+
+return "—";
+
 }
 
+}
+
+
 function datetime(v){
-if(!v)return"—";
+
+if(!v)return "—";
+
 try{
-return new Date(v).toLocaleString("ar-EG",{
+
+return new Date(v)
+.toLocaleString("ar-EG",{
 year:"numeric",
 month:"2-digit",
 day:"2-digit",
 hour:"2-digit",
 minute:"2-digit"
 });
+
 }catch{
-return"—";
-}
+
+return "—";
+
 }
 
+}
+
+
 function active(v){
-v=String(v||"").toLowerCase().trim();
+
+v=String(v||"")
+.toLowerCase()
+.trim();
 
 return v==="active" ||
 v==="نشطة" ||
 v==="نشط";
+
 }
 
+
 function type(url){
+
 return String(url||"")
 .toLowerCase()
 .includes("bot")
-?"إعلان بوت"
-:"إعلان قناة";
+?
+"إعلان بوت"
+:
+"إعلان قناة";
+
 }
 
+
 function esc(v){
+
 return String(v??"")
 .replaceAll("&","&amp;")
 .replaceAll("<","&lt;")
 .replaceAll(">","&gt;")
 .replaceAll('"',"&quot;")
 .replaceAll("'","&#039;");
+
 }
 
-
-/* تسجيل دخول Telegram */
 
 function loginWidget(){
 
@@ -628,10 +878,25 @@ s.setAttribute(
 TELEGRAM_BOT
 );
 
-s.setAttribute("data-size","large");
-s.setAttribute("data-radius","10");
-s.setAttribute("data-userpic","true");
-s.setAttribute("data-request-access","write");
+s.setAttribute(
+"data-size",
+"large"
+);
+
+s.setAttribute(
+"data-radius",
+"10"
+);
+
+s.setAttribute(
+"data-userpic",
+"true"
+);
+
+s.setAttribute(
+"data-request-access",
+"write"
+);
 
 s.setAttribute(
 "data-onauth",
@@ -641,10 +906,9 @@ s.setAttribute(
 s.async=true;
 
 c.appendChild(s);
+
 }
 
-
-/* بعد تسجيل الدخول */
 
 window.onTelegramAuth =
 async user => {
@@ -659,52 +923,59 @@ await loadDashboard(user);
 };
 
 
-/* رسالة الخطأ */
-
 function err(msg){
 
 $("error").style.display="block";
 
-$("error").textContent =
+$("error").textContent=
 "❌ "+msg;
+
 }
 
-
-/* تحميل بيانات العميل */
 
 async function loadDashboard(user){
 
 try{
 
 $("login").style.display="none";
+
 $("loading").style.display="block";
+
 $("dashboard").style.display="none";
+
 $("details").style.display="none";
+
 $("error").style.display="none";
+
 
 $("clientName").textContent =
 (
 (user.first_name||"")+
-(user.last_name?" "+user.last_name:"")
-)||"العميل";
+(user.last_name?
+" "+user.last_name:"")
+) || "العميل";
+
 
 $("avatar").src =
 user.photo_url ||
 "https://ui-avatars.com/api/?name=Client&background=087cff&color=fff";
 
+
 $("client").style.display="flex";
 
 
-/*
-نبحث عن العميل باستخدام Telegram ID
-*/
+/* البحث عن العميل */
 
-let {data:client,error:ce} =
+let {
+data:client,
+error:ce
+} =
 await supabaseClient
 .from("clients")
 .select("id,name,telegram_user_id")
 .eq("telegram_user_id",user.id)
 .maybeSingle();
+
 
 if(ce)
 throw new Error(
@@ -712,50 +983,53 @@ throw new Error(
 );
 
 
-/*
-لو العميل غير موجود:
-ننشيء له حساب تلقائي
-*/
+/* لو العميل غير موجود يتم تسجيله تلقائيًا */
 
 if(!client){
 
-const {data:newClient,error:insertError} =
+const clientName =
+(
+(user.first_name||"")+
+(user.last_name?
+" "+user.last_name:"")
+).trim() || "عميل";
+
+
+const {
+data:newClient,
+error:insertError
+} =
 await supabaseClient
 .from("clients")
 .insert({
 
-name:
-(
-(user.first_name||"")+
-(user.last_name?" "+user.last_name:"")
-)||"عميل جديد",
+name:clientName,
 
-telegram_user_id:
-user.id
+telegram_user_id:user.id
 
 })
 .select("id,name,telegram_user_id")
 .single();
 
-if(insertError){
 
-console.error(insertError);
-
+if(insertError)
 throw new Error(
-"تعذر تسجيل العميل في النظام."
+"تعذر تسجيل العميل تلقائيًا: "+
+insertError.message
 );
 
-}
 
 client=newClient;
+
 }
 
 
-/*
-تحميل حملات هذا العميل فقط
-*/
+/* تحميل حملات العميل */
 
-const {data:campaigns,error:ca} =
+const {
+data:campaigns,
+error:ca
+} =
 await supabaseClient
 .from("campaigns")
 .select(
@@ -767,25 +1041,31 @@ await supabaseClient
 {ascending:false}
 );
 
+
 if(ca)
 throw new Error(
 "تعذر تحميل الحملات."
 );
 
+
 render(campaigns||[]);
 
+
 $("loading").style.display="none";
+
 $("dashboard").style.display="block";
+
 
 }catch(e){
 
 console.error(e);
 
 $("loading").style.display="none";
+
 $("dashboard").style.display="none";
 
 err(
-e.message||
+e.message ||
 "حدث خطأ غير متوقع."
 );
 
@@ -794,38 +1074,40 @@ e.message||
 }
 
 
-/* عرض الحملات */
-
 function render(list){
 
 $("campaigns").innerHTML="";
 
 $("empty").style.display =
-list.length?"none":"block";
+list.length ? "none" : "block";
 
 $("count").textContent =
 list.length+" حملة";
+
 
 list.forEach(c=>{
 
 const a=active(c.status);
 
-const el=document.createElement("div");
+const el=
+document.createElement("div");
 
 el.className="card";
 
+
 el.innerHTML=
 
-(
-c.ad_image?
+(c.ad_image?
+
 `<img class="adimg"
 src="${esc(c.ad_image)}"
 onerror="this.style.display='none'">`
-:""
-)+
 
-`
-<div class="body">
+:"")
+
++
+
+`<div class="body">
 
 <div class="row">
 
@@ -833,18 +1115,26 @@ onerror="this.style.display='none'">`
 Ad
 </span>
 
-<span class="status ${a?"active":"inactive"}">
-${a?"● نشطة":"● غير نشطة"}
+<span class="status ${
+a?'active':'inactive'
+}">
+${a?'● نشطة':'● غير نشطة'}
 </span>
 
 </div>
 
 <h3>
-${esc(c.campaign_name||"حملة إعلانية")}
+${esc(
+c.campaign_name||
+"حملة إعلانية"
+)}
 </h3>
 
 <div class="text">
-${esc(c.ad_text||"لا يوجد وصف للإعلان")}
+${esc(
+c.ad_text||
+"لا يوجد وصف للإعلان"
+)}
 </div>
 
 <div class="metric">
@@ -868,13 +1158,19 @@ ${num(c.impressions)}
 </span>
 
 <span>
-${a?"جارية بشكل طبيعي":"متوقفة"}
+${a?
+"جارية بشكل طبيعي":
+"متوقفة"}
 </span>
 
 </div>
 
 <div class="bar">
-<span style="width:${a?100:35}%"></span>
+
+<span style="width:${
+a?100:35
+}%"></span>
+
 </div>
 
 </div>
@@ -883,11 +1179,12 @@ ${a?"جارية بشكل طبيعي":"متوقفة"}
 📊 فتح التقرير
 </button>
 
-</div>
-`;
+</div>`;
+
 
 el.querySelector(".open")
 .onclick=()=>show(c);
+
 
 $("campaigns")
 .appendChild(el);
@@ -897,85 +1194,117 @@ $("campaigns")
 }
 
 
-/* تفاصيل الحملة */
-
 function show(c){
 
-$("dashboard").style.display="none";
-$("details").style.display="block";
+$("dashboard")
+.style.display="none";
+
+$("details")
+.style.display="block";
+
 
 $("dName").textContent =
 c.campaign_name||
 "حملة إعلانية";
 
+
 $("dViews").textContent =
 num(c.impressions);
 
+
 const a=active(c.status);
 
+
 $("dStatus").textContent =
-a?"● نشطة":"● غير نشطة";
+a?
+"● نشطة":
+"● غير نشطة";
+
 
 $("dStatus").className =
-"status "+(a?"active":"inactive");
+"status "+
+(a?"active":"inactive");
+
 
 $("dStatusValue").textContent =
-a?"نشطة 🟢":"غير نشطة 🔴";
+a?
+"نشطة 🟢":
+"غير نشطة 🔴";
+
 
 $("dStatusValue").className =
-"value "+(a?"green":"");
+"value "+
+(a?"green":"");
+
 
 $("dText").textContent =
 c.ad_text||
 "لا يوجد نص للإعلان";
 
+
 if(c.ad_image){
 
 $("dImg").src=c.ad_image;
 
-$("dImg").style.display="block";
+$("dImg").style.display=
+"block";
 
 }else{
 
-$("dImg").style.display="none";
+$("dImg").style.display=
+"none";
 
 }
+
 
 if(c.channel_url){
 
-$("channel").href=c.channel_url;
+$("channel").href=
+c.channel_url;
 
-$("channel").style.display="inline-block";
+$("channel").style.display=
+"inline-block";
 
 }else{
 
-$("channel").style.display="none";
+$("channel").style.display=
+"none";
 
 }
+
 
 $("dType").textContent =
 type(c.channel_url);
 
+
 $("dStart").textContent =
 date(c.start_date);
 
+
 $("dEnd").textContent =
 date(c.end_date);
+
 
 $("dCode").textContent =
 c.report_code?
 "#"+c.report_code:
 "—";
 
+
 $("dNote").textContent =
 a?
-"الحملة جارية بشكل طبيعي حاليًا.":
+"الحملة جارية بشكل طبيعي حاليًا."
+:
 "الحملة غير نشطة حاليًا.";
+
 
 $("updated").textContent =
 c.last_updated?
-"آخر تحديث: "+datetime(c.last_updated):
+"آخر تحديث: "+
+datetime(c.last_updated)
+:
 "آخر تحديث: —";
+
 
 scrollTo({
 top:0,
@@ -985,11 +1314,10 @@ behavior:"smooth"
 }
 
 
-/* رجوع */
-
 $("back").onclick=()=>{
 
 $("details").style.display="none";
+
 $("dashboard").style.display="block";
 
 scrollTo({
@@ -1000,8 +1328,6 @@ behavior:"smooth"
 };
 
 
-/* تسجيل خروج */
-
 $("logout").onclick=()=>{
 
 localStorage.removeItem(
@@ -1009,9 +1335,13 @@ localStorage.removeItem(
 );
 
 $("client").style.display="none";
+
 $("dashboard").style.display="none";
+
 $("details").style.display="none";
+
 $("error").style.display="none";
+
 $("login").style.display="block";
 
 loginWidget();
@@ -1019,15 +1349,14 @@ loginWidget();
 };
 
 
-/* تشغيل تسجيل الدخول */
-
 loginWidget();
 
 
-/* لو العميل سجل قبل كده */
-
 const saved =
-localStorage.getItem("telegram_user");
+localStorage.getItem(
+"telegram_user"
+);
+
 
 if(saved){
 
@@ -1049,12 +1378,14 @@ localStorage.removeItem(
 }
 
 
-/* تحديث كل 5 دقائق */
+/* تحديث البيانات كل 5 دقائق */
 
 setInterval(()=>{
 
 const s =
-localStorage.getItem("telegram_user");
+localStorage.getItem(
+"telegram_user"
+);
 
 if(s){
 
