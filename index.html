@@ -3,140 +3,858 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>El Tager · Ads</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#020d24;color:#dce8ff;min-height:100vh}
-.top{height:105px;background:#061936;border-bottom:2px solid #0c5db7;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;gap:15px}
-.brand{display:flex;align-items:center;gap:14px}.logo{width:66px;height:66px;border-radius:50%;background:#0b7cff;display:flex;align-items:center;justify-content:center;font-size:34px;box-shadow:0 0 25px #0878ff}
-.brand h1{margin:0;color:white;font-size:30px}.brand p{margin:5px 0 0;color:#91a8d0;font-size:16px}
-.container{max-width:1050px;margin:30px auto;padding:0 18px}
-.card{background:linear-gradient(145deg,#06162f,#031028);border:1px solid #123a69;border-radius:20px;padding:24px;box-shadow:0 10px 40px #0006;margin-bottom:20px}
-.loading{text-align:center;padding:80px 15px;font-size:20px;color:#9fb5d9}
-.error{padding:30px;text-align:center;color:#ff9da6;font-size:19px}
-.title-row{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
-.title{font-size:30px;color:white;margin:0}.sub{color:#91a8d0;margin:8px 0 0}
-.badge{background:#063e7b;border:1px solid #0878ff;border-radius:30px;padding:10px 18px;color:#b8dbff;font-size:18px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:15px;margin-top:22px}
-.metric{background:#061b3a;border:1px solid #16477d;border-radius:16px;padding:20px}
-.metric .label{color:#91a8d0;margin-bottom:9px}.metric .value{font-size:30px;font-weight:bold;color:white}
-.campaign{border:1px solid #174a83;border-radius:18px;padding:20px;margin-top:20px;background:#04142d}
-.campaign h2{color:white;margin:0 0 8px}.status{display:inline-block;border-radius:20px;padding:7px 14px;margin-bottom:15px;font-weight:bold}
-.active{background:#073d2b;color:#6dffbb}.inactive{background:#4b1820;color:#ff9ea8}
-.ad{background:#061a35;border-radius:14px;padding:16px;margin-top:15px}
-.ad img{display:block;width:100%;max-height:480px;object-fit:contain;border-radius:12px;margin-bottom:15px}
-.ad-text{white-space:pre-wrap;line-height:1.9;color:#dce8ff}
-.channel{display:inline-block;margin-top:16px;background:#1597d4;color:white;text-decoration:none;padding:12px 20px;border-radius:10px;font-weight:bold}
-.footer{text-align:center;color:#6f88b2;padding:30px}
-@media(max-width:600px){.top{height:auto;min-height:105px}.brand h1{font-size:23px}.logo{width:55px;height:55px}.container{margin-top:18px}.title{font-size:25px}}
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Arial,Tahoma,sans-serif;
+  background:#020d24;
+  color:#dce8ff;
+  min-height:100vh;
+}
+
+.top{
+  height:105px;
+  background:#061936;
+  border-bottom:2px solid #0c5db7;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px 24px;
+  gap:15px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.logo{
+  width:66px;
+  height:66px;
+  border-radius:50%;
+  background:#0b7cff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:34px;
+  box-shadow:0 0 25px #0878ff;
+}
+
+.brand h1{
+  margin:0;
+  color:white;
+  font-size:30px;
+}
+
+.brand p{
+  margin:5px 0 0;
+  color:#91a8d0;
+  font-size:16px;
+}
+
+.container{
+  max-width:1050px;
+  margin:30px auto;
+  padding:0 18px;
+}
+
+.card{
+  background:linear-gradient(145deg,#06162f,#031028);
+  border:1px solid #123a69;
+  border-radius:20px;
+  padding:24px;
+  box-shadow:0 10px 40px #0006;
+  margin-bottom:20px;
+}
+
+.loading{
+  text-align:center;
+  padding:80px 15px;
+  font-size:20px;
+  color:#9fb5d9;
+}
+
+.error{
+  padding:30px;
+  text-align:center;
+  color:#ff9da6;
+  font-size:19px;
+}
+
+.title-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  flex-wrap:wrap;
+}
+
+.title{
+  font-size:30px;
+  color:white;
+  margin:0;
+}
+
+.sub{
+  color:#91a8d0;
+  margin:8px 0 0;
+}
+
+.badge{
+  background:#063e7b;
+  border:1px solid #0878ff;
+  border-radius:30px;
+  padding:10px 18px;
+  color:#b8dbff;
+  font-size:18px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:15px;
+  margin-top:22px;
+}
+
+.metric{
+  background:#061b3a;
+  border:1px solid #16477d;
+  border-radius:16px;
+  padding:20px;
+}
+
+.metric .label{
+  color:#91a8d0;
+  margin-bottom:9px;
+}
+
+.metric .value{
+  font-size:30px;
+  font-weight:bold;
+  color:white;
+}
+
+.campaign{
+  border:1px solid #174a83;
+  border-radius:18px;
+  padding:20px;
+  margin-top:20px;
+  background:#04142d;
+}
+
+.campaign h2{
+  color:white;
+  margin:0 0 8px;
+}
+
+.status{
+  display:inline-block;
+  border-radius:20px;
+  padding:7px 14px;
+  margin-bottom:15px;
+  font-weight:bold;
+}
+
+.active{
+  background:#073d2b;
+  color:#6dffbb;
+}
+
+.inactive{
+  background:#4b1820;
+  color:#ff9ea8;
+}
+
+.ad{
+  background:#061a35;
+  border-radius:14px;
+  padding:16px;
+  margin-top:15px;
+}
+
+.ad img{
+  display:block;
+  width:100%;
+  max-height:480px;
+  object-fit:contain;
+  border-radius:12px;
+  margin-bottom:15px;
+}
+
+.ad-text{
+  white-space:pre-wrap;
+  line-height:1.9;
+  color:#dce8ff;
+}
+
+.channel{
+  display:inline-block;
+  margin-top:16px;
+  background:#1597d4;
+  color:white;
+  text-decoration:none;
+  padding:12px 20px;
+  border-radius:10px;
+  font-weight:bold;
+}
+
+.channel:hover{
+  opacity:.9;
+}
+
+.footer{
+  text-align:center;
+  color:#6f88b2;
+  padding:30px;
+}
+
+/* حالة التحديث */
+.update-box{
+  margin-top:15px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  color:#7fa4d8;
+  font-size:14px;
+}
+
+.update-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#35e69a;
+  box-shadow:0 0 10px #35e69a;
+}
+
+.refreshing{
+  opacity:.65;
+}
+
+@media(max-width:600px){
+
+  .top{
+    height:auto;
+    min-height:105px;
+  }
+
+  .brand h1{
+    font-size:23px;
+  }
+
+  .logo{
+    width:55px;
+    height:55px;
+  }
+
+  .container{
+    margin-top:18px;
+  }
+
+  .title{
+    font-size:25px;
+  }
+
+}
 </style>
 </head>
+
 <body>
+
 <header class="top">
+
   <div class="brand">
-    <div class="logo">📊</div>
-    <div><h1>El Tager · Ads</h1><p>تقارير إعلانات تيليجرام</p></div>
+
+    <div class="logo">
+      📊
+    </div>
+
+    <div>
+      <h1>El Tager · Ads</h1>
+      <p>تقارير إعلانات تيليجرام</p>
+    </div>
+
   </div>
+
 </header>
 
+
 <main class="container">
-  <div id="loading" class="card loading">جاري تحميل التقرير...</div>
-  <div id="error" class="card error" style="display:none"></div>
-  <div id="app" style="display:none">
-    <section class="card">
-      <div class="title-row">
-        <div><h1 class="title">📣 إعلاناتك</h1><p class="sub">الحملات المرتبطة برابط التقرير الخاص بك</p></div>
-        <div id="count" class="badge">0 حملة</div>
-      </div>
-    </section>
-    <div id="campaigns"></div>
+
+  <div id="loading" class="card loading">
+    جاري تحميل التقرير...
   </div>
+
+
+  <div id="error" class="card error" style="display:none"></div>
+
+
+  <div id="app" style="display:none">
+
+    <section class="card">
+
+      <div class="title-row">
+
+        <div>
+
+          <h1 class="title">
+            📣 إعلاناتك
+          </h1>
+
+          <p class="sub">
+            الحملات المرتبطة برابط التقرير الخاص بك
+          </p>
+
+        </div>
+
+        <div id="count" class="badge">
+          0 حملة
+        </div>
+
+      </div>
+
+
+      <div class="update-box">
+
+        <span class="update-dot"></span>
+
+        <span id="updateText">
+          التحديث التلقائي يعمل
+        </span>
+
+      </div>
+
+    </section>
+
+
+    <div id="campaigns"></div>
+
+  </div>
+
 </main>
-<footer class="footer">شفافية ونتائج حقيقية — El Tager · Ads</footer>
+
+
+<footer class="footer">
+  شفافية ونتائج حقيقية — El Tager · Ads
+</footer>
+
 
 <script>
-const SUPABASE_URL = "https://oxclimxygexnezblrhpz.supabase.co";
-const SUPABASE_KEY = "sb_publishable_LakP2nXyrFIvnpwzj8GEvA_90dL9_LK";
-const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const $ = id => document.getElementById(id);
-const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({
-  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-}[c]));
+/* ==============================
+   إعدادات Supabase
+================================ */
+
+const SUPABASE_URL =
+  "https://oxclimxygexnezblrhpz.supabase.co";
+
+
+const SUPABASE_KEY =
+  "sb_publishable_LakP2nXyrFIvnpwzj8GEvA_90dL9_LK";
+
+
+const db =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+/* ==============================
+   عناصر الصفحة
+================================ */
+
+const $ = id =>
+  document.getElementById(id);
+
+
+/* ==============================
+   حماية النصوص من HTML
+================================ */
+
+function esc(value){
+
+  return String(value ?? "")
+    .replace(/[&<>"']/g, c => ({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#039;"
+    }[c]));
+
+}
+
+
+/* ==============================
+   تنسيق الأرقام
+================================ */
+
+function num(value){
+
+  return Number(value || 0)
+    .toLocaleString("en-US");
+
+}
+
+
+/* ==============================
+   إظهار الخطأ
+================================ */
 
 function showError(msg){
+
   $("loading").style.display="none";
+
   $("app").style.display="none";
+
   $("error").style.display="block";
+
   $("error").textContent=msg;
+
 }
-function num(v){ return Number(v||0).toLocaleString("en-US"); }
+
+
+/* ==============================
+   كارت الحملة
+================================ */
 
 function campaignCard(c){
-  const active = String(c.status||"").toLowerCase()==="active";
-  const updated = c.last_updated ? new Date(c.last_updated).toLocaleString("ar-EG") : "";
+
+  const active =
+    String(c.status || "")
+      .toLowerCase() === "active";
+
+
+  const updated =
+    c.last_updated
+      ? new Date(c.last_updated)
+          .toLocaleString("ar-EG")
+      : "";
+
+
   return `
+
   <section class="campaign">
+
     <div class="title-row">
+
       <div>
-        <h2>${esc(c.campaign_name || "حملة إعلانية")}</h2>
-        ${updated ? `<div class="sub">آخر تحديث: ${esc(updated)}</div>` : ""}
+
+        <h2>
+          ${esc(
+            c.campaign_name ||
+            "حملة إعلانية"
+          )}
+        </h2>
+
+        ${
+          updated
+          ?
+          `<div class="sub">
+             آخر تحديث: ${esc(updated)}
+           </div>`
+          :
+          ""
+        }
+
       </div>
-      <span class="status ${active ? "active":"inactive"}">${active ? "● نشطة":"● "+esc(c.status||"غير معروفة")}</span>
+
+
+      <span class="status ${
+        active
+          ? "active"
+          : "inactive"
+      }">
+
+        ${
+          active
+            ? "● نشطة"
+            : "● " +
+              esc(
+                c.status ||
+                "غير معروفة"
+              )
+        }
+
+      </span>
+
     </div>
+
+
     <div class="grid">
-      <div class="metric"><div class="label">👁 مرات الظهور</div><div class="value">${num(c.impressions)}</div></div>
-      <div class="metric"><div class="label">📈 التفاعل</div><div class="value">${num(c.actions)}</div></div>
-      <div class="metric"><div class="label">📅 الحالة</div><div class="value" style="font-size:22px">${active ? "جارية":"متوقفة"}</div></div>
+
+
+      <div class="metric">
+
+        <div class="label">
+          👁 مرات الظهور
+        </div>
+
+        <div class="value">
+          ${num(c.impressions)}
+        </div>
+
+      </div>
+
+
+      <div class="metric">
+
+        <div class="label">
+          📈 التفاعل
+        </div>
+
+        <div class="value">
+          ${num(c.actions)}
+        </div>
+
+      </div>
+
+
+      <div class="metric">
+
+        <div class="label">
+          📅 الحالة
+        </div>
+
+        <div
+          class="value"
+          style="font-size:22px"
+        >
+
+          ${
+            active
+              ? "جارية"
+              : "متوقفة"
+          }
+
+        </div>
+
+      </div>
+
+
     </div>
+
+
     <div class="ad">
-      ${c.ad_image ? `<img src="${esc(c.ad_image)}" alt="صورة الإعلان" onerror="this.style.display='none'">` : ""}
-      <div class="ad-text">${esc(c.ad_text || "لا يوجد نص للإعلان.")}</div>
-      ${c.channel_url ? `<a class="channel" href="${esc(c.channel_url)}" target="_blank" rel="noopener noreferrer">زيارة القناة</a>` : ""}
+
+
+      ${
+        c.ad_image
+        ?
+        `<img
+           src="${esc(c.ad_image)}"
+           alt="صورة الإعلان"
+           onerror="this.style.display='none'"
+         >`
+        :
+        ""
+      }
+
+
+      <div class="ad-text">
+
+        ${esc(
+          c.ad_text ||
+          "لا يوجد نص للإعلان."
+        )}
+
+      </div>
+
+
+      ${
+        c.channel_url
+        ?
+        `<a
+           class="channel"
+           href="${esc(c.channel_url)}"
+           target="_blank"
+           rel="noopener noreferrer"
+         >
+           زيارة القناة
+         </a>`
+        :
+        ""
+      }
+
+
     </div>
-  </section>`;
+
+  </section>
+
+  `;
+
 }
+
+
+/* ==============================
+   تحميل البيانات
+================================ */
 
 async function load(){
+
   try{
-    const params = new URLSearchParams(location.search);
-    const code = (params.get("code")||"").trim();
+
+    const params =
+      new URLSearchParams(
+        location.search
+      );
+
+
+    const code =
+      (params.get("code") || "")
+        .trim();
+
 
     if(!code){
-      showError("❌ رابط التقرير غير مكتمل. استخدمي رابط العميل الذي يحتوي على كود التقرير.");
+
+      showError(
+        "❌ رابط التقرير غير مكتمل. استخدمي رابط العميل الذي يحتوي على كود التقرير."
+      );
+
       return;
+
     }
 
-    /*
-      مهم:
-      هذا هو نفس الموقع لكل العملاء.
-      عند إضافة عميل أو حملة جديدة لا نعدل هذا الملف.
-      فقط نضيف البيانات في Supabase ونضع report_code للحملة.
-    */
-    const {data,error} = await db
-      .from("campaigns")
-      .select("id,client_id,campaign_name,impressions,status,ad_text,ad_image,channel_url,last_updated,actions,report_code")
-      .eq("report_code", code)
-      .order("created_at",{ascending:false});
 
-    if(error) throw error;
+    $("campaigns")
+      .classList.add("refreshing");
 
-    if(!data || data.length===0){
-      showError("❌ لا توجد حملات مرتبطة بكود التقرير هذا. تأكدي من أن report_code في Supabase يساوي الكود الموجود في الرابط.");
-      return;
+
+    const { data, error } =
+      await db
+
+        .from("campaigns")
+
+        .select(
+          "id,client_id,campaign_name,impressions,status,ad_text,ad_image,channel_url,last_updated,actions,report_code"
+        )
+
+        .eq(
+          "report_code",
+          code
+        )
+
+        .order(
+          "created_at",
+          {
+            ascending:false
+          }
+        );
+
+
+    if(error){
+
+      throw error;
+
     }
 
-    $("loading").style.display="none";
-    $("app").style.display="block";
-    $("count").textContent = `${data.length} حملة`;
-    $("campaigns").innerHTML = data.map(campaignCard).join("");
+
+    if(!data || data.length === 0){
+
+      showError(
+        "❌ لا توجد حملات مرتبطة بكود التقرير هذا. تأكدي من أن report_code في Supabase يساوي الكود الموجود في الرابط."
+      );
+
+      return;
+
+    }
+
+
+    $("loading")
+      .style.display="none";
+
+
+    $("error")
+      .style.display="none";
+
+
+    $("app")
+      .style.display="block";
+
+
+    $("count")
+      .textContent =
+      `${data.length} حملة`;
+
+
+    $("campaigns")
+      .innerHTML =
+      data
+        .map(campaignCard)
+        .join("");
+
+
+    $("campaigns")
+      .classList.remove("refreshing");
+
+
+    const now =
+      new Date()
+        .toLocaleTimeString(
+          "ar-EG"
+        );
+
+
+    $("updateText")
+      .textContent =
+      `آخر تحديث ${now} · التحديث التلقائي يعمل`;
+
+
   }catch(e){
-    console.error(e);
-    showError("❌ تعذر تحميل بيانات الإعلان. تأكدي من إعدادات Supabase وRLS.");
+
+    console.error(
+      "REPORT ERROR:",
+      e
+    );
+
+
+    $("campaigns")
+      .classList.remove("refreshing");
+
+
+    showError(
+      "❌ تعذر تحميل بيانات الإعلان. تأكدي من إعدادات Supabase وRLS."
+    );
+
   }
+
 }
+
+
+/* ==============================
+   معرفة كود التقرير
+================================ */
+
+const params =
+  new URLSearchParams(
+    location.search
+  );
+
+
+const REPORT_CODE =
+  (params.get("code") || "")
+    .trim();
+
+
+/* ==============================
+   أول تحميل
+================================ */
+
 load();
+
+
+/* ==============================
+   تحديث تلقائي كل 30 ثانية
+================================ */
+
+setInterval(() => {
+
+  if(REPORT_CODE){
+
+    load();
+
+  }
+
+}, 30000);
+
+
+/* ==============================
+   Supabase Realtime
+   تحديث فوري عند تغيير الحملات
+================================ */
+
+if(REPORT_CODE){
+
+  const channel =
+    db
+      .channel(
+        "campaigns-report-" +
+        REPORT_CODE
+      )
+
+      .on(
+        "postgres_changes",
+        {
+          event:"*",
+          schema:"public",
+          table:"campaigns",
+          filter:
+            `report_code=eq.${REPORT_CODE}`
+        },
+
+        payload => {
+
+          console.log(
+            "Campaign updated:",
+            payload
+          );
+
+          load();
+
+        }
+
+      )
+
+      .subscribe(
+        status => {
+
+          console.log(
+            "Realtime status:",
+            status
+          );
+
+        }
+      );
+
+}
+
+
+/* ==============================
+   تحديث عند رجوع العميل للصفحة
+================================ */
+
+document.addEventListener(
+  "visibilitychange",
+  () => {
+
+    if(
+      document.visibilityState ===
+      "visible"
+    ){
+
+      load();
+
+    }
+
+  }
+);
+
+
+/* ==============================
+   تحديث عند استعادة الإنترنت
+================================ */
+
+window.addEventListener(
+  "online",
+  () => {
+
+    load();
+
+  }
+);
+
 </script>
+
 </body>
   </html>
