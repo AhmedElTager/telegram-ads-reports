@@ -82,7 +82,7 @@ body{background:radial-gradient(circle at 50% -10%,#06366b 0%,#03132a 35%,#01061
 <footer class="footer">𝐄𝐋 𝐓𝐀𝐆𝐄𝐑.𝐀𝐝𝐬<br>شفافية ونتائج حقيقية • النتائج يتم تحديثها تلقائيًا</footer>
 <script>
 const SUPABASE_URL="https://oxclimxygexnezblrhpz.supabase.co";
-const SUPABASE_KEY="sb_publishable_LakP2nXyrFIvnpwz8GEvA_90dL9_LK";
+const SUPABASE_KEY="sb_publishable_LakP2nXyrFIvnpwzj8GEvA_90dL9_LK";
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 function esc(value){return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));}
@@ -100,7 +100,7 @@ $("error").innerHTML=`<div class="report-disabled"><div class="report-disabled-i
 
 function renderReport(c){
 const active=isActive(c.status);const status=statusText(c.status);
-let imageHTML="";
+let imageHTML="";  
 if(c.ad_image){imageHTML=`<div class="ad-image-wrap"><img class="ad-image" src="${esc(c.ad_image)}" alt="صورة الإعلان" onerror="this.outerHTML='<div class=&quot;no-image&quot;>📷 صورة الإعلان غير متاحة</div>'"></div>`;}
 else{imageHTML=`<div class="ad-image-wrap"><div class="no-image">📷 لا توجد صورة للإعلان</div></div>`;}
 $("adCard").innerHTML=`<div class="ad-header"><div><h1 class="ad-title">${esc(c.campaign_name||"إعلان Telegram Ads")}</h1><div class="ad-id">Telegram Ad ID: ${esc(c.telegram_ad_id||"-")}</div></div><div class="status ${active?"active":"inactive"}">● ${esc(status)}</div></div>${imageHTML}<div class="ad-text">${esc(c.ad_text||"لا يوجد نص للإعلان.")}</div>`;
@@ -142,4 +142,4 @@ document.addEventListener("visibilitychange",()=>{if(document.visibilityState===
 window.addEventListener("online",()=>load());
 </script>
 </body>
-  </html>
+                                                                                                            </html>   
