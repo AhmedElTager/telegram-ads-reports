@@ -86,6 +86,12 @@ const SUPABASE_KEY="sb_publishable_LakP2nXyrFIvnpwzj8GEvA_90dL9_LK";
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 function esc(value){return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));}
+function cleanDisplayName(value){
+  let s=String(value??"");
+  s=s.replace(/(?:https?:\/\/)?(?:www\.)?(?:t\.me|telegram\.me)\/[^\s<>]+/gi," ");
+  s=s.replace(/\b(?:ad\s*title|url)\s*[:：-]?/gi," ");
+  return s.replace(/\s+/g," ").trim().replace(/^[\s\-\|•:\/]+|[\s\-\|•:\/]+$/g,"") || "إعلان Telegram Ads";
+}
 function num(value){return Number(value||0).toLocaleString("en-US");}
 function formatDate(value){if(!value)return "";try{return new Date(value).toLocaleString("ar-EG",{year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit"});}catch(e){return String(value);}}
 function isActive(status){const s=String(status||"").toLowerCase();return s==="active"||s.includes("running")||s.includes("active")||s.includes("نشط");}
@@ -100,10 +106,10 @@ $("error").innerHTML=`<div class="report-disabled"><div class="report-disabled-i
 
 function renderReport(c){
 const active=isActive(c.status);const status=statusText(c.status);
-let imageHTML="";  
+let imageHTML="";
 if(c.ad_image){imageHTML=`<div class="ad-image-wrap"><img class="ad-image" src="${esc(c.ad_image)}" alt="صورة الإعلان" onerror="this.outerHTML='<div class=&quot;no-image&quot;>📷 صورة الإعلان غير متاحة</div>'"></div>`;}
 else{imageHTML=`<div class="ad-image-wrap"><div class="no-image">📷 لا توجد صورة للإعلان</div></div>`;}
-$("adCard").innerHTML=`<div class="ad-header"><div><h1 class="ad-title">${esc(c.campaign_name||"إعلان Telegram Ads")}</h1><div class="ad-id">Telegram Ad ID: ${esc(c.telegram_ad_id||"-")}</div></div><div class="status ${active?"active":"inactive"}">● ${esc(status)}</div></div>${imageHTML}<div class="ad-text">${esc(c.ad_text||"لا يوجد نص للإعلان.")}</div>`;
+$("adCard").innerHTML=`<div class="ad-header"><div><h1 class="ad-title">${esc(cleanDisplayName(c.campaign_name||"إعلان Telegram Ads"))}</h1><div class="ad-id">Telegram Ad ID: ${esc(c.telegram_ad_id||"-")}</div></div><div class="status ${active?"active":"inactive"}">● ${esc(status)}</div></div>${imageHTML}<div class="ad-text">${esc(c.ad_text||"لا يوجد نص للإعلان.")}</div>`;
 $("metrics").innerHTML=`
 <div class="metric"><div class="metric-head"><div class="metric-title">المشاهدات</div><div class="metric-icon">📊</div></div><div class="metric-value">${num(c.impressions)}</div><div class="metric-label">إجمالي مرات الظهور</div></div>
 <div class="metric"><div class="metric-head"><div class="metric-title">الحالة</div><div class="metric-icon">🛡️</div></div><div class="metric-value" style="font-size:38px">${esc(status)}</div><div class="metric-label">حالة الإعلان الحالية</div></div>
@@ -142,4 +148,4 @@ document.addEventListener("visibilitychange",()=>{if(document.visibilityState===
 window.addEventListener("online",()=>load());
 </script>
 </body>
-                                                                                                            </html>   
+  </html>
