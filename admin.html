@@ -1,2192 +1,283 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
-
 <head>
-  <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <title>لوحة إدارة تقارير إعلانات تيليجرام</title>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
-      color: #222;
-    }
-
-    .topbar {
-      background: #fff;
-      border-bottom: 1px solid #ddd;
-      padding: 18px 20px;
-      font-size: 21px;
-      font-weight: bold;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .container {
-      max-width: 950px;
-      margin: 30px auto;
-      padding: 0 16px;
-    }
-
-    .card {
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 14px;
-      padding: 24px;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,.05);
-    }
-
-    h1,
-    h2,
-    h3 {
-      margin-top: 0;
-    }
-
-    label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 7px;
-    }
-
-    input,
-    textarea,
-    select {
-      width: 100%;
-      padding: 13px;
-      border: 1px solid #d5d9dd;
-      border-radius: 8px;
-      font-size: 15px;
-      margin-bottom: 16px;
-      background: #fff;
-      font-family: Arial, sans-serif;
-    }
-
-    textarea {
-      min-height: 120px;
-      resize: vertical;
-    }
-
-    input:focus,
-    textarea:focus,
-    select:focus {
-      outline: none;
-      border-color: #229ed9;
-      box-shadow: 0 0 0 2px rgba(34,158,217,.1);
-    }
-
-    button {
-      border: 0;
-      border-radius: 8px;
-      padding: 12px 18px;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
-      font-family: Arial, sans-serif;
-    }
-
-    button:disabled {
-      opacity: .6;
-      cursor: not-allowed;
-    }
-
-    .primary {
-      background: #229ed9;
-      color: #fff;
-    }
-
-    .success {
-      background: #16834b;
-      color: #fff;
-    }
-
-    .danger {
-      background: #d64545;
-      color: #fff;
-    }
-
-    .secondary {
-      background: #eef1f4;
-      color: #333;
-    }
-
-    .refresh {
-      background: #6c5ce7;
-      color: white;
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-    }
-
-    .message {
-      padding: 13px;
-      border-radius: 8px;
-      margin-bottom: 18px;
-      display: none;
-      line-height: 1.7;
-      word-break: break-word;
-      white-space: pre-line;
-    }
-
-    .success-message {
-      background: #e7f7ed;
-      color: #16834b;
-    }
-
-    .error-message {
-      background: #fdecec;
-      color: #b42318;
-    }
-
-    .campaign-list {
-      margin-top: 15px;
-    }
-
-    .campaign-item {
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      padding: 18px;
-      margin-bottom: 15px;
-      background: #fafafa;
-    }
-
-    .campaign-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 15px;
-    }
-
-    .campaign-title {
-      font-size: 19px;
-      font-weight: bold;
-    }
-
-    .campaign-code {
-      color: #777;
-      font-size: 13px;
-      margin-top: 5px;
-    }
-
-    .status-badge {
-      padding: 7px 12px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: bold;
-    }
-
-    .active {
-      background: #e7f7ed;
-      color: #16834b;
-    }
-
-    .inactive {
-      background: #fce8e8;
-      color: #c0392b;
-    }
-
-    .campaign-info {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-
-    .info-box {
-      background: #fff;
-      border: 1px solid #e1e4e8;
-      border-radius: 8px;
-      padding: 12px;
-    }
-
-    .info-title {
-      color: #777;
-      font-size: 13px;
-      margin-bottom: 5px;
-    }
-
-    .info-value {
-      font-weight: bold;
-      word-break: break-word;
-    }
-
-    .actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .report-link {
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 12px;
-      margin-top: 12px;
-      word-break: break-all;
-      direction: ltr;
-      text-align: left;
-      font-size: 13px;
-    }
-
-    .telegram-link {
-      background: #eef8fc;
-      border: 1px solid #c9e9f5;
-      border-radius: 8px;
-      padding: 12px;
-      margin-top: 12px;
-      word-break: break-all;
-      direction: ltr;
-      text-align: left;
-      font-size: 13px;
-    }
-
-    .hint {
-      color: #777;
-      font-size: 13px;
-      line-height: 1.7;
-      margin-top: -8px;
-      margin-bottom: 15px;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .empty,
-    .loading {
-      text-align: center;
-      padding: 30px;
-      color: #777;
-    }
-
-    .top-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .copy-small {
-      margin-top: 10px;
-      width: 100%;
-    }
-
-    @media (max-width: 650px) {
-      .form-row {
-        grid-template-columns: 1fr;
-        gap: 0;
-      }
-
-      .campaign-info {
-        grid-template-columns: 1fr;
-      }
-
-      .topbar {
-        font-size: 17px;
-        padding: 15px;
-      }
-
-      .topbar > div:first-child {
-        max-width: 60%;
-        line-height: 1.4;
-      }
-
-      .card {
-        padding: 18px;
-      }
-
-      button {
-        width: 100%;
-      }
-
-      .actions button {
-        width: 100%;
-      }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>𝐄𝐋 𝐓𝐀𝐆𝐄𝐑.𝐀𝐝𝐬 — إدارة التقارير</title>
+<style>
+:root{--bg:#050b16;--card:#0b1424;--line:#1677ff;--text:#f4f8ff;--muted:#91a4bf;--ok:#35d07f;--danger:#ff5b6e}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#0b1b35 0,#050b16 48%,#030711 100%);color:var(--text);font-family:Arial,"Tahoma",sans-serif}
+.wrap{max-width:1050px;margin:auto;padding:24px 14px 50px}.brand{text-align:center;font-size:30px;font-weight:900;letter-spacing:1px;margin:8px 0}.sub{text-align:center;color:var(--muted);margin-bottom:24px}
+.card{background:rgba(11,20,36,.94);border:1px solid rgba(22,119,255,.55);box-shadow:0 0 22px rgba(22,119,255,.12);border-radius:18px;padding:20px;margin-bottom:18px}
+h2{margin:0 0 18px;font-size:20px}label{display:block;color:#cbd8ea;font-weight:700;margin:12px 0 7px}
+input,textarea,select{width:100%;border:1px solid #263b59;background:#07101e;color:#fff;border-radius:11px;padding:12px;font-size:15px;outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--line);box-shadow:0 0 0 3px rgba(22,119,255,.12)}
+textarea{min-height:100px;resize:vertical}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.full{grid-column:1/-1}.hint{font-size:12px;color:var(--muted);margin-top:5px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+button,.btn{border:0;border-radius:11px;padding:12px 18px;font-weight:800;cursor:pointer;text-decoration:none;display:inline-block}
+.primary{background:#1677ff;color:white}.secondary{background:#16263d;color:#dce9ff;border:1px solid #294464}.success{background:#178c57;color:white}.danger{background:#8d2030;color:#fff}
+.msg{display:none;margin-top:14px;padding:12px;border-radius:11px;background:#10243a}.msg.show{display:block}.msg.ok{border:1px solid rgba(53,208,127,.5)}.msg.err{border:1px solid rgba(255,91,110,.5)}
+.codebox{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}.readonly{opacity:.9}
+table{width:100%;border-collapse:collapse;margin-top:10px}th,td{padding:11px 8px;border-bottom:1px solid #1b2c45;text-align:right;vertical-align:top}th{color:#8eb8ff;font-size:13px}td{font-size:14px}
+.badge{display:inline-block;padding:5px 8px;border-radius:999px;background:#12263f;color:#9fc4ff;font-size:12px}.link{color:#6db0ff;word-break:break-all}
+.smallbtn{padding:7px 9px;font-size:12px;background:#16263d;color:#fff;border:1px solid #294464}
+.empty{color:var(--muted);padding:15px 0}.note{font-size:13px;line-height:1.8;color:#b8c7db;background:#081221;border-right:3px solid var(--line);padding:10px 12px;border-radius:9px}
+@media(max-width:700px){.grid{grid-template-columns:1fr}.full{grid-column:auto}table{font-size:12px}.hide-mobile{display:none}.brand{font-size:24px}}
+</style>
 </head>
-
 <body>
+<div class="wrap">
+  <div class="brand">𝐄𝐋 𝐓𝐀𝐆𝐄𝐑.𝐀𝐝𝐬</div>
+  <div class="sub">لوحة إدارة تقارير إعلانات تيليجرام</div>
 
-  <!-- =========================
-       TOP BAR
-  ========================== -->
-
-  <div class="topbar">
-
-    <div>
-      📊 لوحة إدارة تقارير إعلانات تيليجرام
+  <section class="card">
+    <h2>➕ إضافة إعلان جديد</h2>
+    <div class="note">
+      الكود يتولد تلقائيًا لكل إعلان. لو أدخلتِ Telegram Ad ID، المزامنة من البوت ستتعرف على نفس الإعلان وتحدّث أرقامه تلقائيًا.
+      لا تكتبي Report Code يدويًا.
     </div>
 
-    <div class="top-actions">
-
-      <button
-        id="refreshButton"
-        class="refresh"
-        type="button"
-      >
-        🔄 تحديث
-      </button>
-
-    </div>
-
-  </div>
-
-
-  <div class="container">
-
-
-    <!-- =========================
-         ADD CAMPAIGN
-    ========================== -->
-
-    <div class="card">
-
-      <h1>
-        ➕ إضافة إعلان جديد
-      </h1>
-
-      <p style="color:#777;line-height:1.8;">
-
-        أضيفي بيانات الإعلان الحقيقي،
-        وسيتم إنشاء رابط تقرير للعميل تلقائيًا.
-
-      </p>
-
-      <div
-        id="addMessage"
-        class="message"
-      ></div>
-
-
-      <div class="form-row">
-
+    <form id="form">
+      <div class="grid">
         <div>
-
-          <label for="addCampaignName">
-            اسم الحملة / العميل
-          </label>
-
-          <input
-            id="addCampaignName"
-            type="text"
-            placeholder="مثال: حملة أحمد"
-          >
-
-        </div>
-
-
-        <div>
-
-          <label for="addReportCode">
-            Report Code
-          </label>
-
-          <input
-            id="addReportCode"
-            type="text"
-            placeholder="مثال: AHM-001"
-          >
-
-        </div>
-
-      </div>
-
-
-      <div class="form-row">
-
-        <div>
-
-          <label for="addImpressions">
-            مرات الظهور
-          </label>
-
-          <input
-            id="addImpressions"
-            type="number"
-            min="0"
-            value="0"
-          >
-
-        </div>
-
-
-        <div>
-
-          <label for="addStatus">
-            حالة الإعلان
-          </label>
-
-          <select id="addStatus">
-
-            <option value="Active">
-              Active
-            </option>
-
-            <option value="Paused">
-              Paused
-            </option>
-
-            <option value="Completed">
-              Completed
-            </option>
-
-            <option value="Inactive">
-              Inactive
-            </option>
-
+          <label>اسم العميل</label>
+          <select id="client" required>
+            <option value="">جاري تحميل العملاء...</option>
           </select>
-
+          <div class="hint">اختاري العميل المرتبط بالإعلان.</div>
         </div>
 
+        <div>
+          <label>Telegram Ad ID (اختياري لكن يُفضّل)</label>
+          <input id="adId" type="number" min="1" placeholder="مثال: 119">
+          <div class="hint">لو الإعلان موجود بالفعل في Telegram Ads، اكتبي الـ ID لضمان التحديث على نفس السجل.</div>
+        </div>
+
+        <div>
+          <label>اسم الحملة / الإعلان</label>
+          <input id="campaignName" required placeholder="مثال: الغندور بيت الملكه (كوين)">
+        </div>
+
+        <div>
+          <label>الحالة</label>
+          <select id="status">
+            <option>Active</option>
+            <option>On Hold</option>
+            <option>Inactive</option>
+            <option>Declined</option>
+          </select>
+        </div>
+
+        <div>
+          <label>مرات الظهور الحالية</label>
+          <input id="impressions" type="number" min="0" value="0">
+        </div>
+
+        <div>
+          <label>الانضمام / Actions</label>
+          <input id="actions" type="number" min="0" value="0">
+        </div>
+
+        <div>
+          <label>الضغطات / Clicks</label>
+          <input id="clicks" type="number" min="0" value="0">
+        </div>
+
+        <div>
+          <label>رابط القناة / البوت</label>
+          <input id="channelUrl" type="url" placeholder="https://t.me/...">
+        </div>
+
+        <div class="full">
+          <label>نص الإعلان</label>
+          <textarea id="adText" placeholder="اكتبي نص الإعلان هنا..."></textarea>
+        </div>
+
+        <div>
+          <label>رابط صورة الإعلان</label>
+          <input id="adImage" type="url" placeholder="https://...">
+        </div>
+
+        <div>
+          <label>تاريخ البداية</label>
+          <input id="startDate" type="date">
+        </div>
+
+        <div>
+          <label>تاريخ النهاية</label>
+          <input id="endDate" type="date">
+        </div>
+
+        <div>
+          <label>Report Code</label>
+          <div class="codebox">
+            <input id="reportCode" class="readonly" readonly placeholder="سيتم توليده تلقائيًا">
+            <button type="button" class="secondary" id="newCode">توليد</button>
+          </div>
+        </div>
       </div>
 
-
-      <label for="addStatsUrl">
-
-        🔗 رابط إحصائيات الإعلان الحقيقي
-
-      </label>
-
-      <input
-        id="addStatsUrl"
-        type="url"
-        placeholder="https://ads.telegram.org/stats/XXXXXXXX"
-        dir="ltr"
-      >
-
-      <div class="hint">
-
-        ضعي هنا رابط الإعلان الحقيقي من Telegram Ads.
-
+      <div class="actions">
+        <button class="primary" type="submit" id="save">💾 حفظ الإعلان وإنشاء الرابط</button>
+        <button class="secondary" type="button" id="reset">مسح</button>
       </div>
-
-
-      <label for="addAdText">
-
-        📝 نص الإعلان
-
-      </label>
-
-      <textarea
-        id="addAdText"
-        placeholder="اكتبي نص الإعلان..."
-      ></textarea>
-
-
-      <label for="addAdImage">
-
-        🖼️ صورة الإعلان
-
-      </label>
-
-      <input
-        id="addAdImage"
-        type="url"
-        placeholder="https://example.com/image.jpg"
-        dir="ltr"
-      >
-
-
-      <label for="addChannelUrl">
-
-        🔗 رابط القناة / البوت
-
-      </label>
-
-      <input
-        id="addChannelUrl"
-        type="url"
-        placeholder="https://t.me/example"
-        dir="ltr"
-      >
-
-
-      <button
-        id="addButton"
-        class="success"
-        type="button"
-      >
-        ➕ إضافة الإعلان
-      </button>
-
-    </div>
-
-
-    <!-- =========================
-         EDIT
-    ========================== -->
-
-    <div class="card">
-
-      <h2>
-        ✏️ تعديل إعلان
-      </h2>
-
-      <p style="color:#777;">
-        اختاري الإعلان الذي تريدين تعديله.
-      </p>
-
-
-      <div
-        id="editMessage"
-        class="message"
-      ></div>
-
-
-      <label for="campaignSelect">
-        الإعلان
-      </label>
-
-      <select id="campaignSelect">
-
-        <option value="">
-          جاري تحميل الإعلانات...
-        </option>
-
-      </select>
-
-
-      <div
-        id="editForm"
-        class="hidden"
-      >
-
-        <div class="form-row">
-
-          <div>
-
-            <label for="editCampaignName">
-              اسم الحملة
-            </label>
-
-            <input
-              id="editCampaignName"
-              type="text"
-            >
-
-          </div>
-
-
-          <div>
-
-            <label for="editReportCode">
-              Report Code
-            </label>
-
-            <input
-              id="editReportCode"
-              type="text"
-            >
-
-          </div>
-
-        </div>
-
-
-        <div class="form-row">
-
-          <div>
-
-            <label for="editImpressions">
-              مرات الظهور
-            </label>
-
-            <input
-              id="editImpressions"
-              type="number"
-              min="0"
-            >
-
-          </div>
-
-
-          <div>
-
-            <label for="editStatus">
-              حالة الإعلان
-            </label>
-
-            <select id="editStatus">
-
-              <option value="Active">
-                Active
-              </option>
-
-              <option value="Paused">
-                Paused
-              </option>
-
-              <option value="Completed">
-                Completed
-              </option>
-
-              <option value="Inactive">
-                Inactive
-              </option>
-
-            </select>
-
-          </div>
-
-        </div>
-
-
-        <label for="editStatsUrl">
-          🔗 رابط إحصائيات الإعلان
-        </label>
-
-        <input
-          id="editStatsUrl"
-          type="url"
-          placeholder="https://ads.telegram.org/stats/XXXXXXXX"
-          dir="ltr"
-        >
-
-
-        <label for="editAdText">
-          📝 نص الإعلان
-        </label>
-
-        <textarea
-          id="editAdText"
-        ></textarea>
-
-
-        <label for="editAdImage">
-          🖼️ صورة الإعلان
-        </label>
-
-        <input
-          id="editAdImage"
-          type="url"
-          dir="ltr"
-        >
-
-
-        <label for="editChannelUrl">
-          🔗 رابط القناة / البوت
-        </label>
-
-        <input
-          id="editChannelUrl"
-          type="url"
-          dir="ltr"
-        >
-
-
-        <div class="actions">
-
-          <button
-            id="saveButton"
-            class="primary"
-            type="button"
-          >
-            💾 حفظ التعديلات
-          </button>
-
-
-          <button
-            id="deleteButton"
-            class="danger"
-            type="button"
-          >
-            🗑️ حذف الإعلان
-          </button>
-
-        </div>
-
-
-        <div
-          id="reportLinkBox"
-          class="report-link hidden"
-        ></div>
-
-
-        <div
-          id="telegramLinkBox"
-          class="telegram-link hidden"
-        ></div>
-
-
-        <div
-          class="actions"
-          style="margin-top:10px;"
-        >
-
-          <button
-            id="copyLinkButton"
-            class="secondary"
-            type="button"
-          >
-            📋 نسخ رابط التقرير
-          </button>
-
-
-          <button
-            id="openLinkButton"
-            class="secondary"
-            type="button"
-          >
-            🔗 فتح التقرير
-          </button>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <!-- =========================
-         CAMPAIGNS LIST
-    ========================== -->
-
-    <div class="card">
-
-      <h2>
-        📋 قائمة الإعلانات
-      </h2>
-
-
-      <div
-        id="campaignsLoading"
-        class="loading"
-      >
-        جاري تحميل الإعلانات...
-      </div>
-
-
-      <div
-        id="campaignList"
-        class="campaign-list"
-      ></div>
-
-    </div>
-
-  </div>
-
-
-  <script>
-
-    /* =====================================
-       SUPABASE
-    ===================================== */
-
-    const SUPABASE_URL =
-      "https://oxclimxygexnezblrhpz.supabase.co";
-
-
-    const SUPABASE_KEY =
-      "sb_publishable_LakP2nXyrFIvnpwzj8GEvA_90dL9_LK";
-
-
-    const supabaseClient =
-      window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-      );
-
-
-    /* =====================================
-       REPORT URL
-    ===================================== */
-
-    const REPORT_BASE_URL =
-      "https://ahmedeltager.github.io/telegram-ads-reports/";
-
-
-    /* =====================================
-       VARIABLES
-    ===================================== */
-
-    let campaigns = [];
-
-    let selectedCampaignId = null;
-
-
-    /* =====================================
-       ELEMENTS
-    ===================================== */
-
-    const addButton =
-      document.getElementById("addButton");
-
-    const addMessage =
-      document.getElementById("addMessage");
-
-    const campaignSelect =
-      document.getElementById("campaignSelect");
-
-    const editForm =
-      document.getElementById("editForm");
-
-    const editMessage =
-      document.getElementById("editMessage");
-
-    const saveButton =
-      document.getElementById("saveButton");
-
-    const deleteButton =
-      document.getElementById("deleteButton");
-
-    const copyLinkButton =
-      document.getElementById("copyLinkButton");
-
-    const openLinkButton =
-      document.getElementById("openLinkButton");
-
-    const refreshButton =
-      document.getElementById("refreshButton");
-
-
-    /* =====================================
-       MESSAGE
-    ===================================== */
-
-    function showMessage(
-      element,
-      text,
-      type = "error"
-    ) {
-
-      element.textContent = text;
-
-      element.className =
-        "message " +
-        (
-          type === "success"
-            ? "success-message"
-            : "error-message"
-        );
-
-      element.style.display = "block";
+      <div id="msg" class="msg"></div>
+    </form>
+  </section>
+
+  <section class="card">
+    <h2>📋 الإعلانات والتقارير</h2>
+    <div id="list" class="empty">جاري التحميل...</div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://oxclimxygexnezblrhpz.supabase.co";
+const SUPABASE_KEY = "sb_publishable_LakP2nXyrFIvnpwzj8GEvA_90dL9_LK";
+const REPORT_BASE = "https://ahmedeltager.github.io/telegram-ads-reports/";
+
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const $ = id => document.getElementById(id);
+
+function makeCode(){
+  const chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let s="";
+  for(let i=0;i<8;i++) s+=chars[Math.floor(Math.random()*chars.length)];
+  return "ET-"+s;
+}
+function setMsg(text, ok=false){
+  $("msg").textContent=text;
+  $("msg").className="msg show "+(ok?"ok":"err");
+}
+function clearMsg(){ $("msg").className="msg"; }
+function reportUrl(code){ return REPORT_BASE+"?code="+encodeURIComponent(code); }
+async function uniqueCode(){
+  for(let i=0;i<10;i++){
+    const c=makeCode();
+    const {data,error}=await db.from("campaigns").select("id").eq("report_code",c).limit(1);
+    if(!error && (!data || data.length===0)) return c;
+  }
+  throw new Error("تعذر توليد Report Code فريد.");
+}
+
+async function loadClients(){
+  const {data,error}=await db.from("clients").select("id,name").order("name",{ascending:true});
+  if(error) throw error;
+  const sel=$("client");
+  sel.innerHTML='<option value="">اختاري العميل</option>';
+  (data||[]).forEach(c=>{
+    const o=document.createElement("option");
+    o.value=c.id;o.textContent=c.name;
+    sel.appendChild(o);
+  });
+}
+
+async function loadCampaigns(){
+  const {data,error}=await db.from("campaigns")
+    .select("id,client_id,campaign_name,telegram_ad_id,impressions,actions,clicks,status,report_code,channel_url,last_updated,created_at")
+    .order("created_at",{ascending:false}).limit(100);
+  if(error) throw error;
+  if(!data || !data.length){$("list").innerHTML='<div class="empty">لا توجد إعلانات حتى الآن.</div>';return;}
+  const clientIds=[...new Set(data.map(x=>x.client_id).filter(Boolean))];
+  let clients={};
+  if(clientIds.length){
+    const {data:cs}=await db.from("clients").select("id,name").in("id",clientIds);
+    (cs||[]).forEach(c=>clients[c.id]=c.name);
+  }
+  let html='<div style="overflow:auto"><table><thead><tr><th>العميل</th><th>Ad ID</th><th>المشاهدات</th><th>الانضمام</th><th>الحالة</th><th>الرابط</th><th></th></tr></thead><tbody>';
+  data.forEach(x=>{
+    const url=reportUrl(x.report_code);
+    html+=`<tr>
+      <td>${esc(clients[x.client_id]||x.campaign_name||"-")}<br><span class="badge">${esc(x.report_code||"-")}</span></td>
+      <td>${x.telegram_ad_id||"-"}</td>
+      <td>${Number(x.impressions||0).toLocaleString("en-US")}</td>
+      <td>${Number(x.actions||0).toLocaleString("en-US")}</td>
+      <td>${esc(x.status||"-")}</td>
+      <td><a class="link" target="_blank" href="${url}">فتح التقرير</a></td>
+      <td><button class="smallbtn" onclick="copyText('${url.replace(/'/g,"\\\\'")}')">نسخ</button></td>
+    </tr>`;
+  });
+  html+='</tbody></table></div>';
+  $("list").innerHTML=html;
+}
+function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
+async function copyText(t){
+  try{await navigator.clipboard.writeText(t);alert("✅ تم نسخ رابط التقرير");}
+  catch(e){prompt("انسخي الرابط:",t);}
+}
+window.copyText=copyText;
+
+$("newCode").onclick=async()=>{$("reportCode").value=await uniqueCode();};
+$("reset").onclick=()=>{ $("form").reset(); $("impressions").value=0;$("actions").value=0;$("clicks").value=0;$("reportCode").value="";clearMsg(); };
+
+$("form").addEventListener("submit",async e=>{
+  e.preventDefault(); clearMsg();
+  const btn=$("save");btn.disabled=true;btn.textContent="⏳ جاري الحفظ...";
+  try{
+    const clientId=$("client").value;
+    if(!clientId) throw new Error("اختاري العميل أولًا.");
+    const code=$("reportCode").value || await uniqueCode();
+    $("reportCode").value=code;
+
+    const row={
+      client_id:clientId,
+      campaign_name:$("campaignName").value.trim(),
+      telegram_ad_id:$("adId").value ? Number($("adId").value) : null,
+      impressions:Number($("impressions").value||0),
+      actions:Number($("actions").value||0),
+      clicks:Number($("clicks").value||0),
+      status:$("status").value,
+      ad_text:$("adText").value.trim(),
+      ad_image:$("adImage").value.trim(),
+      channel_url:$("channelUrl").value.trim(),
+      start_date:$("startDate").value || null,
+      end_date:$("endDate").value || null,
+      report_code:code,
+      last_updated:new Date().toISOString()
+    };
+
+    if(row.telegram_ad_id){
+      const {data:old,error:findErr}=await db.from("campaigns").select("id,report_code").eq("telegram_ad_id",row.telegram_ad_id).limit(1);
+      if(findErr) throw findErr;
+      if(old && old.length){
+        // Never change an existing ad's report code.
+        row.report_code=old[0].report_code || code;
+        const {error}=await db.from("campaigns").update(row).eq("id",old[0].id);
+        if(error) throw error;
+        const url=reportUrl(row.report_code);
+        setMsg("✅ الإعلان موجود بالفعل؛ تم تحديث نفس السجل.\n🔗 "+url,true);
+      }else{
+        const {error}=await db.from("campaigns").insert(row);
+        if(error) throw error;
+        setMsg("✅ تم إنشاء الإعلان والرابط المستقل.\n🔗 "+reportUrl(row.report_code),true);
+      }
+    }else{
+      const {error}=await db.from("campaigns").insert(row);
+      if(error) throw error;
+      setMsg("✅ تم إنشاء الإعلان والرابط المستقل.\n🔗 "+reportUrl(row.report_code),true);
     }
-
-
-    function hideMessage(element) {
-
-      element.textContent = "";
-
-      element.style.display = "none";
-    }
-
-
-    /* =====================================
-       ESCAPE HTML
-    ===================================== */
-
-    function escapeHtml(value) {
-
-      return String(value ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
-
-
-    /* =====================================
-       REPORT LINK
-    ===================================== */
-
-    function createReportLink(code) {
-
-      if (!code) {
-        return REPORT_BASE_URL;
-      }
-
-      return (
-        REPORT_BASE_URL +
-        "?code=" +
-        encodeURIComponent(code)
-      );
-    }
-
-
-    /* =====================================
-       FILL SELECT
-    ===================================== */
-
-    function fillCampaignSelect() {
-
-      campaignSelect.innerHTML = "";
-
-      if (!campaigns.length) {
-
-        campaignSelect.innerHTML =
-          `<option value="">
-            لا توجد إعلانات
-          </option>`;
-
-        editForm.classList.add("hidden");
-
-        return;
-      }
-
-
-      campaignSelect.innerHTML =
-        `<option value="">
-          اختاري الإعلان
-        </option>`;
-
-
-      campaigns.forEach(campaign => {
-
-        const option =
-          document.createElement("option");
-
-        option.value =
-          campaign.id;
-
-        option.textContent =
-          (
-            campaign.campaign_name ||
-            "بدون اسم"
-          ) +
-          " — " +
-          (
-            campaign.report_code ||
-            "بدون كود"
-          );
-
-        campaignSelect.appendChild(option);
-
-      });
-
-    }
-
-
-    /* =====================================
-       LOAD CAMPAIGNS
-    ===================================== */
-
-    async function loadCampaigns() {
-
-      const loading =
-        document.getElementById(
-          "campaignsLoading"
-        );
-
-      const list =
-        document.getElementById(
-          "campaignList"
-        );
-
-
-      loading.style.display = "block";
-
-      list.innerHTML = "";
-
-
-      try {
-
-        const result =
-          await supabaseClient
-            .from("campaigns")
-            .select("*")
-            .order(
-              "created_at",
-              {
-                ascending: false
-              }
-            );
-
-
-        if (result.error) {
-
-          console.error(
-            "LOAD ERROR:",
-            result.error
-          );
-
-
-          list.innerHTML =
-            "<div class='empty'>" +
-            "❌ فشل تحميل الإعلانات.<br><br>" +
-            escapeHtml(
-              result.error.message
-            ) +
-            "</div>";
-
-          return;
-        }
-
-
-        campaigns =
-          result.data || [];
-
-
-        renderCampaigns();
-
-        fillCampaignSelect();
-
-      }
-
-      catch (error) {
-
-        console.error(error);
-
-
-        list.innerHTML =
-          "<div class='empty'>" +
-          "❌ حدث خطأ أثناء الاتصال بقاعدة البيانات.<br><br>" +
-          escapeHtml(error.message) +
-          "</div>";
-
-      }
-
-      finally {
-
-        loading.style.display = "none";
-
-      }
-
-    }
-
-
-    /* =====================================
-       RENDER CAMPAIGNS
-    ===================================== */
-
-    function renderCampaigns() {
-
-      const list =
-        document.getElementById(
-          "campaignList"
-        );
-
-
-      if (!campaigns.length) {
-
-        list.innerHTML =
-          "<div class='empty'>" +
-          "لا توجد إعلانات حتى الآن." +
-          "</div>";
-
-        return;
-      }
-
-
-      list.innerHTML =
-        campaigns.map(campaign => {
-
-          const reportLink =
-            createReportLink(
-              campaign.report_code
-            );
-
-
-          const statusClass =
-            campaign.status === "Active"
-              ? "active"
-              : "inactive";
-
-
-          return `
-
-            <div class="campaign-item">
-
-              <div class="campaign-header">
-
-                <div>
-
-                  <div class="campaign-title">
-                    ${escapeHtml(
-                      campaign.campaign_name ||
-                      "بدون اسم"
-                    )}
-                  </div>
-
-                  <div class="campaign-code">
-                    Report Code:
-                    ${escapeHtml(
-                      campaign.report_code ||
-                      "—"
-                    )}
-                  </div>
-
-                </div>
-
-
-                <span
-                  class="status-badge ${statusClass}"
-                >
-                  ${escapeHtml(
-                    campaign.status ||
-                    "غير معروف"
-                  )}
-                </span>
-
-              </div>
-
-
-              <div class="campaign-info">
-
-                <div class="info-box">
-
-                  <div class="info-title">
-                    👁️ مرات الظهور
-                  </div>
-
-                  <div class="info-value">
-                    ${Number(
-                      campaign.impressions || 0
-                    ).toLocaleString("en-US")}
-                  </div>
-                    </div>
-
-
-                    <div class="info-box">
-
-                      <div class="info-title">
-                        📅 تاريخ الإضافة
-                      </div>
-
-                      <div class="info-value">
-
-                        ${
-                          campaign.created_at
-                            ? new Date(
-                                campaign.created_at
-                              ).toLocaleDateString(
-                                "ar-EG"
-                              )
-                            : "—"
-                        }
-
-                      </div>
-
-                    </div>
-
-                  </div>
-
-
-                  ${
-                    campaign.stats_url
-                      ? `
-                        <div class="telegram-link">
-
-                          📈 رابط إحصائيات الإعلان الحقيقي:
-
-                          <br><br>
-
-                          ${escapeHtml(
-                            campaign.stats_url
-                          )}
-
-                        </div>
-                      `
-                      : ""
-                  }
-
-
-                  ${
-                    campaign.channel_url
-                      ? `
-                        <div class="report-link">
-
-                          📢 رابط القناة:
-
-                          <br><br>
-
-                          ${escapeHtml(
-                            campaign.channel_url
-                          )}
-
-                        </div>
-                      `
-                      : ""
-                  }
-
-
-                  <div class="report-link">
-
-                    🔗 رابط تقرير العميل:
-
-                    <br><br>
-
-                    ${escapeHtml(reportLink)}
-
-                    <button
-                      class="secondary copy-small"
-                      type="button"
-                      onclick="copyReportDirect('${encodeURIComponent(reportLink)}')"
-                    >
-                      📋 نسخ رابط التقرير
-                    </button>
-
-                  </div>
-
-
-                  ${
-                    campaign.ad_text
-                      ? `
-                        <div
-                          class="info-box"
-                          style="margin-top:12px;"
-                        >
-
-                          <div class="info-title">
-                            📝 نص الإعلان
-                          </div>
-
-                          <div
-                            class="info-value"
-                            style="font-weight:normal;line-height:1.8;"
-                          >
-                            ${escapeHtml(
-                              campaign.ad_text
-                            )}
-                          </div>
-
-                        </div>
-                      `
-                      : ""
-                  }
-
-
-                </div>
-
-              `;
-
-            }
-          )
-          .join("");
-
-    }
-
-
-    /* =====================================
-       SELECT CAMPAIGN
-    ===================================== */
-
-    campaignSelect.addEventListener(
-      "change",
-      function () {
-
-        selectedCampaignId =
-          this.value || null;
-
-
-        const campaign =
-          campaigns.find(
-            item =>
-              String(item.id) ===
-              String(selectedCampaignId)
-          );
-
-
-        if (!campaign) {
-
-          editForm.classList.add(
-            "hidden"
-          );
-
-          return;
-        }
-
-
-        editForm.classList.remove(
-          "hidden"
-        );
-
-
-        document.getElementById(
-          "editCampaignName"
-        ).value =
-          campaign.campaign_name || "";
-
-
-        document.getElementById(
-          "editReportCode"
-        ).value =
-          campaign.report_code || "";
-
-
-        document.getElementById(
-          "editImpressions"
-        ).value =
-          campaign.impressions || 0;
-
-
-        document.getElementById(
-          "editStatus"
-        ).value =
-          campaign.status || "Active";
-
-
-        document.getElementById(
-          "editStatsUrl"
-        ).value =
-          campaign.stats_url || "";
-
-
-        document.getElementById(
-          "editAdText"
-        ).value =
-          campaign.ad_text || "";
-
-
-        document.getElementById(
-          "editAdImage"
-        ).value =
-          campaign.ad_image || "";
-
-
-        document.getElementById(
-          "editChannelUrl"
-        ).value =
-          campaign.channel_url || "";
-
-
-        const reportLink =
-          createReportLink(
-            campaign.report_code
-          );
-
-
-        const reportBox =
-          document.getElementById(
-            "reportLinkBox"
-          );
-
-
-        reportBox.innerHTML =
-          "🔗 رابط تقرير العميل:<br><br>" +
-          escapeHtml(
-            reportLink
-          );
-
-
-        reportBox.classList.remove(
-          "hidden"
-        );
-
-
-        const telegramBox =
-          document.getElementById(
-            "telegramLinkBox"
-          );
-
-
-        if (campaign.stats_url) {
-
-          telegramBox.innerHTML =
-            "📈 رابط إحصائيات الإعلان الحقيقي:<br><br>" +
-            escapeHtml(
-              campaign.stats_url
-            );
-
-          telegramBox.classList.remove(
-            "hidden"
-          );
-
-        }
-
-        else {
-
-          telegramBox.classList.add(
-            "hidden"
-          );
-
-        }
-
-      }
-    );
-
-
-    /* =====================================
-       ADD CAMPAIGN
-    ===================================== */
-
-    addButton.addEventListener(
-      "click",
-      async function () {
-
-        hideMessage(
-          addMessage
-        );
-
-
-        const campaignName =
-          document.getElementById(
-            "addCampaignName"
-          ).value.trim();
-
-
-        const reportCode =
-          document.getElementById(
-            "addReportCode"
-          ).value.trim();
-
-
-        const impressions =
-          Number(
-            document.getElementById(
-              "addImpressions"
-            ).value || 0
-          );
-
-
-        const status =
-          document.getElementById(
-            "addStatus"
-          ).value;
-
-
-        const statsUrl =
-          document.getElementById(
-            "addStatsUrl"
-          ).value.trim();
-
-
-        const adText =
-          document.getElementById(
-            "addAdText"
-          ).value.trim();
-
-
-        const adImage =
-          document.getElementById(
-            "addAdImage"
-          ).value.trim();
-
-
-        const channelUrl =
-          document.getElementById(
-            "addChannelUrl"
-          ).value.trim();
-
-
-        if (!campaignName) {
-
-          showMessage(
-            addMessage,
-            "❌ اكتبي اسم الحملة / العميل.",
-            "error"
-          );
-
-          return;
-        }
-
-
-        if (!reportCode) {
-
-          showMessage(
-            addMessage,
-            "❌ اكتبي Report Code.",
-            "error"
-          );
-
-          return;
-        }
-
-
-        if (
-          !Number.isFinite(impressions) ||
-          impressions < 0
-        ) {
-
-          showMessage(
-            addMessage,
-            "❌ عدد مرات الظهور غير صحيح.",
-            "error"
-          );
-
-          return;
-        }
-
-
-        addButton.disabled = true;
-
-        addButton.textContent =
-          "⏳ جاري إضافة الإعلان...";
-
-
-        try {
-
-          const insertData = {
-
-            campaign_name:
-              campaignName,
-
-            report_code:
-              reportCode,
-
-            impressions:
-              impressions,
-
-            status:
-              status,
-
-            stats_url:
-              statsUrl || null,
-
-            ad_text:
-              adText || null,
-
-            ad_image:
-              adImage || null,
-
-            channel_url:
-              channelUrl || null
-
-          };
-
-
-          console.log(
-            "INSERT DATA:",
-            insertData
-          );
-
-
-          const result =
-            await supabaseClient
-              .from("campaigns")
-              .insert(
-                insertData
-              )
-              .select()
-              .single();
-
-
-          if (result.error) {
-
-            console.error(
-              "INSERT ERROR:",
-              result.error
-            );
-
-
-            showMessage(
-              addMessage,
-
-              "❌ لم تتم إضافة الإعلان.\n\n" +
-              result.error.message,
-
-              "error"
-            );
-
-            return;
-          }
-
-
-          showMessage(
-            addMessage,
-            "✅ تم إضافة الإعلان بنجاح.",
-            "success"
-          );
-
-
-          document.getElementById(
-            "addCampaignName"
-          ).value = "";
-
-
-          document.getElementById(
-            "addReportCode"
-          ).value = "";
-
-
-          document.getElementById(
-            "addImpressions"
-          ).value = "0";
-
-
-          document.getElementById(
-            "addStatsUrl"
-          ).value = "";
-
-
-          document.getElementById(
-            "addAdText"
-          ).value = "";
-
-
-          document.getElementById(
-            "addAdImage"
-          ).value = "";
-
-
-          document.getElementById(
-            "addChannelUrl"
-          ).value = "";
-
-
-          await loadCampaigns();
-
-        }
-
-        catch (error) {
-
-          console.error(
-            "ADD EXCEPTION:",
-            error
-          );
-
-
-          showMessage(
-            addMessage,
-
-            "❌ حدث خطأ أثناء إضافة الإعلان.\n\n" +
-            error.message,
-
-            "error"
-          );
-
-        }
-
-        finally {
-
-          addButton.disabled = false;
-
-          addButton.textContent =
-            "➕ إضافة الإعلان";
-
-        }
-
-      }
-    );
-
-
-    /* =====================================
-       SAVE EDIT
-    ===================================== */
-
-    saveButton.addEventListener(
-      "click",
-      async function () {
-
-        hideMessage(
-          editMessage
-        );
-
-
-        if (!selectedCampaignId) {
-
-          showMessage(
-            editMessage,
-            "❌ اختاري إعلان أولًا.",
-            "error"
-          );
-
-          return;
-        }
-
-
-        const updates = {
-
-          campaign_name:
-            document.getElementById(
-              "editCampaignName"
-            ).value.trim(),
-
-          report_code:
-            document.getElementById(
-              "editReportCode"
-            ).value.trim(),
-
-          impressions:
-            Number(
-              document.getElementById(
-                "editImpressions"
-              ).value || 0
-            ),
-
-          status:
-            document.getElementById(
-              "editStatus"
-            ).value,
-
-          stats_url:
-            document.getElementById(
-              "editStatsUrl"
-            ).value.trim() || null,
-
-          ad_text:
-            document.getElementById(
-              "editAdText"
-            ).value.trim() || null,
-
-          ad_image:
-            document.getElementById(
-              "editAdImage"
-            ).value.trim() || null,
-
-          channel_url:
-            document.getElementById(
-              "editChannelUrl"
-            ).value.trim() || null
-
-        };
-
-
-        if (!updates.campaign_name) {
-
-          showMessage(
-            editMessage,
-            "❌ اسم الحملة مطلوب.",
-            "error"
-          );
-
-          return;
-        }
-
-
-        if (!updates.report_code) {
-
-          showMessage(
-            editMessage,
-            "❌ Report Code مطلوب.",
-            "error"
-          );
-
-          return;
-        }
-
-
-        saveButton.disabled = true;
-
-        saveButton.textContent =
-          "⏳ جاري الحفظ...";
-
-
-        try {
-
-          const result =
-            await supabaseClient
-              .from("campaigns")
-              .update(updates)
-              .eq(
-                "id",
-                selectedCampaignId
-              );
-
-
-          if (result.error) {
-
-            console.error(
-              "UPDATE ERROR:",
-              result.error
-            );
-
-
-            showMessage(
-              editMessage,
-
-              "❌ فشل حفظ التعديلات.\n\n" +
-              result.error.message,
-
-              "error"
-            );
-
-            return;
-          }
-
-
-          showMessage(
-            editMessage,
-            "✅ تم حفظ التعديلات بنجاح.",
-            "success"
-          );
-
-
-          await loadCampaigns();
-
-        }
-
-        catch (error) {
-
-          showMessage(
-            editMessage,
-
-            "❌ حدث خطأ:\n\n" +
-            error.message,
-
-            "error"
-          );
-
-        }
-
-        finally {
-
-          saveButton.disabled = false;
-
-          saveButton.textContent =
-            "💾 حفظ التعديلات";
-
-        }
-
-      }
-    );
-
-
-    /* =====================================
-       DELETE
-    ===================================== */
-
-    deleteButton.addEventListener(
-      "click",
-      async function () {
-
-        if (!selectedCampaignId) {
-
-          showMessage(
-            editMessage,
-            "❌ اختاري إعلان أولًا.",
-            "error"
-          );
-
-          return;
-        }
-
-
-        const confirmed =
-          confirm(
-            "⚠️ هل أنتِ متأكدة من حذف هذا الإعلان؟"
-          );
-
-
-        if (!confirmed) {
-          return;
-        }
-
-
-        deleteButton.disabled = true;
-
-        deleteButton.textContent =
-          "⏳ جاري الحذف...";
-
-
-        try {
-
-          const result =
-            await supabaseClient
-              .from("campaigns")
-              .delete()
-              .eq(
-                "id",
-                selectedCampaignId
-              );
-
-
-          if (result.error) {
-
-            console.error(
-              "DELETE ERROR:",
-              result.error
-            );
-
-
-            showMessage(
-              editMessage,
-
-              "❌ فشل حذف الإعلان.\n\n" +
-              result.error.message,
-
-              "error"
-            );
-
-            return;
-          }
-
-
-          showMessage(
-            editMessage,
-            "✅ تم حذف الإعلان.",
-            "success"
-          );
-
-
-          selectedCampaignId =
-            null;
-
-
-          editForm.classList.add(
-            "hidden"
-          );
-
-
-          await loadCampaigns();
-
-        }
-
-        catch (error) {
-
-          showMessage(
-            editMessage,
-
-            "❌ حدث خطأ:\n\n" +
-            error.message,
-
-            "error"
-          );
-
-        }
-
-        finally {
-
-          deleteButton.disabled = false;
-
-          deleteButton.textContent =
-            "🗑️ حذف الإعلان";
-
-        }
-
-      }
-    );
-
-
-    /* =====================================
-       COPY REPORT LINK
-    ===================================== */
-
-    copyLinkButton.addEventListener(
-      "click",
-      async function () {
-
-        if (!selectedCampaignId) {
-
-          alert(
-            "اختاري إعلان أولًا."
-          );
-
-          return;
-        }
-
-
-        const campaign =
-          campaigns.find(
-            item =>
-              String(item.id) ===
-              String(selectedCampaignId)
-          );
-
-
-        if (!campaign) {
-          return;
-        }
-
-
-        const link =
-          createReportLink(
-            campaign.report_code
-          );
-
-
-        copyText(link);
-
-      }
-    );
-
-
-    /* =====================================
-       OPEN REPORT
-    ===================================== */
-
-    openLinkButton.addEventListener(
-      "click",
-      function () {
-
-        if (!selectedCampaignId) {
-
-          alert(
-            "اختاري إعلان أولًا."
-          );
-
-          return;
-        }
-
-
-        const campaign =
-          campaigns.find(
-            item =>
-              String(item.id) ===
-              String(selectedCampaignId)
-          );
-
-
-        if (!campaign) {
-          return;
-        }
-
-
-        const link =
-          createReportLink(
-            campaign.report_code
-          );
-
-
-        window.open(
-          link,
-          "_blank"
-        );
-
-      }
-    );
-
-
-    /* =====================================
-       COPY
-    ===================================== */
-
-    async function copyText(text) {
-
-      try {
-
-        if (
-          navigator.clipboard &&
-          window.isSecureContext
-        ) {
-
-          await navigator.clipboard.writeText(
-            text
-          );
-
-          alert(
-            "✅ تم نسخ رابط التقرير."
-          );
-
-          return;
-        }
-
-
-        const input =
-          document.createElement(
-            "textarea"
-          );
-
-
-        input.value = text;
-
-        input.style.position =
-          "fixed";
-
-        input.style.opacity =
-          "0";
-
-
-        document.body.appendChild(
-          input
-        );
-
-
-        input.focus();
-
-        input.select();
-
-
-        document.execCommand(
-          "copy"
-        );
-
-
-        document.body.removeChild(
-          input
-        );
-
-
-        alert(
-          "✅ تم نسخ رابط التقرير."
-        );
-
-      }
-
-      catch (error) {
-
-        prompt(
-          "انسخي الرابط:",
-          text
-        );
-
-      }
-
-    }
-
-
-    /* =====================================
-       COPY DIRECT
-    ===================================== */
-
-    async function copyReportDirect(
-      encodedLink
-    ) {
-
-      const link =
-        decodeURIComponent(
-          encodedLink
-        );
-
-
-      copyText(link);
-
-    }
-
-
-    /* =====================================
-       REFRESH
-    ===================================== */
-
-    refreshButton.addEventListener(
-      "click",
-      async function () {
-
-        refreshButton.disabled = true;
-
-        refreshButton.textContent =
-          "⏳ تحديث...";
-
-
-        await loadCampaigns();
-
-
-        refreshButton.disabled =
-          false;
-
-        refreshButton.textContent =
-          "🔄 تحديث";
-
-      }
-    );
-
-
-    /* =====================================
-       START
-    ===================================== */
-
-    document.addEventListener(
-      "DOMContentLoaded",
-      function () {
-
-        loadCampaigns();
-
-      }
-    );
-
-  </script>
-
+    await loadCampaigns();
+  }catch(err){
+    console.error(err);
+    setMsg("❌ لم يتم الحفظ: "+(err.message||err));
+  }finally{
+    btn.disabled=false;btn.textContent="💾 حفظ الإعلان وإنشاء الرابط";
+  }
+});
+
+(async()=>{
+  try{
+    $("reportCode").value=await uniqueCode();
+    await loadClients();
+    await loadCampaigns();
+  }catch(e){
+    console.error(e);
+    setMsg("❌ تعذر الاتصال بقاعدة البيانات. لو ظهر خطأ permission denied فالمشكلة في RLS، وليس في الرابط.");
+    $("list").textContent="تعذر تحميل البيانات.";
+  }
+})();
+</script>
 </body>
-
-</html>
+            </html>
           
