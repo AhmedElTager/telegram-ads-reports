@@ -273,21 +273,27 @@ window.editCampaign=editCampaign;
 
 async function setReportEnabled(id, enabled){
   const action=enabled ? "تفعيل" : "إيقاف";
+  const btn=[...document.querySelectorAll('button[data-action="report"]')]
+    .find(x=>x.dataset.id===String(id));
 
-  if(!confirm(`هل تريدين ${action} التقرير؟\nالرابط نفسه سيظل موجودًا، لكن عند الإيقاف لن يستطيع العميل مشاهدة التقرير.`)){
-    return;
+  if(btn){
+    btn.disabled=true;
+    btn.textContent="⏳ جاري...";
   }
 
   try{
-    const {error}=await db
+    const {data,error}=await db
       .from("campaigns")
       .update({
         report_enabled:enabled,
         last_updated:new Date().toISOString()
       })
-      .eq("id",id);
+      .eq("id",id)
+      .select("id,report_enabled")
+      .single();
 
     if(error) throw error;
+    if(!data) throw new Error("لم يتم العثور على الإعلان.");
 
     setMsg(
       enabled
@@ -300,9 +306,14 @@ async function setReportEnabled(id, enabled){
   }catch(e){
     console.error("REPORT ENABLE ERROR:",e);
     setMsg(
-      "❌ لم يتم تغيير حالة التقرير:\n"+
-      (e.message||e.details||e.hint||e)
+      "❌ لم يتم "+action+" التقرير.\n"+
+      (e?.message||e?.details||e?.hint||JSON.stringify(e)),
+      false
     );
+    if(btn){
+      btn.disabled=false;
+      btn.textContent=enabled ? "▶️ تفعيل التقرير" : "⛔ إيقاف التقرير";
+    }
   }
 }
 window.setReportEnabled=setReportEnabled;
@@ -377,12 +388,12 @@ async function loadCampaigns(){
         <a class="link" target="_blank" href="${esc(url)}">فتح التقرير</a>
       </td>
       <td>
-        <button class="smallbtn" onclick="copyText(${JSON.stringify(url)})">نسخ</button>
-        <button class="smallbtn" onclick="editCampaign(${JSON.stringify(x.id)})">✏️ تعديل</button>
+        <button class="smallbtn" data-action="copy" data-url=${JSON.stringify(url)}>نسخ</button>
+        <button class="smallbtn" data-action="edit" data-id=${JSON.stringify(x.id)}>✏️ تعديل</button>
         ${
           enabled
-          ? `<button class="smallbtn stop" onclick="setReportEnabled(${JSON.stringify(x.id)},false)">⛔ إيقاف التقرير</button>`
-          : `<button class="smallbtn start" onclick="setReportEnabled(${JSON.stringify(x.id)},true)">▶️ تفعيل التقرير</button>`
+          ? `<button class="smallbtn stop" data-action="report" data-enabled="false" data-id=${JSON.stringify(x.id)}>⛔ إيقاف التقرير</button>`
+          : `<button class="smallbtn start" data-action="report" data-enabled="true" data-id=${JSON.stringify(x.id)}>▶️ تفعيل التقرير</button>`
         }
       </td>
     </tr>`;
@@ -391,6 +402,34 @@ async function loadCampaigns(){
   html+='</tbody></table></div>';
   $("list").innerHTML=html;
 }
+
+document.addEventListener("click",async(e)=>{
+  const b=e.target.closest("button[data-action]");
+  if(!b) return;
+  e.preventDefault();
+  e.stopPropagation();
+
+  const action=b.dataset.action;
+  const id=b.dataset.id;
+
+  try{
+    if(action==="copy"){
+      await copyText(b.dataset.url||"");
+      return;
+    }
+    if(action==="edit"){
+      await editCampaign(id);
+      return;
+    }
+    if(action==="report"){
+      await setReportEnabled(id,b.dataset.enabled==="true");
+      return;
+    }
+  }catch(err){
+    console.error("BUTTON ERROR:",err);
+    setMsg("❌ حدث خطأ: "+(err?.message||err),false);
+  }
+});
 
 async function copyText(t){
   try{
@@ -529,12 +568,15 @@ $("form").addEventListener("submit",async e=>{
       // نحافظ على حالة التقرير الحالية أثناء التعديل
       row.report_enabled=old.report_enabled!==false;
 
-      const {error}=await db
+      const {data:updated,error}=await db
         .from("campaigns")
         .update(row)
-        .eq("id",editingId);
+        .eq("id",editingId)
+        .select("id,report_code")
+        .single();
 
       if(error) throw error;
+      if(!updated) throw new Error("لم يتم تعديل الإعلان.");
 
       setMsg(
         "✅ تم حفظ تعديلات الإعلان بنجاح.\n🔗 "+reportUrl(row.report_code),
@@ -572,12 +614,15 @@ $("form").addEventListener("submit",async e=>{
 
           row.report_code=old[0].report_code||code;
 
-          const {error}=await db
+          const {data:updated,error}=await db
             .from("campaigns")
             .update(row)
-            .eq("id",old[0].id);
+            .eq("id",old[0].id)
+            .select("id")
+            .single();
 
-          if(error) throw error;
+     if(error) throw error;
+          if(!updated) throw new Error("لم يتم تحديث الإعلان الموجود.");
 
           setMsg(
             "✅ الإعلان موجود بالفعل؛ تم تحديث نفس السجل.\n🔗 "+
@@ -658,4 +703,6 @@ $("cancelEdit").onclick=exitEditMode;
 })();
 </script>
 </body>
-</html>
+  </html>
+
+                                       
