@@ -20,8 +20,9 @@ button,.btn{border:0;border-radius:11px;padding:12px 18px;font-weight:800;cursor
 .codebox{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}.readonly{opacity:.9}
 table{width:100%;border-collapse:collapse;margin-top:10px}th,td{padding:11px 8px;border-bottom:1px solid #1b2c45;text-align:right;vertical-align:top}th{color:#8eb8ff;font-size:13px}td{font-size:14px}
 .badge{display:inline-block;padding:5px 8px;border-radius:999px;background:#12263f;color:#9fc4ff;font-size:12px}.link{color:#6db0ff;word-break:break-all}
-.smallbtn{padding:7px 9px;font-size:12px;background:#16263d;color:#fff;border:1px solid #294464}
+.smallbtn{padding:7px 9px;font-size:12px;background:#16263d;color:#fff;border:1px solid #294464}.smallbtn.dangerbtn{background:#8d2030;border-color:#b73b4d}.smallbtn.successbtn{background:#178c57;border-color:#26b874}
 .empty{color:var(--muted);padding:15px 0}.note{font-size:13px;line-height:1.8;color:#b8c7db;background:#081221;border-right:3px solid var(--line);padding:10px 12px;border-radius:9px}
+.report-on{color:#35d07f}.report-off{color:#ff7c7c}
 @media(max-width:700px){.grid{grid-template-columns:1fr}.full{grid-column:auto}table{font-size:12px}.hide-mobile{display:none}.brand{font-size:24px}}
 </style>
 </head>
@@ -140,8 +141,8 @@ table{width:100%;border-collapse:collapse;margin-top:10px}th,td{padding:11px 8px
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL = "https://oxclimxygexnezblrhpz.supabase.co";
-const SUPABASE_KEY = "sb_publishable_LakP2nXyrFIvnpwzj8GEvA_90dL9_LK";
-const REPORT_BASE = "https://ahmedeltager.github.io/telegram-ads-reports/";
+const SUPABASE_KEY = "sb_publishable_LakP2nXyrFIvnpwz8GEvA_90dL9_LK";
+const REPORT_BASE = "https://ahmedeltager.github.io/telegram-ads-reports/report.html";
 
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const $ = id => document.getElementById(id);
@@ -228,9 +229,24 @@ async function editCampaign(id){
 }
 window.editCampaign=editCampaign;
 
+async function toggleReport(id, enabled){
+  const action = enabled ? "تفعيل" : "إيقاف";
+  if(!confirm(`هل تريدين ${action} تقرير هذا الإعلان؟`)) return;
+  try{
+    const {error}=await db.from("campaigns").update({report_enabled:enabled}).eq("id",id);
+    if(error) throw error;
+    await loadCampaigns();
+    setMsg(enabled ? "▶️ تم تفعيل التقرير بنجاح." : "⛔ تم إيقاف التقرير بنجاح.", true);
+  }catch(e){
+    console.error(e);
+    setMsg("❌ تعذر "+action+" التقرير: "+(e.message||e));
+  }
+}
+window.toggleReport=toggleReport;
+
 async function loadCampaigns(){
   const {data,error}=await db.from("campaigns")
-    .select("id,client_id,campaign_name,telegram_ad_id,impressions,actions,clicks,status,report_code,channel_url,last_updated,created_at,ad_text,ad_image,start_date,end_date")
+    .select("id,client_id,campaign_name,telegram_ad_id,impressions,actions,clicks,status,report_code,channel_url,last_updated,created_at,ad_text,ad_image,start_date,end_date,report_enabled")
     .order("created_at",{ascending:false}).limit(100);
   if(error) throw error;
   if(!data || !data.length){$("list").innerHTML='<div class="empty">لا توجد إعلانات حتى الآن.</div>';return;}
@@ -240,17 +256,25 @@ async function loadCampaigns(){
     const {data:cs}=await db.from("clients").select("id,name").in("id",clientIds);
     (cs||[]).forEach(c=>clients[c.id]=c.name);
   }
-  let html='<div style="overflow:auto"><table><thead><tr><th>العميل</th><th>Ad ID</th><th>المشاهدات</th><th>الانضمام</th><th>الحالة</th><th>الرابط</th><th>إجراء</th></tr></thead><tbody>';
+  let html='<div style="overflow:auto"><table><thead><tr><th>العميل</th><th>Ad ID</th><th>المشاهدات</th><th>الانضمام</th><th>الحالة</th><th>التقرير</th><th>الرابط</th><th>إجراء</th></tr></thead><tbody>';
   data.forEach(x=>{
     const url=reportUrl(x.report_code);
+    const enabled = x.report_enabled !== false;
     html+=`<tr>
       <td>${esc(clients[x.client_id]||x.campaign_name||"-")}<br><span class="badge">${esc(x.report_code||"-")}</span></td>
       <td>${x.telegram_ad_id||"-"}</td>
       <td>${Number(x.impressions||0).toLocaleString("en-US")}</td>
       <td>${Number(x.actions||0).toLocaleString("en-US")}</td>
       <td>${esc(x.status||"-")}</td>
+      <td><span class="${enabled?'report-on':'report-off'}">${enabled?'🟢 متاح':'⛔ متوقف'}</span></td>
       <td><a class="link" target="_blank" href="${url}">فتح التقرير</a></td>
-      <td><button class="smallbtn" onclick="copyText('${url.replace(/'/g,"\\\'")}')">نسخ</button> <button class="smallbtn" onclick="editCampaign('${x.id}')">✏️ تعديل</button></td>
+      <td>
+        <button class="smallbtn" onclick="copyText('${url.replace(/'/g,"\\\'")}')">نسخ</button>
+        <button class="smallbtn" onclick="editCampaign('${x.id}')">✏️ تعديل</button>
+        ${enabled
+          ? `<button class="smallbtn dangerbtn" onclick="toggleReport('${x.id}',false)">⛔ إيقاف</button>`
+          : `<button class="smallbtn successbtn" onclick="toggleReport('${x.id}',true)">▶️ تفعيل</button>`}
+      </td>
     </tr>`;
   });
   html+='</tbody></table></div>';
@@ -323,9 +347,10 @@ $("form").addEventListener("submit",async e=>{
         if(dupErr) throw dupErr;
         if(dup && dup.length) throw new Error("Telegram Ad ID مستخدم بالفعل في إعلان آخر.");
       }
-      const {data:old,error:oldErr}=await db.from("campaigns").select("report_code").eq("id",editingId).single();
+      const {data:old,error:oldErr}=await db.from("campaigns").select("report_code,report_enabled").eq("id",editingId).single();
       if(oldErr) throw oldErr;
       row.report_code=old.report_code || $("reportCode").value;
+      row.report_enabled=old.report_enabled !== false;
       const {error}=await db.from("campaigns").update(row).eq("id",editingId);
       if(error) throw error;
       setMsg("✅ تم حفظ تعديلات الإعلان بنجاح.\n🔗 "+reportUrl(row.report_code),true);
@@ -341,6 +366,7 @@ $("form").addEventListener("submit",async e=>{
     }else{
       const code=$("reportCode").value || await uniqueCode();
       row.report_code=code;
+      row.report_enabled=true;
       if(adId){
         const {data:old,error:findErr}=await db.from("campaigns").select("id,report_code").eq("telegram_ad_id",adId).limit(1);
         if(findErr) throw findErr;
@@ -386,5 +412,4 @@ $("reset").onclick=()=>{ if(editingId) exitEditMode(); else { $("form").reset();
 })();
 </script>
 </body>
-  </html>
-  
+            </html>
