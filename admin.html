@@ -31,7 +31,7 @@ table{width:100%;border-collapse:collapse;margin-top:10px}th,td{padding:11px 8px
   <div class="sub">لوحة إدارة تقارير إعلانات تيليجرام</div>
 
   <section class="card">
-    <h2>➕ إضافة إعلان جديد</h2>
+    <h2 id="formTitle">➕ إضافة إعلان جديد</h2>
     <div class="note">
       الكود يتولد تلقائيًا لكل إعلان. لو أدخلتِ Telegram Ad ID، المزامنة من البوت ستتعرف على نفس الإعلان وتحدّث أرقامه تلقائيًا.
       لا تكتبي Report Code يدويًا.
@@ -94,8 +94,13 @@ table{width:100%;border-collapse:collapse;margin-top:10px}th,td{padding:11px 8px
         </div>
 
         <div>
-          <label>رابط صورة الإعلان</label>
-          <input id="adImage" type="url" placeholder="https://...">
+          <label>📷 صورة الإعلان</label>
+          <input id="adImageFile" type="file" accept="image/*">
+          <div class="hint">اختاري الصورة مباشرة من الموبايل. سيتم رفعها تلقائيًا.</div>
+          <div id="imagePreview" style="margin-top:10px;display:none">
+            <img id="previewImg" style="max-width:180px;max-height:180px;border-radius:12px;border:1px solid #294464;object-fit:cover">
+          </div>
+          <input id="adImage" type="hidden">
         </div>
 
         <div>
@@ -120,6 +125,7 @@ table{width:100%;border-collapse:collapse;margin-top:10px}th,td{padding:11px 8px
       <div class="actions">
         <button class="primary" type="submit" id="save">💾 حفظ الإعلان وإنشاء الرابط</button>
         <button class="secondary" type="button" id="reset">مسح</button>
+        <button class="danger" type="button" id="cancelEdit" style="display:none">✖ إلغاء التعديل</button>
       </div>
       <div id="msg" class="msg"></div>
     </form>
@@ -173,9 +179,58 @@ async function loadClients(){
   });
 }
 
+let editingId = null;
+
+function startEditMode(c){
+  editingId = c.id;
+  $("formTitle").textContent = "✏️ تعديل الإعلان";
+  $("save").textContent = "💾 حفظ التعديلات";
+  $("cancelEdit").style.display = "inline-block";
+  $("client").value = c.client_id || "";
+  $("adId").value = c.telegram_ad_id || "";
+  $("campaignName").value = c.campaign_name || "";
+  $("status").value = c.status || "Active";
+  $("impressions").value = c.impressions || 0;
+  $("actions").value = c.actions || 0;
+  $("clicks").value = c.clicks || 0;
+  $("channelUrl").value = c.channel_url || "";
+  $("adText").value = c.ad_text || "";
+  $("adImage").value = c.ad_image || "";
+  $("startDate").value = c.start_date || "";
+  $("endDate").value = c.end_date || "";
+  $("reportCode").value = c.report_code || "";
+  setMsg("✏️ أنتِ الآن في وضع التعديل. Report Code لن يتغير.", true);
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function exitEditMode(){
+  editingId = null;
+  $("formTitle").textContent = "➕ إضافة إعلان جديد";
+  $("save").textContent = "💾 حفظ الإعلان وإنشاء الرابط";
+  $("cancelEdit").style.display = "none";
+  $("form").reset();
+  $("impressions").value=0; $("actions").value=0; $("clicks").value=0;
+  $("reportCode").value="";
+  clearMsg();
+  uniqueCode().then(c=>$("reportCode").value=c).catch(()=>{});
+}
+
+async function editCampaign(id){
+  try{
+    const {data,error}=await db.from("campaigns").select("*").eq("id",id).single();
+    if(error) throw error;
+    await loadClients();
+    startEditMode(data);
+  }catch(e){
+    console.error(e);
+    alert("❌ تعذر تحميل الإعلان للتعديل: "+(e.message||e));
+  }
+}
+window.editCampaign=editCampaign;
+
 async function loadCampaigns(){
   const {data,error}=await db.from("campaigns")
-    .select("id,client_id,campaign_name,telegram_ad_id,impressions,actions,clicks,status,report_code,channel_url,last_updated,created_at")
+    .select("id,client_id,campaign_name,telegram_ad_id,impressions,actions,clicks,status,report_code,channel_url,last_updated,created_at,ad_text,ad_image,start_date,end_date")
     .order("created_at",{ascending:false}).limit(100);
   if(error) throw error;
   if(!data || !data.length){$("list").innerHTML='<div class="empty">لا توجد إعلانات حتى الآن.</div>';return;}
@@ -185,7 +240,7 @@ async function loadCampaigns(){
     const {data:cs}=await db.from("clients").select("id,name").in("id",clientIds);
     (cs||[]).forEach(c=>clients[c.id]=c.name);
   }
-  let html='<div style="overflow:auto"><table><thead><tr><th>العميل</th><th>Ad ID</th><th>المشاهدات</th><th>الانضمام</th><th>الحالة</th><th>الرابط</th><th></th></tr></thead><tbody>';
+  let html='<div style="overflow:auto"><table><thead><tr><th>العميل</th><th>Ad ID</th><th>المشاهدات</th><th>الانضمام</th><th>الحالة</th><th>الرابط</th><th>إجراء</th></tr></thead><tbody>';
   data.forEach(x=>{
     const url=reportUrl(x.report_code);
     html+=`<tr>
@@ -195,7 +250,7 @@ async function loadCampaigns(){
       <td>${Number(x.actions||0).toLocaleString("en-US")}</td>
       <td>${esc(x.status||"-")}</td>
       <td><a class="link" target="_blank" href="${url}">فتح التقرير</a></td>
-      <td><button class="smallbtn" onclick="copyText('${url.replace(/'/g,"\\\\'")}')">نسخ</button></td>
+      <td><button class="smallbtn" onclick="copyText('${url.replace(/'/g,"\\\'")}')">نسخ</button> <button class="smallbtn" onclick="editCampaign('${x.id}')">✏️ تعديل</button></td>
     </tr>`;
   });
   html+='</tbody></table></div>';
@@ -208,6 +263,27 @@ async function copyText(t){
 }
 window.copyText=copyText;
 
+async function uploadAdImage(file){
+  if(!file) return $("adImage").value || "";
+  if(!file.type.startsWith("image/")) throw new Error("اختاري ملف صورة فقط.");
+  if(file.size > 8 * 1024 * 1024) throw new Error("حجم الصورة يجب ألا يتجاوز 8 ميجابايت.");
+  const ext=(file.name.split(".").pop()||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"") || "jpg";
+  const path=`ads/${Date.now()}-${crypto.randomUUID()}.${ext}`;
+  const {error}=await db.storage.from("ad-images").upload(path,file,{cacheControl:"3600",upsert:false,contentType:file.type});
+  if(error) throw error;
+  const {data}=db.storage.from("ad-images").getPublicUrl(path);
+  if(!data?.publicUrl) throw new Error("تعذر إنشاء رابط الصورة.");
+  return data.publicUrl;
+}
+
+$("adImageFile").addEventListener("change",()=>{
+  const file=$("adImageFile").files?.[0];
+  const box=$("imagePreview"), img=$("previewImg");
+  if(!file){box.style.display="none";return;}
+  img.src=URL.createObjectURL(file);
+  box.style.display="block";
+});
+
 $("newCode").onclick=async()=>{$("reportCode").value=await uniqueCode();};
 $("reset").onclick=()=>{ $("form").reset(); $("impressions").value=0;$("actions").value=0;$("clicks").value=0;$("reportCode").value="";clearMsg(); };
 
@@ -217,13 +293,18 @@ $("form").addEventListener("submit",async e=>{
   try{
     const clientId=$("client").value;
     if(!clientId) throw new Error("اختاري العميل أولًا.");
-    const code=$("reportCode").value || await uniqueCode();
-    $("reportCode").value=code;
+    const adId=$("adId").value ? Number($("adId").value) : null;
+
+    const selectedImage=$("adImageFile").files?.[0] || null;
+    if(selectedImage){
+      btn.textContent="⏳ جاري رفع الصورة...";
+      $("adImage").value=await uploadAdImage(selectedImage);
+    }
 
     const row={
       client_id:clientId,
       campaign_name:$("campaignName").value.trim(),
-      telegram_ad_id:$("adId").value ? Number($("adId").value) : null,
+      telegram_ad_id:adId,
       impressions:Number($("impressions").value||0),
       actions:Number($("actions").value||0),
       clicks:Number($("clicks").value||0),
@@ -233,38 +314,64 @@ $("form").addEventListener("submit",async e=>{
       channel_url:$("channelUrl").value.trim(),
       start_date:$("startDate").value || null,
       end_date:$("endDate").value || null,
-      report_code:code,
       last_updated:new Date().toISOString()
     };
 
-    if(row.telegram_ad_id){
-      const {data:old,error:findErr}=await db.from("campaigns").select("id,report_code").eq("telegram_ad_id",row.telegram_ad_id).limit(1);
-      if(findErr) throw findErr;
-      if(old && old.length){
-        // Never change an existing ad's report code.
-        row.report_code=old[0].report_code || code;
-        const {error}=await db.from("campaigns").update(row).eq("id",old[0].id);
-        if(error) throw error;
-        const url=reportUrl(row.report_code);
-        setMsg("✅ الإعلان موجود بالفعل؛ تم تحديث نفس السجل.\n🔗 "+url,true);
+    if(editingId){
+      if(adId){
+        const {data:dup,error:dupErr}=await db.from("campaigns").select("id").eq("telegram_ad_id",adId).neq("id",editingId).limit(1);
+        if(dupErr) throw dupErr;
+        if(dup && dup.length) throw new Error("Telegram Ad ID مستخدم بالفعل في إعلان آخر.");
+      }
+      const {data:old,error:oldErr}=await db.from("campaigns").select("report_code").eq("id",editingId).single();
+      if(oldErr) throw oldErr;
+      row.report_code=old.report_code || $("reportCode").value;
+      const {error}=await db.from("campaigns").update(row).eq("id",editingId);
+      if(error) throw error;
+      setMsg("✅ تم حفظ تعديلات الإعلان بنجاح.\n🔗 "+reportUrl(row.report_code),true);
+      await loadCampaigns();
+      editingId=null;
+      $("formTitle").textContent="➕ إضافة إعلان جديد";
+      $("save").textContent="💾 حفظ الإعلان وإنشاء الرابط";
+      $("cancelEdit").style.display="none";
+      $("form").reset();
+      $("impressions").value=0;$("actions").value=0;$("clicks").value=0;
+      $("reportCode").value="";
+      $("reportCode").value=await uniqueCode();
+    }else{
+      const code=$("reportCode").value || await uniqueCode();
+      row.report_code=code;
+      if(adId){
+        const {data:old,error:findErr}=await db.from("campaigns").select("id,report_code").eq("telegram_ad_id",adId).limit(1);
+        if(findErr) throw findErr;
+        if(old && old.length){
+          row.report_code=old[0].report_code || code;
+          const {error}=await db.from("campaigns").update(row).eq("id",old[0].id);
+          if(error) throw error;
+          setMsg("✅ الإعلان موجود بالفعل؛ تم تحديث نفس السجل.\n🔗 "+reportUrl(row.report_code),true);
+        }else{
+          const {error}=await db.from("campaigns").insert(row);
+          if(error) throw error;
+          setMsg("✅ تم إنشاء الإعلان والرابط المستقل.\n🔗 "+reportUrl(row.report_code),true);
+        }
       }else{
         const {error}=await db.from("campaigns").insert(row);
         if(error) throw error;
         setMsg("✅ تم إنشاء الإعلان والرابط المستقل.\n🔗 "+reportUrl(row.report_code),true);
       }
-    }else{
-      const {error}=await db.from("campaigns").insert(row);
-      if(error) throw error;
-      setMsg("✅ تم إنشاء الإعلان والرابط المستقل.\n🔗 "+reportUrl(row.report_code),true);
+      await loadCampaigns();
     }
-    await loadCampaigns();
   }catch(err){
     console.error(err);
     setMsg("❌ لم يتم الحفظ: "+(err.message||err));
   }finally{
-    btn.disabled=false;btn.textContent="💾 حفظ الإعلان وإنشاء الرابط";
+    btn.disabled=false;
+    btn.textContent=editingId ? "💾 حفظ التعديلات" : "💾 حفظ الإعلان وإنشاء الرابط";
   }
 });
+
+$("cancelEdit").onclick=exitEditMode;
+$("reset").onclick=()=>{ if(editingId) exitEditMode(); else { $("form").reset(); $("impressions").value=0;$("actions").value=0;$("clicks").value=0;$("reportCode").value="";clearMsg(); uniqueCode().then(c=>$("reportCode").value=c).catch(()=>{}); } };
 
 (async()=>{
   try{
@@ -280,4 +387,4 @@ $("form").addEventListener("submit",async e=>{
 </script>
 </body>
             </html>
-          
+  
